@@ -1,0 +1,2424 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>สวนทุเรียน · ระบบดูแลสวน</title>
+
+<!-- PWA Meta Tags -->
+<meta name="application-name" content="สวนทุเรียน">
+<meta name="description" content="ระบบบริหารจัดการสวนทุเรียน · บ้านคำชะอี จ.มุกดาหาร">
+<meta name="theme-color" content="#1a7c3e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="สวนทุเรียน">
+
+<!-- PWA Icons (Apple) -->
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-192.png">
+
+<!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@600;700&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f6f2;--surf:#fff;--surf2:#eef3ee;--surf3:#e6ede6;
+  --bdr:#cfdecf;--bdr2:#a8c4a8;
+  --g:#1a7c3e;--g2:#2da55e;--g3:#eaf5ec;
+  --gold:#9a6c18;--gold2:#f7edce;
+  --txt:#1a2c1f;--txt2:#486050;--txt3:#8aaa90;
+  --red:#b83028;--red2:#fdecea;
+  --amb:#a85800;--amb2:#fdf0e0;
+  --sky:#155fa0;--sky2:#e3f0fc;
+  --teal:#0d6b5e;--teal2:#dff2ef;
+  --r:13px;--rsm:8px;
+  --sh:0 1px 6px rgba(20,50,20,.07);--shm:0 4px 18px rgba(20,50,20,.11);
+}
+*{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;font-size:15px;line-height:1.6;}
+
+/* HDR */
+.hdr{background:var(--surf);border-bottom:1.5px solid var(--bdr);position:sticky;top:0;z-index:200;box-shadow:var(--sh);}
+.hdr-in{max-width:1120px;margin:0 auto;padding:0 18px;height:54px;display:flex;align-items:center;gap:12px;}
+.logo{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#1a7c3e,#2da55e);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.logo-t{font-family:'Noto Serif Thai',serif;font-size:.95rem;font-weight:700;color:var(--txt);}
+.logo-s{font-size:.65rem;color:var(--txt3);margin-top:1px;}
+.hdr-r{margin-left:auto;display:flex;align-items:center;gap:9px;}
+.ca{background:var(--gold2);border:1.5px solid #e5c87a;color:var(--gold);font-size:.69rem;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.cd{font-size:.67rem;color:var(--txt3);white-space:nowrap;}
+
+/* NAV */
+nav{background:var(--surf);border-bottom:1.5px solid var(--bdr);position:sticky;top:54px;z-index:199;}
+.nav-in{max-width:1120px;margin:0 auto;display:flex;overflow-x:auto;padding:0 18px;scrollbar-width:none;}
+.nav-in::-webkit-scrollbar{display:none;}
+.nb{background:none;border:none;font-family:'Sarabun',sans-serif;font-size:.8rem;font-weight:500;color:var(--txt3);padding:11px 13px;cursor:pointer;white-space:nowrap;border-bottom:2.5px solid transparent;transition:all .17s;display:flex;align-items:center;gap:5px;}
+.nb:hover{color:var(--g);}
+.nb.on{color:var(--g);border-bottom-color:var(--g);font-weight:600;}
+
+/* MAIN */
+.main{max-width:1120px;margin:0 auto;padding:20px 18px;}
+.pg{display:none;animation:up .25s ease;}
+.pg.on{display:block;}
+@keyframes up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;}
+@media(max-width:820px){.g2{grid-template-columns:1fr;}.g3{grid-template-columns:1fr 1fr;}.g4{grid-template-columns:1fr 1fr;}}
+@media(max-width:480px){.g3{grid-template-columns:1fr;}.g4{grid-template-columns:1fr 1fr;}}
+
+/* CARD */
+.card{background:var(--surf);border:1.5px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-bottom:15px;box-shadow:var(--sh);transition:box-shadow .17s;}
+.card:hover{box-shadow:var(--shm);}
+.ch{padding:12px 16px;border-bottom:1.5px solid var(--bdr);display:flex;align-items:center;gap:9px;}
+.ch h3{font-size:.86rem;font-weight:600;color:var(--txt);}
+.chi{width:25px;height:25px;border-radius:7px;background:var(--g3);border:1.5px solid var(--bdr2);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;}
+.cb{padding:16px;}
+
+/* STAT */
+.stat{background:var(--surf);border:1.5px solid var(--bdr);border-radius:var(--r);padding:14px 16px;transition:all .17s;}
+.stat:hover{box-shadow:var(--shm);transform:translateY(-1px);}
+.sl{font-size:.65rem;color:var(--txt3);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;}
+.sv{font-family:'Noto Serif Thai',serif;font-size:1.8rem;font-weight:700;line-height:1.1;}
+.ss{font-size:.67rem;color:var(--txt3);margin-top:2px;}
+.stat.g .sv{color:var(--g);}
+.stat.o .sv{color:var(--amb);}
+.stat.b .sv{color:var(--sky);}
+.stat.t .sv{color:var(--teal);}
+
+/* BANNER */
+.bnr{background:linear-gradient(135deg,var(--g3),#f0faf2);border:1.5px solid var(--bdr2);border-left:4px solid var(--g);border-radius:var(--r);padding:17px 19px;margin-bottom:15px;}
+.bn-tag{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--g);font-weight:700;margin-bottom:4px;}
+.bn-title{font-family:'Noto Serif Thai',serif;font-size:1.1rem;font-weight:700;color:var(--txt);margin-bottom:10px;}
+.bn-g{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+@media(max-width:520px){.bn-g{grid-template-columns:1fr;}}
+.bn-i{background:rgba(255,255,255,.72);border:1px solid var(--bdr);border-radius:8px;padding:8px 11px;}
+.bn-il{font-size:.62rem;color:var(--txt3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:2px;font-weight:700;}
+.bn-iv{font-size:.78rem;color:var(--txt);line-height:1.5;}
+.bn-w{margin-top:8px;background:var(--red2);border:1px solid #f5bfb8;border-radius:8px;padding:8px 11px;font-size:.76rem;color:var(--red);}
+
+/* TAGS */
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.65rem;font-weight:700;letter-spacing:.02em;}
+.tg{background:var(--g3);color:var(--g);border:1px solid #a8d0b0;}
+.ta{background:var(--amb2);color:var(--amb);border:1px solid #f0c890;}
+.tr{background:var(--red2);color:var(--red);border:1px solid #f0b8b0;}
+.ts{background:var(--sky2);color:var(--sky);border:1px solid #a0c8e8;}
+.tt{background:var(--teal2);color:var(--teal);border:1px solid #88c0b8;}
+.tgold{background:var(--gold2);color:var(--gold);border:1px solid #e5c878;}
+
+/* FORM */
+.fr{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
+.fg{flex:1;min-width:125px;}
+.fg label{display:block;font-size:.67rem;color:var(--txt3);margin-bottom:4px;letter-spacing:.05em;text-transform:uppercase;font-weight:700;}
+.fg input,.fg select,.fg textarea{width:100%;background:var(--surf2);border:1.5px solid var(--bdr);border-radius:8px;color:var(--txt);font-family:'Sarabun',sans-serif;font-size:.85rem;padding:8px 11px;transition:border-color .17s,box-shadow .17s;-webkit-appearance:none;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--g2);box-shadow:0 0 0 3px rgba(45,165,94,.09);}
+.fg textarea{resize:vertical;min-height:60px;}
+.fg select option{background:white;}
+
+/* BTN */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:8px;border:none;font-family:'Sarabun',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .17s;}
+.btn-p{background:var(--g);color:white;}
+.btn-p:hover{background:var(--g2);transform:translateY(-1px);box-shadow:0 3px 10px rgba(26,124,62,.25);}
+.btn-g{background:var(--surf2);border:1.5px solid var(--bdr);color:var(--txt2);}
+.btn-g:hover{border-color:var(--bdr2);color:var(--txt);}
+.btn-r{background:var(--red2);border:1.5px solid #f0b8b0;color:var(--red);}
+.btn-r:hover{background:#fad8d4;}
+.btn-sm{padding:4px 9px;font-size:.7rem;border-radius:6px;}
+
+/* TABLE */
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.79rem;}
+thead tr{background:var(--surf2);border-bottom:2px solid var(--bdr);}
+thead th{padding:8px 11px;text-align:left;font-size:.64rem;color:var(--txt3);font-weight:700;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--bdr);transition:background .12s;}
+tbody tr:hover{background:var(--g3);}
+tbody td{padding:8px 11px;color:var(--txt);vertical-align:top;}
+
+/* CAL */
+.cc{background:var(--surf);border:1.5px solid var(--bdr);border-radius:var(--r);padding:13px 16px;margin-bottom:8px;cursor:pointer;transition:all .17s;}
+.cc:hover{border-color:var(--bdr2);}
+.cc.now{border-color:var(--g);border-left:4px solid var(--g);}
+.cc-top{display:flex;align-items:center;gap:10px;}
+.cc-ico{font-size:1.25rem;}
+.cc-mn{font-family:'Noto Serif Thai',serif;font-size:.9rem;font-weight:700;color:var(--txt);}
+.cc-st{font-size:.69rem;color:var(--txt3);margin-top:2px;}
+.cc-bdg{margin-left:auto;}
+.cc-body{display:none;margin-top:10px;border-top:1.5px solid var(--bdr);padding-top:10px;}
+.cc-body.open{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+@media(max-width:520px){.cc-body.open{grid-template-columns:1fr;}}
+.ci{background:var(--surf2);border-radius:7px;padding:8px 11px;border:1px solid var(--bdr);}
+.ci-t{font-size:.62rem;color:var(--txt3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;font-weight:700;}
+.ci-c{font-size:.77rem;color:var(--txt);line-height:1.55;}
+.ci-w{grid-column:1/-1;background:var(--red2);border-color:#f0b8b0;}
+.ci-w .ci-t{color:var(--red);}
+.ci-w .ci-c{color:#8a1a18;}
+.ci-tip{grid-column:1/-1;background:var(--gold2);border-color:#e5c878;}
+.ci-tip .ci-t{color:var(--gold);}
+
+/* DX */
+.dc{background:var(--surf2);border:1.5px solid var(--bdr);border-radius:var(--rsm);padding:12px 14px;margin-bottom:8px;}
+.dc-n{font-size:.84rem;font-weight:600;color:var(--txt);margin-bottom:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.dc-s{font-size:.76rem;color:var(--txt2);background:rgba(0,0,0,.03);border-radius:6px;padding:6px 10px;margin-bottom:6px;border-left:2.5px solid var(--bdr2);}
+.dc-r{font-size:.76rem;color:var(--txt2);background:var(--g3);border-radius:6px;padding:6px 10px;border-left:2.5px solid var(--g2);}
+
+/* PH */
+.ph-box{background:var(--surf2);border:1.5px solid var(--bdr2);border-radius:var(--r);padding:16px;margin-top:12px;}
+.ph-bar{height:8px;border-radius:4px;background:linear-gradient(90deg,#dc2626 0%,#f59e0b 25%,#16a34a 42%,#16a34a 60%,#2563eb 75%,#7c3aed 100%);position:relative;}
+.ph-th{position:absolute;top:-7px;width:21px;height:21px;border-radius:50%;background:white;border:2.5px solid var(--g);box-shadow:0 2px 6px rgba(0,0,0,.18);transform:translateX(-50%);transition:left .4s cubic-bezier(.34,1.56,.64,1);}
+.ph-lb{display:flex;justify-content:space-between;font-size:.65rem;color:var(--txt3);margin-top:5px;}
+
+/* ROAD */
+.rc{background:var(--surf);border:1.5px solid var(--bdr);border-radius:var(--r);padding:14px 16px;margin-bottom:8px;}
+.rc.now-r{border-color:var(--g);border-left:4px solid var(--g);}
+.rc-head{display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap;}
+.rc-t{font-weight:700;font-size:.84rem;color:var(--txt);}
+.rc-p{font-size:.69rem;color:var(--txt3);margin-left:auto;}
+.rc-g{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+@media(max-width:480px){.rc-g{grid-template-columns:1fr;}}
+.ri{background:var(--surf2);border-radius:7px;padding:8px 11px;border:1px solid var(--bdr);}
+.ri-l{font-size:.62rem;color:var(--txt3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px;font-weight:700;}
+.ri-v{font-size:.76rem;color:var(--txt2);line-height:1.5;}
+
+/* WATER */
+.w-hero{background:linear-gradient(135deg,#deeeff,#eaf5ff);border:1.5px solid #a0c8e8;border-radius:var(--r);padding:18px 20px;margin-bottom:15px;}
+.w-hero-t{font-family:'Noto Serif Thai',serif;font-size:1rem;font-weight:700;color:var(--sky);margin-bottom:4px;}
+.w-hero-s{font-size:.78rem;color:#1a508a;line-height:1.6;}
+.w-res{background:var(--surf);border:1.5px solid var(--bdr);border-radius:var(--r);padding:16px;margin-top:12px;display:none;}
+.w-res.show{display:block;animation:up .22s ease;}
+.w-sec-t{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--txt3);margin-bottom:8px;padding-bottom:5px;border-bottom:1.5px solid var(--bdr);margin-top:14px;}
+.w-sec-t:first-child{margin-top:0;}
+.w-big{text-align:center;padding:12px;background:var(--sky2);border-radius:var(--rsm);border:1.5px solid #a0c8e8;}
+.w-big-n{font-family:'Noto Serif Thai',serif;font-size:1.9rem;font-weight:700;color:var(--sky);}
+.w-big-u{font-size:.7rem;color:var(--txt3);margin-top:1px;}
+.w-tip{background:var(--gold2);border:1.5px solid #e5c878;border-radius:8px;padding:8px 12px;font-size:.75rem;color:var(--amb);margin-top:8px;line-height:1.6;}
+.w-warn{background:var(--red2);border:1.5px solid #f0b8b0;border-radius:8px;padding:8px 12px;font-size:.75rem;color:var(--red);margin-top:8px;line-height:1.6;}
+.w-ok{background:var(--g3);border:1.5px solid var(--bdr2);border-radius:8px;padding:8px 12px;font-size:.75rem;color:var(--g);margin-top:8px;line-height:1.6;}
+.swt{width:100%;border-collapse:collapse;font-size:.76rem;}
+.swt th{background:var(--g3);padding:7px 11px;text-align:left;font-size:.62rem;color:var(--g);font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-bottom:2px solid var(--bdr2);}
+.swt td{padding:7px 11px;border-bottom:1px solid var(--bdr);vertical-align:top;}
+.swt tr.cur{background:var(--sky2);}
+.swt tr:hover{background:var(--g3);}
+.sp-box{background:linear-gradient(135deg,#deeeff,#eaf5ff);border:1.5px solid #a0c8e8;border-radius:10px;padding:13px 15px;margin-bottom:11px;}
+.sp-vis{position:relative;width:100%;height:130px;background:linear-gradient(135deg,#e4f4e4,#d8eede);border-radius:8px;margin:10px 0;overflow:hidden;border:1.5px solid var(--bdr2);}
+
+/* ADV */
+#log-adv{display:none;margin-bottom:10px;background:var(--g3);border:1.5px solid var(--bdr2);border-radius:var(--rsm);padding:11px 13px;}
+#log-adv-t{font-size:.63rem;color:var(--g);letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px;font-weight:700;}
+#log-adv-c{font-size:.76rem;color:var(--txt2);line-height:1.7;}
+#stage-ctx{display:none;margin-bottom:8px;padding:7px 11px;background:var(--sky2);border:1.5px solid #a0c8e8;border-radius:8px;font-size:.75rem;color:var(--sky);}
+
+/* MISC */
+.flt{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;align-items:center;}
+.flt input,.flt select{background:var(--surf2);border:1.5px solid var(--bdr);border-radius:8px;color:var(--txt);font-family:'Sarabun',sans-serif;font-size:.8rem;padding:7px 11px;}
+.flt input:focus,.flt select:focus{outline:none;border-color:var(--g2);}
+.flt input{min-width:160px;}
+.ip-r{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.ip{font-size:.73rem;color:var(--txt2);background:var(--surf2);border:1.5px solid var(--bdr);border-radius:7px;padding:4px 9px;}
+.ip b{color:var(--txt);}
+.sl-r{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--txt3);margin-bottom:8px;font-weight:700;display:flex;align-items:center;gap:7px;}
+.sl-r::after{content:'';flex:1;height:1.5px;background:var(--bdr);}
+.empty{text-align:center;padding:38px 16px;color:var(--txt3);}
+.empty-i{font-size:1.9rem;margin-bottom:7px;opacity:.3;}
+#toast{position:fixed;bottom:18px;right:18px;background:var(--txt);color:white;padding:9px 16px;border-radius:8px;font-size:.79rem;font-weight:500;box-shadow:var(--shm);z-index:9999;transform:translateY(40px);opacity:0;transition:all .24s cubic-bezier(.34,1.56,.64,1);}
+#toast.on{transform:none;opacity:1;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px;}
+
+/* v2: chips / accordion / water */
+.chips{display:flex;gap:7px;overflow-x:auto;margin-bottom:13px;padding-bottom:3px;scrollbar-width:none;}
+.chips::-webkit-scrollbar{display:none;}
+.chip{flex:0 0 auto;background:var(--surf);border:1.5px solid var(--bdr);border-radius:22px;padding:9px 16px;font-family:'Sarabun',sans-serif;font-size:.86rem;font-weight:600;color:var(--txt2);cursor:pointer;white-space:nowrap;transition:all .17s;}
+.chip.on{background:var(--g);border-color:var(--g);color:#fff;box-shadow:var(--sh);}
+.csec,.hsec{display:none;}
+.csec.on,.hsec.on{display:block;animation:up .22s ease;}
+.acc{background:var(--surf);border:1.5px solid var(--bdr);border-radius:var(--r);margin-bottom:10px;overflow:hidden;box-shadow:var(--sh);}
+.acc>summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:600;font-size:.9rem;display:flex;align-items:center;gap:9px;color:var(--txt);-webkit-tap-highlight-color:transparent;}
+.acc>summary::-webkit-details-marker{display:none;}
+.acc>summary::after{content:'+';margin-left:auto;color:var(--txt3);font-size:1.2rem;font-weight:400;line-height:1;}
+.acc[open]>summary::after{content:'–';}
+.acc[open]>summary{border-bottom:1.5px solid var(--bdr);background:var(--surf2);}
+.acc-b{padding:14px 16px;font-size:.83rem;color:var(--txt2);line-height:1.75;}
+.acc-b ul{margin:5px 0 8px 19px;}
+.acc-b li{margin-bottom:4px;}
+.acc-b .dc{background:var(--surf2);}
+.acc-b td small,.acc-b th small{color:var(--txt3);font-weight:400;text-transform:none;letter-spacing:0;}
+.cb .acc{box-shadow:none;}
+.src{font-size:.71rem;color:var(--txt3);line-height:1.6;margin-top:10px;padding-top:8px;border-top:1px dashed var(--bdr);}
+.hint{font-size:.72rem;color:var(--txt3);line-height:1.6;margin:-3px 0 11px;}
+.w-age{background:var(--gold2);border:1.5px solid #e5c878;border-radius:8px;color:var(--gold);font-weight:700;font-size:.9rem;padding:8px 11px;min-height:38px;}
+.w-fx{background:var(--surf2);border:1.5px dashed var(--bdr2);border-radius:8px;padding:9px 12px;font-size:.82rem;color:var(--txt2);}
+.w-big-n{line-height:1.25;}
+#w-res .w-big-n{font-size:1.45rem;}
+.fg input::placeholder{color:#a9bfae;}
+.fg select:disabled,.fg option:disabled{color:#b5c5b8;}
+@media(max-width:820px){.fg input,.fg select,.fg textarea,.flt input,.flt select{font-size:16px;}}
+@media(max-width:600px){.hdr-in{padding:0 12px;gap:9px;}.logo-s,.cd{display:none;}.hdr-r{min-width:0;gap:6px;}#sync-status{max-width:96px;overflow:hidden;text-overflow:ellipsis;}.main{padding:16px 12px;}.nav-in{padding:0 8px;}}
+
+/* v3: redesign */
+:root{--txt3:#6b8672;--r:16px;--rsm:10px;}
+body{font-size:16px;}
+.card{border-width:1px;}
+.ch h3{font-size:.92rem;}
+.fg label{font-size:.72rem;letter-spacing:.02em;text-transform:none;}
+.sl-r{font-size:.74rem;letter-spacing:.03em;text-transform:none;margin:4px 0 10px;}
+thead th{font-size:.7rem;letter-spacing:.02em;text-transform:none;}
+.hero{background:linear-gradient(140deg,#14532d,#1a7c3e 55%,#2da55e);color:#fff;border-radius:18px;padding:18px 18px 14px;margin-bottom:14px;box-shadow:var(--shm);}
+.hero-top{display:flex;align-items:flex-start;gap:10px;}
+.hero-d{font-size:.78rem;opacity:.85;}
+.hero-t{font-family:'Noto Serif Thai',serif;font-size:1.3rem;font-weight:700;margin-top:2px;line-height:1.35;}
+.hero-age{margin-left:auto;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.32);border-radius:20px;padding:4px 11px;font-size:.74rem;font-weight:600;white-space:nowrap;}
+.wx{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:14px;}
+.wx div{background:rgba(255,255,255,.14);border-radius:12px;padding:9px 3px;text-align:center;}
+.wx b{display:block;font-size:1.02rem;font-weight:700;line-height:1.3;}
+.wx span{font-size:.66rem;opacity:.88;}
+.hero-n{font-size:.68rem;opacity:.78;margin-top:10px;line-height:1.5;}
+.rk{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--bdr);}
+.rk:first-child{padding-top:0;}
+.rk-l{flex:0 0 46px;align-self:flex-start;text-align:center;font-size:.7rem;font-weight:700;border-radius:9px;padding:6px 0;}
+.rk-l.hi{background:var(--red2);color:var(--red);border:1px solid #f0b8b0;}
+.rk-l.med{background:var(--amb2);color:var(--amb);border:1px solid #f0c890;}
+.rk-n{font-weight:600;font-size:.88rem;color:var(--txt);}
+.rk-w{font-size:.76rem;color:var(--txt3);line-height:1.5;}
+.rk-x{font-size:.78rem;color:var(--txt2);margin-top:3px;line-height:1.55;}
+.rk-low{font-size:.77rem;color:var(--txt3);margin-top:11px;background:var(--surf2);border-radius:10px;padding:9px 12px;line-height:1.6;}
+.rk-low b{color:var(--txt2);}
+.td{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--bdr);font-size:.83rem;color:var(--txt2);line-height:1.55;}
+.td:first-child{padding-top:0;}.td:last-child{border:0;padding-bottom:0;}
+.td i{font-style:normal;font-size:1.2rem;flex:0 0 26px;text-align:center;}
+.td b{color:var(--txt);}
+.td a{color:var(--sky);text-decoration:none;font-weight:600;white-space:nowrap;}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:15px;}
+.tile{background:var(--surf);border:1px solid var(--bdr);border-radius:15px;padding:14px 6px 12px;text-align:center;cursor:pointer;font-family:'Sarabun',sans-serif;box-shadow:var(--sh);-webkit-tap-highlight-color:transparent;}
+.tile:active{transform:scale(.97);}
+.tile i{font-style:normal;font-size:1.55rem;display:block;line-height:1.3;}
+.tile b{font-size:.82rem;display:block;margin-top:3px;color:var(--txt);font-weight:600;}
+.tile small{font-size:.68rem;color:var(--txt3);display:block;line-height:1.35;margin-top:1px;}
+@media(min-width:821px){.tiles{grid-template-columns:repeat(5,1fr);}}
+#log-adv{display:block;background:var(--surf2);border:1px solid var(--bdr);border-radius:13px;padding:13px 14px;margin-bottom:12px;}
+#log-adv-t{font-size:.86rem;letter-spacing:0;text-transform:none;color:var(--txt);margin-bottom:8px;}
+#log-adv-c{font-size:.8rem;line-height:1.65;}
+.adv-wx{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.adv-wx span{background:var(--surf);border:1px solid var(--bdr);border-radius:20px;padding:3px 10px;font-size:.74rem;color:var(--txt2);}
+.adv-st{margin-top:11px;padding-top:10px;border-top:1px dashed var(--bdr2);}
+.sg{margin-top:8px;}
+.sg-t{font-size:.76rem;font-weight:700;color:var(--g);}
+.sg-c{font-size:.8rem;color:var(--txt2);line-height:1.6;}
+.bbar{display:none;}
+@media(max-width:820px){
+  nav{display:none;}
+  .bbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:300;background:rgba(255,255,255,.97);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid var(--bdr);padding:5px 4px calc(5px + env(safe-area-inset-bottom));box-shadow:0 -2px 12px rgba(20,50,20,.06);}
+  .bb{flex:1;background:none;border:0;font-family:'Sarabun',sans-serif;font-size:.7rem;color:var(--txt3);font-weight:600;padding:4px 0 3px;cursor:pointer;border-radius:10px;-webkit-tap-highlight-color:transparent;}
+  .bb span{display:block;font-size:1.3rem;line-height:1.35;filter:grayscale(.7);opacity:.65;}
+  .bb.on{color:var(--g);}
+  .bb.on span{filter:none;opacity:1;}
+  .main{padding-bottom:calc(88px + env(safe-area-inset-bottom));}
+  #toast{bottom:calc(80px + env(safe-area-inset-bottom));}
+}
+</style>
+<!-- Firebase SDK โหลดใน head ล่วงหน้า — เร็วกว่า dynamic load -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-in">
+    <div class="logo">🌿</div>
+    <div><div class="logo-t">สวนทุเรียน</div><div class="logo-s">ระบบบริหารจัดการสวน · กรมวิชาการเกษตร</div></div>
+    <div class="hdr-r"><div class="ca" id="age-chip">🌱 ทุเรียน</div><div id="sync-status" style="font-size:.65rem;color:var(--txt3);white-space:nowrap"></div><div class="cd" id="dchip"></div></div>
+  </div>
+</header>
+<nav>
+  <div class="nav-in">
+    <button class="nb on" onclick="go('dash')" id="nb-dash">📊 ภาพรวม</button>
+    <button class="nb" onclick="go('log')" id="nb-log">📝 บันทึก</button>
+    <button class="nb" onclick="go('road')" id="nb-road">🗺 แผนดูแล</button>
+    <button class="nb" onclick="go('cal')" id="nb-cal">📅 ปฏิทิน</button>
+    <button class="nb" onclick="go('ph')" id="nb-ph">⬡ pH ดิน</button>
+    <button class="nb" onclick="go('dis')" id="nb-dis">🔬 โรค &amp; แมลง</button>
+    <button class="nb" onclick="go('water')" id="nb-water">💧 ระบบน้ำ</button>
+    <button class="nb" onclick="go('crop')" id="nb-crop">🌾 พืชอื่น</button>
+    <button class="nb" onclick="go('chem')" id="nb-chem">🧴 สารเคมี</button>
+  </div>
+</nav>
+<div class="bbar">
+  <button class="bb on" id="bb-dash" onclick="go('dash')"><span>🏠</span>ภาพรวม</button>
+  <button class="bb" id="bb-log" onclick="go('log')"><span>📝</span>บันทึก</button>
+  <button class="bb" id="bb-water" onclick="go('water')"><span>💧</span>ให้น้ำ</button>
+  <button class="bb" id="bb-dis" onclick="go('dis')"><span>🔬</span>โรค·แมลง</button>
+  <button class="bb" id="bb-menu" onclick="go('menu')"><span>☰</span>เมนู</button>
+</div>
+<div class="main">
+
+<!-- DASH -->
+<div class="pg on" id="pg-dash">
+  <div id="today"></div>
+  <div class="card">
+    <div class="ch"><div class="chi">⚠️</div><h3>ต้องระวังเดือนนี้ · ทุเรียน</h3></div>
+    <div class="cb" id="risk-c"></div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="chi">✅</div><h3>งานเดือนนี้</h3></div>
+    <div class="cb" id="todo-c"></div>
+  </div>
+  <div class="sl-r">สรุปบันทึก (แตะเพื่อดูรายการ)</div>
+  <div class="g4" style="margin-bottom:15px" id="sw"></div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div class="chi">📋</div><h3>บันทึกล่าสุด</h3></div>
+      <div class="tw"><table><thead><tr><th>วันที่</th><th>ประเภท</th><th>รายการ</th></tr></thead><tbody id="rtb"></tbody></table></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="chi">🌱</div><h3>สถานะต้น · อายุ <span id="age-h"></span></h3></div>
+      <div class="cb">
+        <p id="age-st" style="font-size:.84rem;color:var(--txt2);line-height:1.8;margin-bottom:11px"></p>
+        <div class="ip-r">
+          <div class="ip">🎯 <b>เป้า:</b> แตกใบ 3–4 ชุด/ปี</div>
+          <div class="ip">🌳 <b>pH:</b> 5.5–6.5</div>
+          <div class="ip">✂️ ตัดแต่งหลังใบสมบูรณ์</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sl-r">เมนูทั้งหมด</div>
+  <div class="tiles" id="tiles-dash"></div>
+</div>
+
+<!-- MENU -->
+<div class="pg" id="pg-menu">
+  <div class="sl-r">เมนูทั้งหมด</div>
+  <div class="tiles" id="tiles-menu"></div>
+</div>
+
+<!-- LOG -->
+<div class="pg" id="pg-log">
+  <div class="card" style="margin-bottom:15px">
+    <div class="ch"><div class="chi">➕</div><h3>เพิ่มบันทึกใหม่</h3></div>
+    <div class="cb">
+      <div class="fr">
+        <div class="fg"><label>วันที่</label><input type="date" id="i-date" onchange="showAdv()"></div>
+        <div class="fg"><label>พืช</label>
+          <select id="i-crop" onchange="showAdv()"><option>ทุเรียน</option><option>ยางพารา</option><option>อ้อย</option><option>มันสำปะหลัง</option><option>ข้าว</option><option>อื่นๆ</option></select>
+        </div>
+        <div class="fg"><label>ประเภท</label>
+          <select id="i-type"><option>ปุ๋ยทางดิน</option><option>ปุ๋ยทางใบ</option><option>ยาฆ่าแมลง</option><option>ยาเชื้อรา</option><option>สารกำจัดวัชพืช</option><option>ปรับปรุงดิน</option><option>อื่นๆ</option></select>
+        </div>
+        <div class="fg"><label id="i-stage-l">ระยะใบ</label>
+          <select id="i-stage" onchange="showAdv()">
+            <option value="">-- เลือกระยะใบ --</option>
+            <optgroup label="ออกใบอ่อน">
+              <option value="แทงยอด">🌱 แทงยอด (0–2 ซม.)</option>
+              <option value="หางปลา">🌿 หางปลา (3–6 ซม.)</option>
+              <option value="ใบดาบ">🗡 ใบดาบ (7–15 ซม.)</option>
+              <option value="ใบอ่อนตั้ง">🌾 ใบอ่อนตั้ง (นิ่ม)</option>
+            </optgroup>
+            <optgroup label="ใบสมบูรณ์">
+              <option value="ใบแก่เขียว">🍃 ใบแก่เขียวสด</option>
+              <option value="ใบแก่เข้ม">🌲 ใบแก่เขียวเข้ม</option>
+            </optgroup>
+            <optgroup label="พักตัว">
+              <option value="พักตัว">💤 พักตัว</option>
+              <option value="เตรียมแตกใบ">🔖 เตรียมแตกใบ (ตาโป่ง)</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+      <div id="log-adv"><div id="log-adv-t"></div><div id="log-adv-c"></div></div>
+      <div class="fr">
+        <div class="fg" style="flex:2"><label>ชื่อสาร / ปุ๋ย / ยา</label><input type="text" id="i-prod" placeholder="เช่น 25-7-7, อะบาเมกติน..."></div>
+        <div class="fg"><label>อัตรา</label><input type="text" id="i-rate" placeholder="เช่น 300 ก./ต้น"></div>
+        <div class="fg"><label>pH ดิน</label><input type="number" id="i-ph" step=".1" min="3" max="9" placeholder="5.5–6.5" oninput="showAdv()"></div>
+      </div>
+      <div class="fr"><div class="fg"><label>หมายเหตุ</label><textarea id="i-note" placeholder="สภาพอากาศ, ผลลัพธ์..."></textarea></div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-p" onclick="addRec()">💾 บันทึก</button>
+        <button class="btn btn-g" onclick="clrForm()">↺ ล้าง</button>
+        <button class="btn btn-g" onclick="expCSV()">↓ CSV</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="chi">📋</div><h3>ประวัติทั้งหมด</h3></div>
+    <div class="cb" style="padding-bottom:8px">
+      <div class="flt">
+        <input type="text" id="sq" placeholder="🔍 ค้นหา..." oninput="renderLog()">
+        <select id="scrop" onchange="renderLog()"><option value="">ทุกพืช</option><option>ทุเรียน</option><option>ยางพารา</option><option>อ้อย</option><option>มันสำปะหลัง</option><option>ข้าว</option><option>อื่นๆ</option></select>
+        <select id="stype" onchange="renderLog()"><option value="">ทุกประเภท</option><option value="ปุ๋ย">ปุ๋ย (รวม)</option><option>ปุ๋ยทางดิน</option><option>ปุ๋ยทางใบ</option><option>ยาฆ่าแมลง</option><option>ยาเชื้อรา</option><option>สารกำจัดวัชพืช</option><option>ปรับปรุงดิน</option><option>อื่นๆ</option></select>
+      </div>
+    </div>
+    <div class="tw"><table><thead><tr><th>#</th><th>วันที่</th><th>พืช</th><th>ประเภท</th><th>สาร/ปุ๋ย/ยา</th><th>อัตรา</th><th>ระยะ</th><th>pH</th><th>หมายเหตุ</th><th></th></tr></thead><tbody id="ltb"></tbody></table></div>
+    <div id="lem" class="empty" style="display:none"><div class="empty-i">📭</div>ยังไม่มีบันทึก</div>
+  </div>
+</div>
+
+<!-- ROAD -->
+<div class="pg" id="pg-road">
+  <div class="card">
+    <div class="ch"><div class="chi">🗺</div><h3>แผนการดูแลตามอายุต้น · ออกดอกได้เมื่อ <span class="tag tg">ปีที่ 4+</span></h3></div>
+    <div class="cb">
+      <p style="font-size:.76rem;color:var(--txt3);line-height:1.7;margin-bottom:12px">อ้างอิง: กรมวิชาการเกษตร, คู่มือการผลิตทุเรียนคุณภาพ 2563 · สถาบันวิจัยพืชสวน · สถานีวิจัยคำชะอี มุกดาหาร</p>
+      <div id="road-c"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CAL -->
+<div class="pg" id="pg-cal">
+  <div class="card">
+    <div class="ch"><div class="chi">📅</div><h3>ปฏิทินยาและปุ๋ยรายเดือน · ทุเรียนต้นเล็ก ปีที่ 1–3</h3></div>
+    <div class="cb">
+      <p style="font-size:.75rem;color:var(--txt3);margin-bottom:12px">แตะที่เดือนเพื่อดูรายละเอียด · เดือนปัจจุบันแสดงขอบสีเขียว</p>
+      <div id="cal-c"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PH -->
+<div class="pg" id="pg-ph">
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div class="chi">⬡</div><h3>วิเคราะห์ค่า pH ดิน</h3></div>
+      <div class="cb">
+        <div class="fr">
+          <div class="fg"><label>ค่า pH ดิน</label><input type="number" id="ph-v" step=".1" min="3" max="9" placeholder="เช่น 5.8"></div>
+          <div class="fg"><label>ระยะใบ</label><select id="ph-s"><option value="ใบอ่อน">ออกใบอ่อน</option><option value="ใบสมบูรณ์">ใบสมบูรณ์</option><option value="พักตัว">พักตัว</option></select></div>
+        </div>
+        <button class="btn btn-p" onclick="doPh()">วิเคราะห์</button>
+        <div id="ph-r"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="chi">📖</div><h3>ตารางปุ๋ยตามระยะ</h3></div>
+      <div class="tw"><table><thead><tr><th>ระยะ</th><th>ปุ๋ยดิน</th><th>ปุ๋ยใบ</th><th>อัตรา/ต้น</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag tg">ใบอ่อน</span></td><td>25-7-7 หรือ 20-8-8</td><td>Mix+Zn+Fe+Mn+อะมิโน</td><td>200–400 ก.</td></tr>
+          <tr><td><span class="tag ts">ใบสมบูรณ์</span></td><td>15-15-15 หรือ 16-16-16</td><td>Ca+Mg+Zn+Mix</td><td>200–400 ก.</td></tr>
+          <tr><td><span class="tag ta">พักตัว</span></td><td>6-3-3 หรือ 13-13-21</td><td>ฮิวมิค+B1</td><td>100–200 ก.</td></tr>
+          <tr><td><span class="tag tgold">หลังตัดแต่ง</span></td><td>25-7-7 + อินทรีย์</td><td>ฮิวมิค+B1+อะมิโน</td><td>300–500 ก.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- DIS -->
+<div class="pg" id="pg-dis">
+  <div class="card" style="margin-bottom:14px">
+    <div class="ch"><div class="chi">🔬</div><h3>วินิจฉัยโรคและแมลงศัตรู · ตามระยะใบ + อาการ</h3></div>
+    <div class="cb">
+      <p style="font-size:.74rem;color:var(--txt3);margin-bottom:10px">เลือก <b style="color:var(--txt)">ระยะใบ</b> + <b style="color:var(--txt)">อาการ</b> รับคำแนะนำที่ตรงจุด</p>
+      <div class="fr" style="align-items:flex-end">
+        <div class="fg"><label>ระยะใบ</label>
+          <select id="dis-st" onchange="doDx()">
+            <option value="">-- เลือกระยะใบ --</option>
+            <optgroup label="ออกใบอ่อน"><option value="แทงยอด">🌱 แทงยอด</option><option value="หางปลา">🌿 หางปลา</option><option value="ใบดาบ">🗡 ใบดาบ</option><option value="ใบอ่อนตั้ง">🌾 ใบอ่อนตั้ง</option></optgroup>
+            <optgroup label="ใบสมบูรณ์"><option value="ใบแก่เขียว">🍃 ใบแก่เขียวสด</option><option value="ใบแก่เข้ม">🌲 ใบแก่เขียวเข้ม</option></optgroup>
+            <optgroup label="พักตัว"><option value="พักตัว">💤 พักตัว</option><option value="เตรียมแตกใบ">🔖 เตรียมแตกใบ</option></optgroup>
+          </select>
+        </div>
+        <div class="fg"><label>อาการที่พบ</label>
+          <select id="sym-s" onchange="doDx()">
+            <option value="">-- เลือกอาการ --</option>
+            <optgroup label="ยอด / ใบอ่อน"><option value="ยอดกุด">ยอดกุด / ยอดแห้ง</option><option value="ยอดหงิก">ยอดหงิกงอ / บิดเบี้ยว</option><option value="ใบม้วน">ใบม้วน / งอ</option><option value="ใบอ่อนแหว่ง">ใบอ่อนแหว่ง ถูกกัด</option><option value="ใบอ่อนมีจุด">ใบอ่อนมีจุด / ด่าง</option></optgroup>
+            <optgroup label="สีใบ / ใบแก่"><option value="ใบเหลืองซีด">ใบเหลือง / ซีด ทั้งใบ</option><option value="ใบเหลืองเส้น">ใบเหลืองระหว่างเส้น</option><option value="ใบเหลืองขอบ">ใบเหลืองจากขอบเข้าใน</option><option value="ใบด่างขาว">ใบด่างขาว / ผงขาว</option></optgroup>
+            <optgroup label="ขอบใบ / ปลายใบ"><option value="ขอบใบไหม้น้ำตาล">ขอบใบไหม้สีน้ำตาล</option><option value="ปลายใบไหม้ดำ">ปลายใบไหม้ดำ</option><option value="ขอบใบไหม้เงิน">ขอบใบเป็นสีเงิน (เพลี้ยไฟ)</option></optgroup>
+            <optgroup label="จุด / แผล"><option value="จุดน้ำตาลวงเหลือง">จุดน้ำตาล มีวงเหลือง</option><option value="จุดฉ่ำน้ำ">จุดฉ่ำน้ำ</option><option value="แผลเน่าชื้น">แผลเน่าชื้น / ยางไหล</option></optgroup>
+            <optgroup label="แมลง / ร่องรอย"><option value="พบไร">ใต้ใบมีเส้นใย / พบไร</option><option value="พบเพลี้ย">พบเพลี้ยไฟ / แมลงตัวเล็ก</option><option value="พบหนอน">พบหนอน / มูลหนอน</option><option value="พบเพลี้ยหอย">พบเพลี้ยหอย / เกล็ดน้ำตาล</option></optgroup>
+            <optgroup label="โคนต้น / ราก"><option value="โคนเน่า">โคนต้นเน่า / ยางน้ำตาลไหล</option><option value="รากดำ">รากดำ / เน่า</option></optgroup>
+          </select>
+        </div>
+        <button class="btn btn-p" style="flex-shrink:0" onclick="doDx()">วินิจฉัย</button>
+      </div>
+      <div id="stage-ctx"></div>
+      <div id="dis-r"></div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ch"><div class="chi">🦟</div><h3>แมลงศัตรูสำคัญ</h3></div><div class="cb" id="pest-l"></div></div>
+    <div class="card"><div class="ch"><div class="chi">🍄</div><h3>โรคเชื้อราสำคัญ</h3></div><div class="cb" id="fung-l"></div></div>
+  </div>
+</div>
+
+<!-- WATER -->
+<div class="pg" id="pg-water">
+  <div class="w-hero">
+    <div class="w-hero-t">💧 คำนวณการให้น้ำทุเรียน</div>
+    <div class="w-hero-s">เลือกชนิดหัวสปริงเกอร์ ใส่อัตราไหล แล้วระบบคำนวณ "ลิตร/ต้น" และ "เวลาเปิดน้ำ" ให้อัตโนมัติตามอายุต้นและเดือน · สูตรกรมส่งเสริมการเกษตร · ค่าการระเหยจังหวัดมุกดาหาร (กรมชลประทาน)</div>
+  </div>
+
+  <div class="g2">
+    <!-- 1) ต้นทุเรียน -->
+    <div class="card">
+      <div class="ch"><div class="chi">🌳</div><h3>1 · ต้นทุเรียน</h3></div>
+      <div class="cb">
+        <div class="fr">
+          <div class="fg"><label>เดือน/ปีที่ปลูก</label><input type="month" id="w-plant" onchange="onPlant()"></div>
+          <div class="fg"><label>อายุต้น (คำนวณให้)</label><div class="w-age" id="w-agebox">–</div></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label>ทรงพุ่มกว้าง (ม.)</label><input type="text" inputmode="decimal" id="w-can" oninput="calcW()" autocomplete="off"></div>
+          <div class="fg"><label>จำนวนต้น</label><input type="text" inputmode="numeric" id="w-tr" oninput="calcW()" autocomplete="off"></div>
+        </div>
+        <div class="hint" id="w-canhint"></div>
+        <div class="fr">
+          <div class="fg"><label>ระยะของต้น</label>
+            <select id="w-stage" onchange="calcW()">
+              <option value="veg">สร้างใบ–กิ่งก้าน</option>
+              <option value="induce">ชักนำดอก (งดน้ำ)</option>
+              <option value="flower">ระยะดอก</option>
+              <option value="set">ติดผล</option>
+              <option value="young">ผลอ่อน</option>
+              <option value="grow">ผลเจริญเติบโต</option>
+              <option value="ripe">ผลเริ่มสุกแก่</option>
+            </select>
+          </div>
+          <div class="fg"><label>เดือน</label><select id="w-mon" onchange="onMon()"></select></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label>ค่าการระเหย (มม./วัน)</label><input type="text" inputmode="decimal" id="w-ev" oninput="calcW()" autocomplete="off"></div>
+          <div class="fg"><label>ฝนตกล่าสุด (มม.) ถ้ามี</label><input type="text" inputmode="decimal" id="w-rain" placeholder="เว้นว่างได้" oninput="calcW()" autocomplete="off"></div>
+        </div>
+        <div class="hint">ช่องที่เว้นว่าง ระบบจะใช้ค่าอัตโนมัติ (ตัวเลขสีจางในช่อง) · พิมพ์ทับเพื่อใช้ค่าของสวนเอง</div>
+      </div>
+    </div>
+
+    <!-- 2) หัวสปริงเกอร์ -->
+    <div class="card">
+      <div class="ch"><div class="chi">🚿</div><h3>2 · หัวสปริงเกอร์</h3></div>
+      <div class="cb">
+        <div class="fr">
+          <div class="fg"><label>ชนิดหัว</label><select id="w-type" onchange="onSpkType()"></select></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label>อัตราไหล (ลิตร/ชม./หัว)</label><input type="text" inputmode="decimal" id="w-flow" oninput="calcW()" autocomplete="off"></div>
+          <div class="fg"><label>จำนวนหัวต่อต้น</label><input type="text" inputmode="numeric" id="w-heads" oninput="calcW()" autocomplete="off"></div>
+        </div>
+        <div class="hint" id="w-typehint"></div>
+        <div class="fr">
+          <div class="fg"><label>รอบการให้น้ำ</label>
+            <select id="w-int" onchange="calcW()">
+              <option value="1">ทุกวัน</option>
+              <option value="2">วันเว้นวัน</option>
+              <option value="3">ทุก 3 วัน</option>
+            </select>
+          </div>
+        </div>
+        <details class="acc" style="margin-top:4px">
+          <summary>🪣 ไม่รู้อัตราไหล? วัดด้วยถัง</summary>
+          <div class="acc-b">
+            เปิดน้ำตามปกติ เอาถังรองน้ำจากหัว 1 หัว แล้วจับเวลา
+            <div class="fr" style="margin-top:9px">
+              <div class="fg"><label>น้ำที่รองได้ (ลิตร)</label><input type="text" inputmode="decimal" id="w-bl" placeholder="เช่น 1" oninput="bucket()" autocomplete="off"></div>
+              <div class="fg"><label>ใช้เวลา (วินาที)</label><input type="text" inputmode="numeric" id="w-bs" placeholder="เช่น 60" oninput="bucket()" autocomplete="off"></div>
+            </div>
+            <div id="w-bres" style="font-size:.8rem;color:var(--txt2);margin-bottom:8px"></div>
+            <button class="btn btn-p" id="w-bbtn" onclick="useBucket()" style="display:none">ใช้ค่านี้เป็นอัตราไหล</button>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <!-- ผลคำนวณ -->
+  <div class="card">
+    <div class="ch"><div class="chi">✅</div><h3>ผลคำนวณ</h3></div>
+    <div class="cb"><div id="w-res"></div></div>
+  </div>
+
+  <!-- ตารางรายเดือน -->
+  <div class="card">
+    <div class="ch"><div class="chi">📅</div><h3>ความต้องการน้ำรายเดือน · ต้นนี้ · มุกดาหาร</h3></div>
+    <div class="tw"><table class="swt"><thead><tr><th>เดือน</th><th>ETo<br>(มม./วัน)</th><th>ระเหย<br>(มม./วัน)</th><th>น้ำ<br>(ล./ต้น/วัน)</th><th>เปิดน้ำ<br>(นาที/ครั้ง)</th><th>ฝนเฉลี่ย<br>(มม./เดือน)</th></tr></thead><tbody id="wtb"></tbody></table></div>
+    <div style="padding:9px 14px;font-size:.7rem;color:var(--txt3);line-height:1.6">ETo = ค่าการใช้น้ำของพืชอ้างอิง จ.มุกดาหาร (กรมชลประทาน, Penman-Monteith) · ระเหย = ETo ÷ 0.75 (แปลงเป็นค่าการระเหยจากถาดโดยประมาณ) · เดือนที่ฝนมาก ให้ดูฝนจริงก่อนเปิดน้ำ</div>
+  </div>
+
+  <!-- ตารางตามอายุ -->
+  <div class="card">
+    <div class="ch"><div class="chi">📈</div><h3>ประมาณการตามอายุต้น · เดือนที่เลือก</h3></div>
+    <div class="tw"><table class="swt"><thead><tr><th>อายุ</th><th>ทรงพุ่ม<br>(ม.)*</th><th>พื้นที่ใต้พุ่ม<br>(ตร.ม.)</th><th>น้ำ<br>(ล./ต้น/วัน)</th><th>เปิดน้ำ<br>(นาที/วัน)</th></tr></thead><tbody id="wage"></tbody></table></div>
+    <div style="padding:9px 14px;font-size:.7rem;color:var(--txt3);line-height:1.6">* ขนาดทรงพุ่มในตารางนี้เป็น<b>ค่าประมาณ</b> (ราว 0.8 ม. ต่ออายุ 1 ปี) ไม่ใช่ตัวเลขจากงานวิจัย — ต้นจริงโตไม่เท่ากัน ให้วัดทรงพุ่มจริงแล้วกรอกในช่องด้านบนจะแม่นกว่า · คิดที่ค่าสัมประสิทธิ์ 0.60 (ระยะเจริญเติบโตทางใบ)</div>
+  </div>
+
+  <!-- หลักวิชาการ -->
+  <div class="card">
+    <div class="ch"><div class="chi">📖</div><h3>หลักวิชาการที่ใช้คำนวณ</h3></div>
+    <div class="cb">
+      <div class="w-ok" style="margin-top:0"><b>สูตรกรมส่งเสริมการเกษตร:</b><br>น้ำ (ลิตร/ต้น/วัน) = ค่าสัมประสิทธิ์ตามระยะ × อัตราการระเหย (มม./วัน) × พื้นที่ใต้ทรงพุ่ม (ตร.ม.)</div>
+      <div class="sl-r" style="margin-top:14px">ค่าสัมประสิทธิ์ตามระยะของต้น</div>
+      <div class="tw"><table><thead><tr><th>ระยะ</th><th>ค่า</th><th>หมายเหตุ</th></tr></thead><tbody>
+        <tr><td>เจริญเติบโตทางใบ / กิ่งก้าน</td><td><b>0.60</b></td><td>ต้นเล็กที่ยังไม่ให้ผลใช้ค่านี้</td></tr>
+        <tr><td>ชักนำดอก</td><td><b>0.00</b></td><td>งดน้ำ 10–14 วัน ให้ต้นเครียดน้ำ</td></tr>
+        <tr><td>ระยะดอก</td><td><b>0.75</b></td><td>เริ่มให้น้ำก่อนดอกบาน 7–10 วัน</td></tr>
+        <tr><td>ติดผล</td><td><b>0.50</b></td><td>ลดน้ำลงช่วงติดผล</td></tr>
+        <tr><td>ผลอ่อน</td><td><b>0.60</b></td><td></td></tr>
+        <tr><td>ผลเจริญเติบโต</td><td><b>0.85</b></td><td>ช่วง 8–12 สัปดาห์หลังดอกบาน ห้ามขาดน้ำ</td></tr>
+        <tr><td>ผลเริ่มสุกแก่</td><td><b>0.75</b></td><td></td></tr>
+      </tbody></table></div>
+      <div class="g2" style="gap:8px;margin-top:12px">
+        <div class="ri"><div class="ri-l">ระบบที่กรมฯ แนะนำ</div><div class="ri-v">หัวเหวี่ยงขนาดเล็ก (มินิสปริงเกอร์) ให้น้ำใต้ทรงพุ่ม</div></div>
+        <div class="ri"><div class="ri-l">น้ำที่ต้องเตรียมทั้งปี</div><div class="ri-v">ราว 850–900 ลิตร ต่อ ตร.ม. ใต้ทรงพุ่ม · แหล่งน้ำสำรอง 600–800 ลบ.ม./ไร่</div></div>
+      </div>
+      <div class="w-tip">💡 อย่าให้น้ำฉีดโดนโคนต้นโดยตรงและอย่าให้น้ำขัง เพราะเสี่ยงโรครากเน่าโคนเน่า · ถ้าหัวพ่นกว้างกว่าทรงพุ่มมาก น้ำที่ตกนอกทรงพุ่มต้นแทบไม่ได้ใช้ ให้ปรับหัวให้พ่นแคบลงหรือเปิดนานขึ้น · ดินทรายอุ้มน้ำน้อย ควรแบ่งให้น้ำถี่ ครั้งละน้อย</div>
+      <div class="src">📚 แหล่งอ้างอิง: กรมส่งเสริมการเกษตร – เอกสารคำแนะนำ "ทุเรียน" (สูตรคำนวณน้ำ ค่าสัมประสิทธิ์ตามระยะ ระบบน้ำ) · กรมชลประทาน – ค่า ETo รายเดือนวิธี Penman-Monteith จ.มุกดาหาร (ข้อมูลปี 2524–2553) · ค่าแปลง 0.75 เป็นค่าสัมประสิทธิ์ถาดวัดการระเหยโดยทั่วไป (FAO-56) ซึ่งเป็นการประมาณ ถ้ามีค่าการระเหยจริงจากสถานีใกล้สวนให้พิมพ์ทับได้</div>
+    </div>
+  </div>
+</div>
+
+<!-- CROPS -->
+<div class="pg" id="pg-crop">
+  <div class="w-hero" style="background:linear-gradient(135deg,#eaf5ec,#f7edce);border-color:var(--bdr2)">
+    <div class="w-hero-t" style="color:var(--g)">🌾 พืชอื่นในสวน</div>
+    <div class="w-hero-s" style="color:var(--txt2)">ปุ๋ย · วัชพืช · แมลง · โรค ของยางพารา อ้อย มันสำปะหลัง และข้าว · ทุกหัวข้อบอกแหล่งที่มา · หัวข้อไหนยังไม่มีข้อมูลที่ตรวจสอบได้จะบอกตรง ๆ</div>
+  </div>
+  <div class="chips">
+    <button class="chip on" id="cc-rubber" onclick="showCrop('rubber')">🌳 ยางพารา</button>
+    <button class="chip" id="cc-cane" onclick="showCrop('cane')">🎋 อ้อย</button>
+    <button class="chip" id="cc-cassava" onclick="showCrop('cassava')">🥔 มันสำปะหลัง</button>
+    <button class="chip" id="cc-rice" onclick="showCrop('rice')">🌾 ข้าว</button>
+  </div>
+
+  <!-- ═════════ ยางพารา ═════════ -->
+  <div class="csec on" id="cs-rubber">
+    <details class="acc" open>
+      <summary>🌱 ปุ๋ย · ยางก่อนเปิดกรีด</summary>
+      <div class="acc-b">
+        เขตปลูกยางใหม่ (ภาคอีสาน) ใช้สูตรตามเนื้อดิน: <b>ดินร่วนเหนียว 20-10-12</b> · <b>ดินร่วนทราย 20-10-17</b>
+        <div class="tw" style="margin:9px 0"><table><thead><tr><th>อายุยาง</th><th>ดินร่วนเหนียว<br>20-10-12</th><th>ดินร่วนทราย<br>20-10-17</th></tr></thead><tbody>
+          <tr><td>ปีที่ 1</td><td>60–100</td><td>70–120</td></tr>
+          <tr><td>ปีที่ 2</td><td>110–180</td><td>130–140</td></tr>
+          <tr><td>ปีที่ 3</td><td>180</td><td>210</td></tr>
+          <tr><td>ปีที่ 4</td><td>180–200</td><td>210–280</td></tr>
+          <tr><td>ปีที่ 5</td><td>200</td><td>280</td></tr>
+          <tr><td>ปีที่ 6–7</td><td>200</td><td>330</td></tr>
+        </tbody></table></div>
+        หน่วย: <b>กรัม/ต้น/ครั้ง</b> · ปีแรกแบ่งใส่ 3 ครั้ง · ปีถัดไปให้ยึดจำนวนครั้งตามคำแนะนำ กยท.
+        <div class="w-tip">⚠️ ตัวเลขในตารางถอดจากเอกสารสแกน อาจคลาดเคลื่อนบางช่อง ควรเทียบกับคำแนะนำปุ๋ยยางพาราฉบับล่าสุดของ กยท. ก่อนซื้อปุ๋ยจำนวนมาก</div>
+        <div class="src">📚 ศูนย์วิจัยยางหนองคาย – คำแนะนำการใส่ปุ๋ยยางพาราเขตปลูกยางใหม่</div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary>🌿 ปุ๋ย · ยางหลังเปิดกรีด</summary>
+      <div class="acc-b">
+        <ul>
+          <li>สูตร <b>30-5-18</b> (หรือ 29-5-18) ประมาณ <b>1 กก./ต้น/ปี</b></li>
+          <li>แบ่งใส่ 2 ครั้ง ครั้งละ 500 ก. — <b>ต้นฤดูฝน</b> และ <b>ปลายฤดูฝน</b></li>
+          <li>หว่านห่างแถวยางราว 1 ม. ขณะดินชื้น หลีกเลี่ยงช่วงแล้งและฝนตกชุก · กำจัดหญ้าก่อนใส่ทุกครั้ง</li>
+          <li>หยุดใส่ปุ๋ย 3–5 ปีก่อนโค่น</li>
+          <li><b>สารเร่งน้ำยาง:</b> เอทธิฟอน 2.5% ไม่เกิน 6 ครั้ง/ปี · ใช้บ่อยหรือกรีดถี่เสี่ยงเปลือกแห้ง</li>
+          <li><b>ธาตุรอง · จุลธาตุ:</b> ยังไม่มีอัตราที่ตรวจสอบได้ จึงไม่ใส่ตัวเลข</li>
+        </ul>
+        <div class="src">📚 ศูนย์วิจัยยางหนองคาย / การยางแห่งประเทศไทย (กยท.)</div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary>🍄 โรคยางพาราและยาที่ใช้</summary>
+      <div class="acc-b">
+        <div class="dc"><div class="dc-n">ราแป้ง <span class="tag ta">ม.ค.–เม.ย.</span></div>
+          <div class="dc-s"><i>Oidium heveae</i> · ระบาดช่วงยางผลิใบใหม่</div>
+          <div class="dc-r">กำมะถัน 80% WP 20 ก. หรือ คาร์เบนดาซิม 50% WP 20 ก. ต่อน้ำ 20 ล. พ่นทุก 4–7 วัน (ยางอายุไม่เกิน 2 ปี / แปลงกล้า)</div></div>
+        <div class="dc"><div class="dc-n">ใบจุดก้างปลา (คอรีนีสปอรา)</div>
+          <div class="dc-r">แมนโคเซบ 80% WP 50 ก. หรือ คลอโรทาโลนิล 75% WP 50 ก. หรือ คาร์เบนดาซิม 50% WP 20 ก. ต่อน้ำ 20 ล.</div></div>
+        <div class="dc"><div class="dc-n">ใบร่วงไฟทอฟธอรา <span class="tag ts">ฤดูฝน</span></div>
+          <div class="dc-r">เมทาแลกซิล 25% WP 40 ก. หรือ ฟอสอีทิล-อะลูมิเนียม 80% WP 40 ก. ต่อน้ำ 20 ล. ทุก 5–7 วัน · ถ้าใบร่วงเกิน 50% ให้หยุดหรือลดการกรีด</div></div>
+        <div class="dc"><div class="dc-n">รากขาว <span class="tag tr">รุนแรง</span></div>
+          <div class="dc-s"><i>Rigidoporus microporus</i> · ต้นยืนตาย ลามไปต้นข้างเคียงทางราก</div>
+          <div class="dc-r">ไซโพรโคนาโซล 10% SL 5–10 มล. หรือ เฮกซะโคนาโซล 5% EC 10–20 มล. หรือ โพรพิโคนาโซล 25% EC 4–8 มล. <b>ต่อน้ำ 2 ลิตร</b> ราดโคนต้น 1–4 ล./ต้น ทำซ้ำทุก 4–6 เดือน อย่างน้อย 2 ครั้ง<br>ขุดคูกั้นราก กว้าง 30 × ลึก 60 ซม. รอบต้นที่เป็นโรค · หลุมปลูกใหม่ใส่กำมะถัน 100–200 ก. ทิ้งไว้ 15 วันก่อนปลูก</div></div>
+        <div class="dc"><div class="dc-n">เปลือกแห้ง (หน้ายางตาย)</div>
+          <div class="dc-r">หยุดกรีด 3–6 เดือน · ถ้าใช้สารเร่งน้ำยาง ความเข้มข้นไม่เกิน 2.5% และไม่เกิน 6 ครั้ง/ปี</div></div>
+        <div class="src">📚 การยางแห่งประเทศไทย (กยท.) – โรคยางพาราและการป้องกันกำจัด</div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary>🌱 วัชพืช · แมลง</summary>
+      <div class="acc-b">
+        <div class="w-tip" style="margin-top:0">ยังไม่มีข้อมูลอัตรายาคุม/ฆ่าหญ้าและยาแมลงในยางพาราที่ผมตรวจสอบจากแหล่งวิชาการได้ จึง<b>ไม่ใส่ตัวเลข</b>ไว้ เพื่อไม่ให้ผิด</div>
+        <ul style="margin-top:9px">
+          <li>ยางเล็ก: ตัดหญ้า/ถากรอบโคน และปลูกพืชคลุมดินตระกูลถั่วระหว่างแถว ลดหญ้าและเพิ่มไนโตรเจน</li>
+          <li>ถ้าใช้ยาฆ่าหญ้า ระวังละอองโดนส่วนสีเขียวของต้นยางเล็ก และใช้ตามอัตราบนฉลากที่ขึ้นทะเบียนกับยางพารา</li>
+          <li>ดูหลักการเลือกยาคุม/ยาฆ่าหญ้าในแท็บ <a href="#" onclick="go('chem');return false" style="color:var(--sky)">🧴 สารเคมี</a></li>
+        </ul>
+      </div>
+    </details>
+  </div>
+
+  <!-- ═════════ อ้อย ═════════ -->
+  <div class="csec" id="cs-cane">
+    <details class="acc" open>
+      <summary>🌱 ปุ๋ยตามเนื้อดิน</summary>
+      <div class="acc-b">
+        ปริมาณธาตุอาหาร N-P₂O₅-K₂O (กก./ไร่) แบ่งใส่ 2 ครั้ง
+        <div class="tw" style="margin:9px 0"><table><thead><tr><th>เนื้อดิน</th><th>อ้อยปลูก</th><th>อ้อยตอ</th></tr></thead><tbody>
+          <tr><td>ดินทราย / ร่วนปนทราย</td><td><b>18-6-12</b></td><td><b>18-9-18</b></td></tr>
+          <tr><td>ดินเหนียว / ร่วนเหนียว</td><td><b>12-6-6</b></td><td><b>24-12-24</b></td></tr>
+        </tbody></table></div>
+        <b>สูตรปุ๋ยที่ใช้ได้</b>
+        <ul>
+          <li>ดินเหนียว: 14-14-14, 15-15-15 หรือ 16-16-16 อัตรา 40–50 กก./ไร่</li>
+          <li>ดินทราย: 12-12-12, 13-13-13 หรือ 14-14-21 อัตรา 40–60 กก./ไร่</li>
+          <li>ครั้งแรกราว 20 กก. พร้อมปลูก (หรือหลังแต่งตอ) · ที่เหลือใส่เมื่ออายุ 60 วัน พร้อม 21-0-0 30–40 กก. หรือ 46-0-0 15–20 กก./ไร่</li>
+        </ul>
+        <div class="src">📚 สถาบันวิจัยพืชไร่และพืชทดแทนพลังงาน กรมวิชาการเกษตร (2559)</div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary>🧪 ปุ๋ยตามค่าวิเคราะห์ดิน (แม่นกว่า)</summary>
+      <div class="acc-b">
+        ปริมาณที่ต้องใส่ (กก./ไร่) — ตัวเลข <b>อ้อยปลูก / อ้อยตอ</b>
+        <div class="tw" style="margin:9px 0"><table><thead><tr><th>ค่าวิเคราะห์ดิน</th><th>ต่ำ</th><th>ปานกลาง</th><th>สูง</th></tr></thead><tbody>
+          <tr><td><b>ไนโตรเจน (N)</b><br><small>ดูจากอินทรียวัตถุ</small></td><td>OM &lt;1%<br><b>18 / 24</b></td><td>OM 1–2%<br><b>12 / 18</b></td><td>OM &gt;2%<br><b>6 / 12</b></td></tr>
+          <tr><td><b>ฟอสฟอรัส (P₂O₅)</b></td><td>&lt;15 มก./กก.<br><b>9 / 12</b></td><td>15–30<br><b>6 / 9</b></td><td>&gt;30<br><b>3 / 6</b></td></tr>
+          <tr><td><b>โพแทสเซียม (K₂O)</b></td><td>&lt;60 มก./กก.<br><b>18 / 24</b></td><td>60–90<br><b>12 / 18</b></td><td>&gt;90<br><b>6 / 12</b></td></tr>
+        </tbody></table></div>
+        <div class="src">📚 สถาบันวิจัยพืชไร่และพืชทดแทนพลังงาน กรมวิชาการเกษตร (2559)</div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary>🌿 ยาคุมหญ้า / ยาฆ่าหญ้าในอ้อย</summary>
+      <div class="acc-b">
+        ช่วงที่ต้องคุมหญ้าให้อยู่: <b>ตั้งแต่ปลูกจนถึง 4–5 เดือนแรก</b> (ก่อนอ้อยคลุมร่อง)
+        <div class="tw" style="margin:9px 0"><table><thead><tr><th>ช่วงพ่น</th><th>สาร</th><th>กรัมสารออกฤทธิ์/ไร่</th></tr></thead><tbody>
+          <tr><td rowspan="4"><span class="tag tg">ก่อนงอก</span><br><small>หลังปลูก ก่อนหญ้างอก ดินต้องชื้น</small></td><td>อะทราซีน</td><td>440</td></tr>
+          <tr><td>ไดยูรอน</td><td>440</td></tr>
+          <tr><td>อะทราซีน + ไดยูรอน</td><td>440 + 400</td></tr>
+          <tr><td>เฮกซะซิโนน + ไดยูรอน <span class="tag tgold">ผลดีสุด</span></td><td>330</td></tr>
+          <tr><td rowspan="2"><span class="tag ta">หลังงอก</span><br><small>อ้อยมีใบมากกว่า 5 ใบ</small></td><td>ฮาโลซัลฟูรอน + อะมีทรีน</td><td>9 + 400</td></tr>
+          <tr><td>โทพรามีโซน + ไดยูรอน (หญ้าใบแคบ)</td><td>6.72 + 400</td></tr>
+        </tbody></table></div>
+        <div class="w-warn">⚠️ ในงานทดลองเดียวกัน กลูโฟซิเนต ไดควอต โบรมาซิล และอะมีทรีนเดี่ยว ทำให้อ้อย<b>เป็นพิษ</b> — ถ้าใช้ต้องพ่นแบบมีครอบหัวฉีด ไม่ให้โดนอ้อย</div>
+        <div class="w-tip">ตัวเลขนี้เป็น "กรัมสารออกฤทธิ์/ไร่" จากงานทดลองในกระถาง ใช้ดูว่าสารไหนน่าใช้ — <b>อัตราผลิตภัณฑ์จริงให้ยึดตามฉลาก</b> เพราะแต่ละยี่ห้อเข้มข้นไม่เท่ากัน</div>
+        <div class="src">📚 สถาบันวิจัยพืชไร่ฯ กรมวิชาการเกษตร – งานทดสอบสารกำจัดวัชพืชในอ้อย</div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary>🐛 แมลงและโรคอ้อย</summary>
+      <div class="acc-b">
+        <div class="dc"><div class="dc-n">หนอนกออ้อย</div>
+          <div class="dc-r"><b>ชีววิธี:</b> ปล่อยแตนเบียนไข่ 12,000–20,000 ตัว/ไร่ เมื่อยอดถูกทำลายน้อยกว่า 10% · แตนเบียนหนอน 500 ตัว/ไร่ ช่วงแตกกอ<br><b>สารเคมี</b> (เมื่อยอดเหี่ยวถึง 10% ช่วง มี.ค.–มิ.ย. พ่น 2–3 ครั้ง ห่าง 14 วัน): อินดอกซาคาร์บ 15% EC 15 มล. · อีมาเมกตินเบนโซเอต 1.92% EC 10 มล. · คลอแรนทรานิลิโพรล 5.17% SC 20 มล. · เดลทาเมทริน 3% EC 10 มล. ต่อน้ำ 20 ล.<br><b>หนอนกอลายจุดใหญ่</b> (อ้อยเป็นลำ): ปิโตรเลียมสเปรย์ออยล์ 83.9% EC 100 มล./น้ำ 20 ล. พ่นตอนเย็นเมื่อพบไข่</div></div>
+        <div class="dc"><div class="dc-n">ด้วงหนวดยาวอ้อย · หนอนด้วงแมลงนูน · ปลวก</div>
+          <div class="dc-r">ฟิโพรนิล 5% SC 80 มล./น้ำ 20 ล. พ่นตามร่องปลูกแล้วกลบดิน</div></div>
+        <div class="dc"><div class="dc-n">ไรแมงมุมอ้อย</div>
+          <div class="dc-r">อะมิทราซ 20% EC 40 มล./น้ำ 20 ล.</div></div>
+        <div class="dc"><div class="dc-n">โรคยอดเน่า</div>
+          <div class="dc-r">คอปเปอร์ออกซีคลอไรด์ พ่นตามอัตราฉลาก</div></div>
+        <div class="src">📚 สถาบันวิจัยพืชไร่และพืชทดแทนพลังงาน กรมวิชาการเกษตร (2559) · สารที่เอกสารเดิมแนะนำแต่ปัจจุบันถูกห้ามใช้แล้ว (เช่น เอนโดซัลแฟน) ผมตัดออก</div>
+      </div>
+    </details>
+  </div>
+
+  <!-- ═════════ มันสำปะหลัง ═════════ -->
+  <div class="csec" id="cs-cassava">
+    <details class="acc" open>
+      <summary>🌱 การปลูกและปุ๋ย</summary>
+      <div class="acc-b">
+        <ul>
+          <li>ระยะปลูก <b>1 × 1 ม.</b> · ท่อนพันธุ์ยาว 15–20 ซม. ปักตั้งตรง · เก็บเกี่ยวอายุ 12 เดือน</li>
+          <li><b>ปุ๋ยตามเนื้อดิน (กรมวิชาการเกษตร):</b> ดินทราย/ร่วนทราย 15-7-18 <b>100 กก./ไร่</b> · ดินร่วนเหนียว 15-7-18 <b>50 กก./ไร่</b> · ดินเหนียวปนกรวด 15-15-15 30–40 กก./ไร่ — ใส่ครั้งเดียวหลังปลูก 1–3 เดือน ขณะดินชื้น โรยสองข้างต้นแล้วกลบ</li>
+          <li><b>ปรับดิน:</b> ปุ๋ยคอก 500–1,000 กก./ไร่ ไถกลบก่อนปลูก · pH ต่ำกว่า 5 หว่านโดโลไมต์ 100 กก./ไร่</li>
+          <li><b>ธาตุรอง · จุลธาตุ · ฮอร์โมน:</b> เอกสารกรมฯ ไม่มีอัตราแนะนำ จึงไม่ใส่ตัวเลข</li>
+          <li>ทางเลือกแบ่งใส่ (งานทดลอง ม.ขอนแก่น): 15-7-18 50 กก./ไร่ แบ่ง 25 กก. ที่อายุ 1.5 เดือน + 25 กก. ที่อายุ 5.5 เดือน</li>
+        </ul>
+        <div class="w-tip">ผลนี้มาจากแปลงทดลองพันธุ์ห้วยบง 80 บนดินชุดสีคิ้ว — ดินของสวนอาจต่างกัน ถ้าวิเคราะห์ดินได้จะแม่นกว่า</div>
+        <div class="src">📚 สถาบันวิจัยพืชไร่ฯ กรมวิชาการเกษตร – คู่มือการผลิตท่อนพันธุ์มันสำปะหลัง · วารสารแก่นเกษตร 44(1) 2559 (ม.ขอนแก่น)</div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary>🌿 ยาคุมหญ้า / ยาฆ่าหญ้าในมันสำปะหลัง</summary>
+      <div class="acc-b">
+        ช่วงวิกฤต: <b>3–4 เดือนแรก</b> ถ้าหญ้าขึ้นช่วงนี้ผลผลิตลดมาก
+        <div class="dc" style="margin-top:9px"><div class="dc-n"><span class="tag tg">ก่อนงอก (ยาคุมหญ้า)</span> พ่นภายใน 3 วันหลังปลูก</div>
+          <div class="dc-r">• อะลาคลอร์ หรือ เมโทลาคลอร์ <b>500 ซีซี/ไร่ (ดินทราย) – 750 ซีซี/ไร่ (ดินเหนียว)</b> ผสมน้ำ 80 ล./ไร่<br>• หรือ อะลาคลอร์/เมโทลาคลอร์ 300 ซีซี + ไดยูรอน 100 ก. ต่อไร่<br>คุมหญ้าได้ 2–2.5 เดือน · ดินต้องมีความชื้นขณะพ่น</div></div>
+        <div class="dc"><div class="dc-n"><span class="tag ta">หลังงอก (ยาฆ่าหญ้า)</span></div>
+          <div class="dc-r">ใช้ได้เมื่อมันอายุ <b>มากกว่า 4 เดือน หรือสูงเกิน 70 ซม.</b> เท่านั้น และต้องใช้ครอบหัวฉีด ไม่ให้ละอองโดนใบและยอดมัน<br>หลังพ่นต้องไม่มีฝนอย่างน้อย 4 ชม. (ยาดูดซึม) หรือ 30 นาที (ยาสัมผัส)</div></div>
+        <div class="w-warn">⚠️ เอกสารต้นฉบับแนะนำ<b>พาราควอต</b>เป็นยาหลังงอก — ปัจจุบัน<b>ห้ามใช้แล้ว</b> (ตั้งแต่ 1 มิ.ย. 2563) ดูสารทดแทนในแท็บ 🧴 สารเคมี</div>
+        <div class="src">📚 สถาบันวิจัยและพัฒนาแห่ง ม.เกษตรศาสตร์ – การควบคุมวัชพืชในมันสำปะหลัง</div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary>🦠 โรคมันสำปะหลัง</summary>
+      <div class="acc-b">
+        <div class="dc"><div class="dc-n">ใบด่างมันสำปะหลัง <span class="tag tr">รุนแรง</span></div>
+          <div class="dc-s">เชื้อไวรัส SLCMV · แมลงหวี่ขาวยาสูบเป็นพาหะ · ติดไปกับท่อนพันธุ์</div>
+          <div class="dc-r">ใช้ท่อนพันธุ์สะอาด · ถอนทำลายต้นที่เป็นโรค · กำจัดแมลงหวี่ขาว: อิมิดาโคลพริด 70% WG 6–12 ก. หรือ ไบเฟนทริน 2.5% EC 30 มล. ต่อน้ำ 20 ล.</div></div>
+        <div class="dc"><div class="dc-n">พุ่มแจ้</div>
+          <div class="dc-s">เชื้อไฟโตพลาสมา</div>
+          <div class="dc-r">ไม่มีสารเคมีรักษา · ใช้ท่อนพันธุ์สะอาด ถอนทำลายต้นที่เป็น</div></div>
+        <div class="dc"><div class="dc-n">รากเน่า หัวเน่า</div>
+          <div class="dc-s"><i>Phytophthora</i>, <i>Fusarium</i> · พื้นที่น้ำขัง ดินระบายน้ำไม่ดี</div>
+          <div class="dc-r">แช่ท่อนพันธุ์ด้วยเมทาแลกซิล 20–40 ก./น้ำ 20 ล. · ใช้ไตรโคเดอร์มา · ระบาดรุนแรง: ฟอสอีทิล-อะลูมิเนียม 50 ก./น้ำ 20 ล. ราด 300 ซีซี/ต้น (หรือ 150 ก./ไร่) · ไถตากดินอย่างน้อย 2 สัปดาห์</div></div>
+        <div class="dc"><div class="dc-n">ใบไหม้ (แบคทีเรีย)</div>
+          <div class="dc-s"><i>Xanthomonas axonopodis</i> pv. <i>manihotis</i></div>
+          <div class="dc-r">ท่อนพันธุ์สะอาด · สารประกอบทองแดงตามฉลาก · ปลูกพืชหมุนเวียนอย่างน้อย 6 เดือน</div></div>
+        <div class="src">📚 กรมส่งเสริมการเกษตร – คำแนะนำการป้องกันกำจัดศัตรูมันสำปะหลัง ที่ 1/2566</div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary>🐛 แมลงและไรในมันสำปะหลัง</summary>
+      <div class="acc-b">
+        <div class="dc"><div class="dc-n">เพลี้ยแป้ง (เพลี้ยแป้งสีชมพู) <span class="tag tr">เสียหาย 20–80%</span></div>
+          <div class="dc-r"><b>แช่ท่อนพันธุ์ 5–10 นาที</b> ก่อนปลูก: ไทอะมีทอกแซม 25% WG 4 ก. หรือ อิมิดาโคลพริด 70% WG 4 ก. หรือ ไดโนทีฟูแรน 10% WP 40 ก. ต่อน้ำ 20 ล.<br><b>ชีววิธี:</b> แมลงช้างปีกใส 100 ตัว/ไร่ (ระบาดน้อย) หรือ 200–500 ตัว/ไร่ (ระบาดมาก) ปล่อยราว 4 ครั้ง · แตนเบียน <i>Anagyrus lopezi</i> 50 คู่/ไร่ (เริ่มระบาด) หรือ 200 คู่/ไร่ (รุนแรง)</div></div>
+        <div class="dc"><div class="dc-n">ไรแดง <span class="tag ta">ฤดูแล้ง</span></div>
+          <div class="dc-r">อะมิทราซ 20% EC 40 มล. · สไปโรมีซิเฟน 24% SC 6 มล. · ทีบูเฟนไพแรด 36% EC 3–5 มล. · ไพริดาเบน 20% WP 15–20 ก. (ต่อน้ำ 20 ล.)<br>⚠ พ่นสารเดิมติดกัน<b>ไม่เกิน 2 ครั้ง</b> แล้วสลับกลุ่ม</div></div>
+        <div class="dc"><div class="dc-n">เพลี้ยหอย</div>
+          <div class="dc-r">แช่ท่อนพันธุ์ 10 นาที: ไทอะมีทอกแซม หรือ อิมิดาโคลพริด 4 ก./น้ำ 20 ล. · ในแปลง: สารกลุ่ม 1, กลุ่ม 4 ผสมไวต์ออยล์ 30–50 มล./20 ล. หรือกลุ่ม 16 (บูโพรเฟซิน)</div></div>
+        <div class="w-tip">ปริมาณน้ำยาที่พ่น: มันอายุ 1–3 เดือน 60–80 ล./ไร่ · อายุ 4–8 เดือน 80–100 ล./ไร่</div>
+        <div class="src">📚 กรมส่งเสริมการเกษตร – คำแนะนำการป้องกันกำจัดศัตรูมันสำปะหลัง ที่ 1/2566</div>
+      </div>
+    </details>
+  </div>
+
+  <!-- ═════════ ข้าว ═════════ -->
+  <div class="csec" id="cs-rice">
+    <details class="acc" open>
+      <summary>🌱 ปุ๋ยข้าว (นาหว่านข้าวแห้ง)</summary>
+      <div class="acc-b">
+        <div class="tw" style="margin-bottom:9px"><table><thead><tr><th>ดิน</th><th>ครั้งที่ 1<br><small>20–30 วันหลังข้าวงอก</small></th><th>ครั้งที่ 2<br><small>ระยะกำเนิดช่อดอก</small></th></tr></thead><tbody>
+          <tr><td><b>ดินทราย / ร่วนทราย</b><br>ข้าวไวแสง<br><small>(เช่น ขาวดอกมะลิ 105, กข6)</small></td><td>16-16-8 20–25 กก.<br>+ 0-0-60 5–10 กก./ไร่</td><td>ยูเรีย 10 กก.<br>หรือ 21-0-0 20 กก./ไร่</td></tr>
+          <tr><td><b>ดินทราย / ร่วนทราย</b><br>ข้าวไม่ไวแสง</td><td>16-16-8 30–35 กก.<br>+ 0-0-60 5–10 กก./ไร่</td><td>ยูเรีย 20 กก.<br>หรือ 21-0-0 40 กก./ไร่</td></tr>
+          <tr><td><b>ดินเหนียว</b><br>ข้าวไวแสง</td><td>16-20-0, 18-22-0, 20-20-0<br>หรือ 18-46-0 · 20–25 กก./ไร่</td><td>ยูเรีย 10 กก.<br>หรือ 21-0-0 20 กก./ไร่</td></tr>
+          <tr><td><b>ดินเหนียว</b><br>ข้าวไม่ไวแสง</td><td>สูตรเดียวกัน 30–35 กก./ไร่</td><td>ยูเรีย 20 กก.<br>หรือ 21-0-0 40 กก./ไร่</td></tr>
+        </tbody></table></div>
+        <ul>
+          <li>ครั้งที่ 2 ใส่ราว 30 วันก่อนข้าวออกดอก</li>
+          <li>ปุ๋ยอินทรีย์ 600 กก. (น้ำหนักแห้ง)/ไร่ · ปุ๋ยพืชสดใช้เมล็ดถั่ว 5–10 กก./ไร่</li>
+        </ul>
+        <div class="src">📚 องค์ความรู้เรื่องข้าว (Rice Knowledge Bank) กรมการข้าว</div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary>🌿 ยาคุมหญ้า / ยาฆ่าหญ้าในนาข้าว</summary>
+      <div class="acc-b">
+        เลือกสารตาม <b>จำนวนวันหลังหว่านข้าว</b> — พ่นผิดช่วงจะไม่ได้ผลหรือข้าวเป็นพิษ
+        <div class="tw" style="margin:9px 0"><table><thead><tr><th>วันหลังหว่าน</th><th>สาร</th><th>ชนิด</th></tr></thead><tbody>
+          <tr><td><b>0–4</b></td><td>เพรทิลาคลอร์</td><td><span class="tag tg">ก่อนงอก</span></td></tr>
+          <tr><td><b>4–6</b></td><td>บิวทาคลอร์ · ออกซาไดอะซอน</td><td><span class="tag tg">ก่อนงอก</span></td></tr>
+          <tr><td><b>8–12</b><br><small>นาหว่านแห้ง: ทันทีหลังหว่าน</small></td><td>เพนดิเมทาลิน</td><td><span class="tag tg">ก่อนงอก</span></td></tr>
+          <tr><td><b>6–20</b></td><td>ไพราโซซัลฟูรอน</td><td><span class="tag ta">หลังงอก</span></td></tr>
+          <tr><td><b>8–30</b></td><td>บิสไพริแบก-โซเดียม</td><td><span class="tag ta">หลังงอก</span></td></tr>
+          <tr><td><b>10</b></td><td>ไซฮาโลฟอป-บิวทิล (หญ้าใบแคบ)</td><td><span class="tag ta">หลังงอก</span></td></tr>
+          <tr><td><b>15–20</b></td><td>โพรพานิล</td><td><span class="tag ta">หลังงอก</span></td></tr>
+          <tr><td><b>15–30</b></td><td>2,4-ดี (ใบกว้าง / กก)</td><td><span class="tag ta">หลังงอก</span></td></tr>
+          <tr><td><b>20</b></td><td>ควินคลอแรก</td><td><span class="tag ta">หลังงอก</span></td></tr>
+          <tr><td><b>20–30</b></td><td>ฟีนอกซาพรอป-พี-เอทิล (หญ้าใบแคบ)</td><td><span class="tag ta">หลังงอก</span></td></tr>
+        </tbody></table></div>
+        <b>อัตราที่กรมการข้าวระบุ (ชุดคำแนะนำคุมข้าววัชพืช/ข้าวดีด)</b>
+        <ul>
+          <li><b>ก่อนหว่านข้าว:</b> บิวทาคลอร์ 60% EC 300 ซีซี · เพรทิลาคลอร์ 30% EC 300 ซีซี · ไทโอเบนคาร์บ 80% EC 700 ซีซี · ไดเมทานามิด 90% EC 50 ซีซี (ต่อไร่ เลือกอย่างใดอย่างหนึ่ง)</li>
+          <li><b>8–10 วันหลังหว่าน:</b> ออกซาไดอาร์กิล 40% SC 100 ซีซี หรือ เพนดิเมทาลิน 33% EC 300 ซีซี ต่อไร่</li>
+          <li><b>ข้าวดีดระยะออกรวง:</b> ลูบรวงด้วย กลูโฟซิเนต 15% SL 100–200 ซีซี/ไร่ หรือ ควิซาโลฟอป-พี-เอทิล 5% EC 100 ซีซี/ไร่ (ห้ามโดนข้าวปลูก)</li>
+          <li>สารตัวอื่นในตาราง ใช้อัตราตามฉลาก · หลังพ่น 3 วันให้ไขน้ำเข้านา เพื่อคุมหญ้าที่จะงอกตามมา</li>
+        </ul>
+        <div class="src">📚 องค์ความรู้เรื่องข้าว (Rice Knowledge Bank) กรมการข้าว</div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary>🐛 เพลี้ยกระโดดสีน้ำตาล</summary>
+      <div class="acc-b">
+        เริ่มพ่นเมื่อพบ <b>1 ตัว/ต้น หรือ 10 ตัว/กอ</b>
+        <div class="tw" style="margin:9px 0"><table><thead><tr><th>อายุข้าว</th><th>สาร (ต่อน้ำ 20 ล.)</th></tr></thead><tbody>
+          <tr><td>ไม่เกิน 40 วัน</td><td>บูโพรเฟซิน 10% WP 25 ก.<br>หรือ บูโพรเฟซิน/ไอโซโพรคาร์บ 5%/20% WP 50 ก.</td></tr>
+          <tr><td>41–80 วัน</td><td>ไดโนทีฟูแรน 10% WP 15 ก.<br>หรือ ไพมีโทรซีน 50% WG 10 ก.</td></tr>
+        </tbody></table></div>
+        <div class="w-warn">⚠️ <b>ห้ามใช้ยากลุ่มไพรีทรอยด์</b> (เช่น ไซเพอร์เมทริน เดลทาเมทริน) ในนาข้าวที่มีเพลี้ยกระโดด — ฆ่าศัตรูธรรมชาติ ทำให้เพลี้ยระบาดหนักกว่าเดิม · อย่าขังน้ำในนาตลอดเวลา ให้ระบายน้ำออกเป็นช่วง ๆ</div>
+        <div class="src">📚 ศูนย์วิจัยข้าวเชียงราย กรมการข้าว</div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary>🍄 โรคไหม้</summary>
+      <div class="acc-b">
+        <ul>
+          <li>พันธุ์อ่อนแอ: <b>ขาวดอกมะลิ 105, กข15, กข6</b></li>
+          <li>อย่าใส่ปุ๋ยไนโตรเจนมากเกิน (ยิ่งใบงาม ยิ่งเป็นง่าย)</li>
+          <li>พ่นเมื่อพบแผลบนใบราว <b>5% ของพื้นที่ใบ</b>: ไตรไซคลาโซล, ไอโซโพรไทโอเลน, คาซูกาไมซิน, อีดิเฟนฟอส หรือ คาร์เบนดาซิม — อัตราตามฉลาก</li>
+        </ul>
+        <div class="src">📚 ศูนย์วิจัยข้าวเชียงราย กรมการข้าว</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="w-tip" style="margin-top:4px">📌 อัตราทุกตัวให้เทียบกับ<b>ฉลากผลิตภัณฑ์ที่ขึ้นทะเบียน</b>อีกครั้งก่อนผสม เพราะความเข้มข้นแต่ละยี่ห้อต่างกัน · บันทึกการใช้ของพืชเหล่านี้ได้ที่แท็บ 📝 บันทึก (เลือกชนิดพืช)</div>
+</div>
+
+<!-- CHEM -->
+<div class="pg" id="pg-chem">
+  <div class="w-hero" style="background:linear-gradient(135deg,#fdf0e0,#f7edce);border-color:#e5c878">
+    <div class="w-hero-t" style="color:var(--amb)">🧴 สารเคมีเกษตร · ยาคุมหญ้า ยาฆ่าหญ้า ยาแมลง ยาเชื้อรา</div>
+    <div class="w-hero-s" style="color:var(--txt2)">สารที่ห้ามใช้ · เลือกยาคุม/ยาฆ่าหญ้าให้ถูกจังหวะ · กลุ่มยาสำหรับสลับลดการดื้อยา · การใช้ให้ปลอดภัย</div>
+  </div>
+  <div class="chips">
+    <button class="chip on" id="hc-ban" onclick="showChem('ban')">⛔ ห้ามใช้</button>
+    <button class="chip" id="hc-herb" onclick="showChem('herb')">🌿 ยาคุม/ฆ่าหญ้า</button>
+    <button class="chip" id="hc-ins" onclick="showChem('ins')">🐛 ยาแมลง</button>
+    <button class="chip" id="hc-fun" onclick="showChem('fun')">🍄 ยาเชื้อรา</button>
+    <button class="chip" id="hc-pgr" onclick="showChem('pgr')">💧 ฮอร์โมน</button>
+    <button class="chip" id="hc-safe" onclick="showChem('safe')">🦺 ใช้ให้ปลอดภัย</button>
+  </div>
+
+  <!-- ══ ห้ามใช้ ══ -->
+  <div class="hsec on" id="hs-ban">
+    <div class="card"><div class="ch"><div class="chi">⛔</div><h3>สารที่ห้ามใช้ / จำกัดการใช้ในไทย</h3></div>
+      <div class="cb">
+        <div class="dc" style="border-color:#f0b8b0;background:var(--red2)"><div class="dc-n" style="color:var(--red)">พาราควอต <span class="tag tr">ห้ามใช้</span></div>
+          <div style="font-size:.78rem;color:var(--txt2);line-height:1.7">ยาฆ่าหญ้าแบบสัมผัส (ชื่อการค้าที่คุ้น เช่น กรัมม็อกโซน) · เป็นวัตถุอันตรายชนิดที่ 4 ตั้งแต่ <b>1 มิ.ย. 2563</b> — ห้ามผลิต นำเข้า ขาย และมีไว้ในครอบครอง</div></div>
+        <div class="dc" style="border-color:#f0b8b0;background:var(--red2)"><div class="dc-n" style="color:var(--red)">คลอร์ไพริฟอส · คลอร์ไพริฟอส-เมทิล <span class="tag tr">ห้ามใช้</span></div>
+          <div style="font-size:.78rem;color:var(--txt2);line-height:1.7">ยาฆ่าแมลงกลุ่ม 1B ที่เคยนิยมใช้กับหนอนเจาะลำต้น ปลวก เพลี้ย · เป็นวัตถุอันตรายชนิดที่ 4 ตั้งแต่ <b>1 มิ.ย. 2563</b> เช่นกัน</div></div>
+        <div class="dc" style="border-color:#e5c878;background:var(--gold2)"><div class="dc-n" style="color:var(--amb)">ไกลโฟเซต <span class="tag tgold">จำกัดการใช้</span></div>
+          <div style="font-size:.78rem;color:var(--txt2);line-height:1.7">ยังใช้ได้ แต่อยู่ในมาตรการจำกัดการใช้ — ผู้ซื้อและผู้ใช้ต้องผ่านการอบรม และใช้ได้กับพืชที่กำหนด (เท่าที่ผมทราบคือ อ้อย ยางพารา ปาล์มน้ำมัน มันสำปะหลัง ข้าวโพด และไม้ผล) · <b>รายละเอียดล่าสุดกรุณาสอบถามเกษตรอำเภอหรือร้านที่มีใบอนุญาต</b> เพราะผมยังยืนยันรายชื่อพืชจากประกาศฉบับเต็มไม่ได้</div></div>
+        <div class="w-warn">⚠️ ถ้ายังมีพาราควอตหรือคลอร์ไพริฟอสเหลืออยู่ อย่าใช้และอย่าทิ้งเอง ให้ติดต่อเกษตรอำเภอ/ร้านค้าเพื่อส่งคืน · ยาที่ขายถูกผิดปกติ ไม่มีเลขทะเบียน หรือฉลากไม่ใช่ภาษาไทย อาจเป็นสารผิดกฎหมาย</div>
+        <div class="src">📚 มติคณะกรรมการวัตถุอันตราย 27 พ.ย. 2562 (มีผล 1 มิ.ย. 2563) · มติจำกัดการใช้ไกลโฟเซต 23 พ.ค. 2561 · ศาลปกครองกลางยกฟ้องคดีขอเพิกถอนการแบน (รายงานข่าว ก.ค.–ส.ค. 2569) จึงยังห้ามใช้ต่อไป</div>
+      </div>
+    </div>
+    <div class="card"><div class="ch"><div class="chi">✏️</div><h3>สิ่งที่แก้ในแอปรอบนี้</h3></div>
+      <div class="cb" style="font-size:.8rem;color:var(--txt2);line-height:1.8">
+        ข้อมูลยาทุเรียนในแท็บ 🔬 โรค &amp; แมลง เวอร์ชันก่อนเคยแนะนำ<b>คลอร์ไพริฟอส</b> 4 จุด (เพลี้ยหอย เพลี้ยแป้ง ด้วงหนวดยาว มอดเจาะลำต้น) — ผิด เพราะห้ามใช้แล้ว รอบนี้เอาออกทั้งหมด และแก้รหัสกลุ่มยา (IRAC/FRAC) ที่ติดป้ายผิดหลายตัวให้ถูกต้อง
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ยาคุม/ฆ่าหญ้า ══ -->
+  <div class="hsec" id="hs-herb">
+    <div class="card"><div class="ch"><div class="chi">🌿</div><h3>ยาคุมหญ้า กับ ยาฆ่าหญ้า ต่างกันอย่างไร</h3></div>
+      <div class="cb">
+        <div class="g2" style="gap:9px">
+          <div class="ri" style="background:var(--g3);border-color:var(--bdr2)"><div class="ri-l" style="color:var(--g)">ยาคุมหญ้า = ก่อนงอก (pre-emergence)</div><div class="ri-v">พ่นลง<b>ดิน</b>ก่อนเมล็ดหญ้างอก ยาเคลือบผิวดินไว้ หญ้าที่งอกขึ้นมาจะตาย<br>• ดินต้อง<b>ชื้น</b>ขณะพ่น ไม่งั้นไม่ได้ผล<br>• หลังพ่นอย่าไถพรวน/เหยียบย่ำหน้าดิน<br>• หญ้าที่งอกแล้ว ยาคุมเอาไม่อยู่</div></div>
+          <div class="ri" style="background:var(--amb2);border-color:#f0c890"><div class="ri-l" style="color:var(--amb)">ยาฆ่าหญ้า = หลังงอก (post-emergence)</div><div class="ri-v">พ่นโดน<b>ใบหญ้า</b>ที่งอกแล้ว<br>• <b>สัมผัส (เผาไหม้):</b> ตายเฉพาะส่วนที่โดน เห็นผลเร็ว หญ้ามีเหง้าจะแตกใหม่<br>• <b>ดูดซึม:</b> ซึมลงถึงราก/เหง้า ตายช้าแต่ตายสนิท<br>• พ่นตอนหญ้ากำลังโต ยังไม่ออกดอก ได้ผลดีสุด</div></div>
+        </div>
+        <div class="g2" style="gap:9px;margin-top:9px">
+          <div class="ri"><div class="ri-l">เลือกทำลาย</div><div class="ri-v">ฆ่าหญ้าบางกลุ่ม พืชปลูกไม่ตาย (เมื่อใช้ถูกพืช ถูกอัตรา ถูกระยะ) เช่น อะทราซีนในอ้อย</div></div>
+          <div class="ri"><div class="ri-l">ไม่เลือกทำลาย</div><div class="ri-v">โดนอะไรเขียวตายหมด เช่น ไกลโฟเซต กลูโฟซิเนต — ต้องใช้ครอบหัวฉีด ระวังละอองปลิว</div></div>
+        </div>
+        <div class="w-tip">หลังพ่นต้องไม่มีฝนอย่างน้อย <b>4 ชม.</b> (ยาดูดซึม) หรือ <b>30 นาที</b> (ยาสัมผัส) · สลับกลุ่มยา อย่าใช้ตัวเดิมซ้ำทุกปี หญ้าจะดื้อ</div>
+        <div class="src">📚 ม.เกษตรศาสตร์ – การควบคุมวัชพืชในมันสำปะหลัง (ข้อกำหนดเรื่องฝนและการสลับสาร)</div>
+      </div>
+    </div>
+
+    <div class="card"><div class="ch"><div class="chi">📋</div><h3>ยาคุม/ฆ่าหญ้าแยกตามพืช</h3></div>
+      <div class="tw"><table><thead><tr><th>พืช</th><th>ก่อนงอก (คุม)</th><th>หลังงอก (ฆ่า)</th></tr></thead><tbody>
+        <tr><td><b>อ้อย</b></td><td>อะทราซีน · ไดยูรอน · อะทราซีน+ไดยูรอน · เฮกซะซิโนน+ไดยูรอน</td><td>ฮาโลซัลฟูรอน+อะมีทรีน · โทพรามีโซน+ไดยูรอน (อ้อย &gt;5 ใบ)</td></tr>
+        <tr><td><b>มันสำปะหลัง</b></td><td>อะลาคลอร์ · เมโทลาคลอร์ · ผสมไดยูรอน (ภายใน 3 วันหลังปลูก)</td><td>เฉพาะมันอายุ &gt;4 เดือน / สูง &gt;70 ซม. และต้องครอบหัวฉีด</td></tr>
+        <tr><td><b>ข้าว</b></td><td>เพรทิลาคลอร์ · บิวทาคลอร์ · ออกซาไดอะซอน · เพนดิเมทาลิน</td><td>บิสไพริแบก-โซเดียม · ไพราโซซัลฟูรอน · ไซฮาโลฟอป · โพรพานิล · 2,4-ดี · ควินคลอแรก</td></tr>
+        <tr><td><b>ยางพารา</b></td><td colspan="2" style="color:var(--txt3)">ยังไม่มีข้อมูลที่ตรวจสอบจากแหล่งวิชาการ — ยึดฉลากที่ขึ้นทะเบียนกับยางพารา</td></tr>
+        <tr><td><b>ทุเรียน</b></td><td colspan="2">ทุเรียนเล็กรากฝอยอยู่ตื้นใต้ทรงพุ่ม — แนะนำ<b>ตัดหญ้าและคลุมโคน</b>แทนการพ่นยาในทรงพุ่ม · ถ้าพ่นระหว่างแถวต้องครอบหัวฉีด ห้ามละอองโดนใบ กิ่ง และเปลือกต้น <span style="color:var(--txt3)">(คำแนะนำทั่วไป ยังไม่ได้อ้างเอกสารกรมฯ เฉพาะเรื่อง)</span></td></tr>
+      </tbody></table></div>
+      <div style="padding:9px 14px;font-size:.72rem;color:var(--txt3);line-height:1.6">อัตราและรายละเอียดของแต่ละพืชอยู่ในแท็บ <a href="#" onclick="go('crop');return false" style="color:var(--sky)">🌾 พืชอื่น</a> พร้อมแหล่งอ้างอิง</div>
+    </div>
+
+    <div class="card"><div class="ch"><div class="chi">🔁</div><h3>กลุ่มยาหญ้า (HRAC) · ใช้สลับกลุ่มกันดื้อ</h3></div>
+      <div class="tw"><table><thead><tr><th>กลุ่ม</th><th>กลไก</th><th>ตัวอย่างสาร</th><th>ชนิด</th></tr></thead><tbody>
+        <tr><td><b>1</b></td><td>ยับยั้ง ACCase</td><td>ไซฮาโลฟอป-บิวทิล · ฟีนอกซาพรอป · ควิซาโลฟอป · ฮาโลซิฟอป · ฟลูอะซิฟอป</td><td>หลังงอก ฆ่าหญ้าใบแคบ</td></tr>
+        <tr><td><b>2</b></td><td>ยับยั้ง ALS</td><td>บิสไพริแบก-โซเดียม · ไพราโซซัลฟูรอน · เพนอกซูแลม · เมตซัลฟูรอน · ฮาโลซัลฟูรอน</td><td>หลังงอก (ดื้อง่าย)</td></tr>
+        <tr><td><b>3</b></td><td>ยับยั้งการแบ่งเซลล์ราก</td><td>เพนดิเมทาลิน</td><td>ก่อนงอก</td></tr>
+        <tr><td><b>4</b></td><td>ฮอร์โมนสังเคราะห์</td><td>2,4-ดี · ควินคลอแรก</td><td>หลังงอก ใบกว้าง</td></tr>
+        <tr><td><b>5</b></td><td>ยับยั้งการสังเคราะห์แสง</td><td>อะทราซีน · อะมีทรีน · ไดยูรอน · เฮกซะซิโนน · โพรพานิล</td><td>ก่อน/หลังงอก</td></tr>
+        <tr><td><b>9</b></td><td>ยับยั้ง EPSPS</td><td>ไกลโฟเซต</td><td>หลังงอก ดูดซึม ไม่เลือก</td></tr>
+        <tr><td><b>10</b></td><td>ยับยั้งกลูตามีนซินเทเทส</td><td>กลูโฟซิเนต-แอมโมเนียม</td><td>หลังงอก กึ่งสัมผัส ไม่เลือก</td></tr>
+        <tr><td><b>13</b></td><td>ยับยั้งการสร้างแคโรทีนอยด์</td><td>โคลมาโซน</td><td>ก่อนงอก</td></tr>
+        <tr><td><b>14</b></td><td>ยับยั้ง PPO</td><td>ออกซาไดอะซอน · ออกซาไดอาร์กิล · ออกซีฟลูออร์เฟน · ฟลูมิออกซาซิน</td><td>ก่อนงอก / สัมผัส</td></tr>
+        <tr><td><b>15</b></td><td>ยับยั้งกรดไขมันสายยาว</td><td>อะลาคลอร์ · อะเซโทคลอร์ · เมโทลาคลอร์ · บิวทาคลอร์ · เพรทิลาคลอร์ · ไดเมทานามิด · ไทโอเบนคาร์บ</td><td>ก่อนงอก</td></tr>
+        <tr><td><b>22</b></td><td>รบกวนระบบแสง I</td><td><s>พาราควอต</s> (ห้ามใช้) · ไดควอต</td><td>หลังงอก สัมผัส</td></tr>
+        <tr><td><b>27</b></td><td>ยับยั้ง HPPD</td><td>โทพรามีโซน · มีโซไตรโอน · ไอซอกซาฟลูโทล</td><td>ก่อน/หลังงอก</td></tr>
+      </tbody></table></div>
+      <div style="padding:9px 14px;font-size:.72rem;color:var(--txt3);line-height:1.6">หลักการ: ปีนี้ใช้กลุ่มไหน รอบถัดไปเปลี่ยนไปใช้<b>เลขกลุ่มอื่น</b> ไม่ใช่แค่เปลี่ยนยี่ห้อ · เลขกลุ่มตามระบบ HRAC (Herbicide Resistance Action Committee) ฉบับปัจจุบัน มักพิมพ์อยู่บนฉลาก</div>
+    </div>
+  </div>
+
+  <!-- ══ ยาแมลง ══ -->
+  <div class="hsec" id="hs-ins">
+    <div class="card"><div class="ch"><div class="chi">🐛</div><h3>กลุ่มยาฆ่าแมลง/ไร (IRAC) · สลับกลุ่มกันดื้อ</h3></div>
+      <div class="tw"><table><thead><tr><th>กลุ่ม</th><th>ชื่อกลุ่ม</th><th>ตัวอย่างสาร</th><th>เด่นกับ</th></tr></thead><tbody>
+        <tr><td><b>1A</b></td><td>คาร์บาเมต</td><td>คาร์บาริล · คาร์โบซัลแฟน · ไอโซโพรคาร์บ</td><td>ปากดูด หนอน</td></tr>
+        <tr><td><b>1B</b></td><td>ออร์กาโนฟอสเฟต</td><td>มาลาไทออน · ไดเมโทเอต · โพรฟีโนฟอส <small>(<s>คลอร์ไพริฟอส</s> ห้ามใช้)</small></td><td>กว้าง</td></tr>
+        <tr><td><b>2B</b></td><td>ฟีนิลไพราโซล</td><td>ฟิโพรนิล</td><td>เพลี้ยไฟ ปลวก ด้วง</td></tr>
+        <tr><td><b>3A</b></td><td>ไพรีทรอยด์</td><td>ไซเพอร์เมทริน · เดลทาเมทริน · แลมบ์ดา-ไซฮาโลทริน · ไบเฟนทริน</td><td>หนอน ด้วง <small>(ทำไรแดง/เพลี้ยกระโดดระบาด)</small></td></tr>
+        <tr><td><b>4A</b></td><td>นีโอนิโคตินอยด์</td><td>อิมิดาโคลพริด · ไทอะมีทอกแซม · ไดโนทีฟูแรน · อะเซทามิพริด · โคลไทอะนิดิน</td><td>เพลี้ย แมลงหวี่ขาว</td></tr>
+        <tr><td><b>5</b></td><td>สปินโนซิน</td><td>สไปนีโทแรม · สไปโนแซด</td><td>เพลี้ยไฟ หนอน</td></tr>
+        <tr><td><b>6</b></td><td>อะเวอร์เมกติน</td><td>อะบาเมกติน · อีมาเมกตินเบนโซเอต</td><td>ไร หนอน เพลี้ยไฟ</td></tr>
+        <tr><td><b>9B</b></td><td>ไพริดีน อะโซเมทีน</td><td>ไพมีโทรซีน</td><td>เพลี้ยกระโดด เพลี้ยอ่อน</td></tr>
+        <tr><td><b>10A</b></td><td>ยับยั้งการเจริญของไร</td><td>เฮกซีไทอะซอกซ์ · โคลเฟนเทซีน</td><td>ไข่และตัวอ่อนไร</td></tr>
+        <tr><td><b>13</b></td><td>ไพร์โรล</td><td>คลอร์ฟีนาเพอร์</td><td>หนอน ไร เพลี้ยไฟ</td></tr>
+        <tr><td><b>15</b></td><td>เบนโซอิลยูเรีย</td><td>ลูเฟนนูรอน · คลอร์ฟลูอาซูรอน</td><td>หนอน (ยับยั้งลอกคราบ)</td></tr>
+        <tr><td><b>16</b></td><td>บูโพรเฟซิน</td><td>บูโพรเฟซิน</td><td>เพลี้ยหอย เพลี้ยแป้ง เพลี้ยกระโดด (ตัวอ่อน)</td></tr>
+        <tr><td><b>19</b></td><td>อะมิทราซ</td><td>อะมิทราซ</td><td>ไร</td></tr>
+        <tr><td><b>21A</b></td><td>METI</td><td>เฟนไพรอกซิเมต · ไพริดาเบน · ทีบูเฟนไพแรด</td><td>ไร</td></tr>
+        <tr><td><b>23</b></td><td>กรดเททโทรนิก/เททรามิก</td><td>สไปโรมีซิเฟน · สไปโรเททระแมต</td><td>ไร แมลงหวี่ขาว เพลี้ย</td></tr>
+        <tr><td><b>28</b></td><td>ไดอะไมด์</td><td>คลอแรนทรานิลิโพรล · ไซแอนทรานิลิโพรล</td><td>หนอน</td></tr>
+        <tr><td><b>29</b></td><td>ฟลอนิคามิด</td><td>ฟลอนิคามิด</td><td>ปากดูด</td></tr>
+      </tbody></table></div>
+      <div style="padding:9px 14px;font-size:.72rem;color:var(--txt3);line-height:1.6">หลักการ: ใช้กลุ่มเดียวกันติดกัน<b>ไม่เกิน 2 ครั้ง</b> แล้วเปลี่ยนไปเลขกลุ่มอื่น · ยาคนละชื่อแต่เลขกลุ่มเดียวกัน = ไม่ได้สลับ · เลขกลุ่มตามระบบ IRAC</div>
+    </div>
+  </div>
+
+  <!-- ══ ยาเชื้อรา ══ -->
+  <div class="hsec" id="hs-fun">
+    <div class="card"><div class="ch"><div class="chi">🍄</div><h3>กลุ่มยาป้องกันกำจัดโรคพืช (FRAC)</h3></div>
+      <div class="tw"><table><thead><tr><th>กลุ่ม</th><th>ชื่อกลุ่ม</th><th>ตัวอย่างสาร</th><th>ความเสี่ยงดื้อยา</th></tr></thead><tbody>
+        <tr><td><b>1</b></td><td>เบนซิมิดาโซล (MBC)</td><td>คาร์เบนดาซิม</td><td><span class="tag tr">สูง</span></td></tr>
+        <tr><td><b>2</b></td><td>ไดคาร์บอกซิไมด์</td><td>ไอโพรไดโอน</td><td><span class="tag ta">ปานกลาง–สูง</span></td></tr>
+        <tr><td><b>3</b></td><td>DMI (ไตรอะโซล)</td><td>ไดฟีโนโคนาโซล · โพรพิโคนาโซล · เฮกซะโคนาโซล · ไซโพรโคนาโซล</td><td><span class="tag ta">ปานกลาง</span></td></tr>
+        <tr><td><b>4</b></td><td>ฟีนิลเอไมด์</td><td>เมทาแลกซิล · เมทาแลกซิล-เอ็ม</td><td><span class="tag tr">สูง</span></td></tr>
+        <tr><td><b>6</b></td><td>ยับยั้งฟอสโฟลิพิด</td><td>ไอโซโพรไทโอเลน · อีดิเฟนฟอส</td><td><span class="tag ta">ปานกลาง</span></td></tr>
+        <tr><td><b>7</b></td><td>SDHI</td><td>บอสคาลิด · เพนไทโอไพแรด</td><td><span class="tag ta">ปานกลาง–สูง</span></td></tr>
+        <tr><td><b>11</b></td><td>QoI (สโตรบิลูริน)</td><td>อะซอกซีสโตรบิน · ไพราโคลสโตรบิน · ไตรฟลอกซีสโตรบิน</td><td><span class="tag tr">สูง</span></td></tr>
+        <tr><td><b>16.1</b></td><td>MBI-R</td><td>ไตรไซคลาโซล</td><td><span class="tag ta">ปานกลาง</span></td></tr>
+        <tr><td><b>24</b></td><td>ปฏิชีวนะ</td><td>คาซูกาไมซิน</td><td><span class="tag ta">ปานกลาง</span></td></tr>
+        <tr><td><b>40</b></td><td>CAA</td><td>ไดเมโทมอร์ฟ · แมนดิโพรพามิด</td><td><span class="tag tg">ต่ำ–ปานกลาง</span></td></tr>
+        <tr><td><b>49</b></td><td>OSBPI</td><td>ออกซาไทอะพิโพรลิน</td><td><span class="tag ta">ปานกลาง–สูง</span></td></tr>
+        <tr><td><b>P07</b></td><td>ฟอสโฟเนต (เดิมกลุ่ม 33)</td><td>ฟอสอีทิล-อะลูมิเนียม · กรดฟอสฟอรัส</td><td><span class="tag tg">ต่ำ</span></td></tr>
+        <tr><td><b>M01</b></td><td>ทองแดง</td><td>คอปเปอร์ไฮดรอกไซด์ · คอปเปอร์ออกซีคลอไรด์</td><td><span class="tag tg">ต่ำ</span></td></tr>
+        <tr><td><b>M02</b></td><td>กำมะถัน</td><td>กำมะถันผง</td><td><span class="tag tg">ต่ำ</span></td></tr>
+        <tr><td><b>M03</b></td><td>ไดไทโอคาร์บาเมต</td><td>แมนโคเซบ · โพรพิเนบ</td><td><span class="tag tg">ต่ำ</span></td></tr>
+        <tr><td><b>M05</b></td><td>คลอโรไนไตรล์</td><td>คลอโรทาโลนิล</td><td><span class="tag tg">ต่ำ</span></td></tr>
+      </tbody></table></div>
+      <div style="padding:9px 14px;font-size:.72rem;color:var(--txt3);line-height:1.6">หลักการ: กลุ่มเสี่ยงสูง (1, 4, 11) อย่าใช้เดี่ยวติดกัน ให้สลับหรือผสมกับกลุ่ม M (สัมผัส หลายจุดออกฤทธิ์) · เลขกลุ่มตามระบบ FRAC</div>
+    </div>
+  </div>
+
+  <!-- ══ ฮอร์โมน ══ -->
+  <div class="hsec" id="hs-pgr">
+    <div class="card"><div class="ch"><div class="chi">💧</div><h3>ฮอร์โมน / สารควบคุมการเจริญเติบโต แยกตามพืช</h3></div>
+      <div class="cb">
+        <div class="w-tip" style="margin-top:0">ฮอร์โมนพืช<b>ไม่ใช่ปุ๋ย</b> — ไม่ได้ให้ธาตุอาหาร แต่ไปสั่งให้พืชเปลี่ยนการเติบโต พืชใช้ในปริมาณน้อยมาก ใช้ผิดระยะหรือเข้มเกินจะเสียหายแทน มี 5 กลุ่มหลัก: ออกซิน · จิบเบอเรลลิน · ไซโตไคนิน · กรดแอบไซซิก · เอทิลีน</div>
+        <div class="sl-r" style="margin-top:14px">ระดับความน่าเชื่อถือ</div>
+        <div class="ip-r" style="margin:0 0 12px"><div class="ip"><span class="tag tg">คำแนะนำ</span> อยู่ในคู่มือหน่วยงานรัฐ</div><div class="ip"><span class="tag ta">งานวิจัย</span> ผลทดลอง ยังไม่ใช่คำแนะนำ</div><div class="ip"><span class="tag ts">ไม่มี</span> ไม่พบคำแนะนำ</div></div>
+
+        <details class="acc" open><summary>🌳 ทุเรียน</summary><div class="acc-b">
+          <div class="dc"><div class="dc-n">ช่วงใบอ่อน <span class="tag tg">คำแนะนำ</span></div><div class="dc-r">สารสกัดสาหร่าย 50 มล./น้ำ 200 ล. พ่นพร้อมยาแมลง–ยาเชื้อรา · ใบคลี่–เพสลาด: 21-21-21 1 กก. + แคลเซียม-โบรอน 200 มล. + แมกนีเซียม-สังกะสี 200 มล./น้ำ 200 ล.</div></div>
+          <div class="dc"><div class="dc-n">ก่อนออกดอก <span class="tag tg">คำแนะนำ</span> <span class="tag tgold">ต้นให้ผล</span></div><div class="dc-r">งดน้ำ 10–14 วัน · เมื่อเริ่มเห็นตาดอกราว 5%: 13-0-46 1 กก. + สารสกัดสาหร่าย 300 มล. + ธาตุรองเสริม ต่อน้ำ 200 ล. พ่นใต้ท้องกิ่ง</div></div>
+          <div class="dc"><div class="dc-n">พาโคลบิวทราโซล (ชักนำดอกนอกฤดู) <span class="tag ta">งานวิจัย</span> <span class="tag tgold">ต้นให้ผล</span></div><div class="dc-r">งานทดลองที่จันทบุรีใช้ <b>1,000–1,500 ppm</b> พ่นทางใบเมื่อใบชุดที่ 2 หลังเก็บเกี่ยวแก่เต็มที่ · ผล<b>ไม่แน่นอน</b> ถ้าฝนตกหลังพ่นจะไม่ได้ผล และได้ผลดีกว่าเมื่อมีช่วงแล้ง 10–14 วัน · <b>ไม่ใช้กับต้นเล็กที่ยังไม่ถึงวัยให้ผล</b></div></div>
+          <div class="dc"><div class="dc-n">ระยะดอก (กระดุมมะเขือพวง–หัวกำไล) <span class="tag tg">คำแนะนำ</span> <span class="tag tgold">ต้นให้ผล</span></div><div class="dc-r">10-52-7 200 ก. + แคลเซียม-โบรอน 200 ก. + อโทนิค 50 มล. ต่อน้ำ 200 ล. · พ่นซ้ำ 10 วันหลังดอกบาน · <b>ห้ามพ่นสารใด ๆ ช่วงดอกบาน</b></div></div>
+          <div class="dc"><div class="dc-n">ระยะผลพัฒนา: กันใบอ่อนแย่งอาหารผล <span class="tag tg">คำแนะนำ</span> <span class="tag tgold">ต้นให้ผล</span></div><div class="dc-r"><b>เมพิควอตคลอไรด์ 37.5 ppm</b> พ่นทั่วต้นชะลอการแตกใบอ่อน · หรือ โพแทสเซียมไนเตรต 13-0-45 150–300 ก./น้ำ 20 ล. เมื่อยอดเริ่มแตกระยะหางปลา พ่นซ้ำหลัง 1–2 สัปดาห์</div></div>
+          <div class="src">📚 คู่มือการผลิตทุเรียนภาคใต้ตอนล่าง – สวพ.8 กรมวิชาการเกษตร · งานวิจัยพาโคลบิวทราโซลในทุเรียนหมอนทอง จ.จันทบุรี (JARQ 58(2))</div>
+        </div></details>
+
+        <details class="acc"><summary>🌳 ยางพารา</summary><div class="acc-b">
+          <div class="dc"><div class="dc-n">เอทธิฟอน 2.5% (สารเร่งน้ำยาง) <span class="tag tg">คำแนะนำ</span></div><div class="dc-r">ใช้กับยางเปิดกรีดแล้วเท่านั้น · ทาครั้งละราว 1 ก. เป็นแถบกว้าง 1 ซม. ที่หน้ากรีด · ไม่เกิน 6 ครั้ง/ปี · ใช้คู่กับระบบกรีดห่าง ไม่ใช้กับการกรีดถี่<br>ข้อเสีย: เนื้อยางแห้งลดลง 3–6% · ใช้บ่อยเกิดเปลือกแห้งมากขึ้น (งานทดลอง ม.อ. พบ 9–15%) · ใช้ต่อเนื่องหลายปีต้นโทรม</div></div>
+          <div class="dc"><div class="dc-n">ยางเล็ก / ฮอร์โมนอื่น <span class="tag ts">ไม่มี</span></div><div class="dc-r" style="background:var(--surf2);border-left-color:var(--bdr2)">ไม่พบคำแนะนำให้ใช้ฮอร์โมนกับยางก่อนเปิดกรีด</div></div>
+          <div class="src">📚 การยางแห่งประเทศไทย / สถาบันวิจัยยาง · รายงานวิจัยระบบกรีดร่วมกับเอทธิฟอน ม.สงขลานครินทร์</div>
+        </div></details>
+
+        <details class="acc"><summary>🥔 มันสำปะหลัง</summary><div class="acc-b">
+          <div class="dc"><div class="dc-n">NAA แช่ท่อนพันธุ์ <span class="tag ta">งานวิจัย</span></div><div class="dc-r">แช่ท่อนพันธุ์ยาว 20 ซม. ใน <b>NAA 1,000 มก./ล.</b> นาน 30 นาทีก่อนปลูก (พันธุ์ระยอง 9 จ.นครพนม อาศัยน้ำฝน) ที่ 270 วันได้น้ำหนักแห้งหัว 1,650 ก./ต้น เทียบกับไม่แช่ 990 ก./ต้น · ความเข้มข้น 2,000–4,000 ได้ผลแย่ลง<br>ข้อจำกัด: ทดลองฤดูเดียว พันธุ์เดียว ผู้วิจัยเองแนะนำให้ศึกษาเพิ่ม — ถ้าจะลองให้ทำแปลงเล็กเทียบกับไม่แช่ก่อน</div></div>
+          <div class="dc"><div class="dc-n">คำแนะนำกรมวิชาการเกษตร <span class="tag ts">ไม่มี</span></div><div class="dc-r" style="background:var(--surf2);border-left-color:var(--bdr2)">คู่มือของสถาบันวิจัยพืชไร่ฯ ไม่มีคำแนะนำให้ใช้ฮอร์โมนในมันสำปะหลัง</div></div>
+          <div class="src">📚 วารสารแก่นเกษตร 51(5) 2566 (ม.นครพนม) · คู่มือการผลิตท่อนพันธุ์มันสำปะหลัง กรมวิชาการเกษตร</div>
+        </div></details>
+
+        <details class="acc"><summary>🎋 อ้อย</summary><div class="acc-b">
+          <div class="dc"><div class="dc-n">เอทีฟอน / สารเร่งความหวาน <span class="tag ta">งานวิจัย</span></div><div class="dc-r">มีงานวิจัยในไทยรายงานว่าเอทีฟอนเพิ่มผลผลิตและน้ำตาลในอ้อยบางพันธุ์ แต่ผมเปิดอ่านอัตราและวิธีใช้ฉบับเต็มไม่ได้ จึง<b>ไม่ใส่ตัวเลข</b></div></div>
+          <div class="dc"><div class="dc-n">คำแนะนำกรมวิชาการเกษตร <span class="tag ts">ไม่มี</span></div><div class="dc-r" style="background:var(--surf2);border-left-color:var(--bdr2)">เอกสารคำแนะนำอ้อยที่ผมตรวจ (ปุ๋ย วัชพืช แมลง) ไม่มีการแนะนำฮอร์โมน — ความหวานขึ้นกับพันธุ์ อายุตัด และการงดน้ำ/ปุ๋ยไนโตรเจนช่วงท้ายมากกว่า</div></div>
+        </div></details>
+
+        <details class="acc"><summary>🌾 ข้าว</summary><div class="acc-b">
+          <div class="dc"><div class="dc-n">บราสสิโนสเตอรอยด์ <span class="tag ta">งานวิจัย</span></div><div class="dc-r">ทดลองในกระถาง (ม.มหาสารคาม) พ่น 0.005–0.04 ppm ที่ 30, 45, 70 วันหลังปลูก ร่วมกับไตรโคเดอร์มา ช่วยข้าวขาวดอกมะลิ 105 ทนแล้งขึ้น แต่ผลแต่ละกรรมวิธี<b>ไม่สม่ำเสมอ</b> และน้ำหนักเมล็ดไม่ต่างกัน</div></div>
+          <div class="dc"><div class="dc-n">คำแนะนำกรมการข้าว <span class="tag ts">ไม่มี</span></div><div class="dc-r" style="background:var(--surf2);border-left-color:var(--bdr2)">ไม่พบคำแนะนำให้พ่นฮอร์โมนในนาข้าวทั่วไป — ผลผลิตข้าวขึ้นกับการใส่ปุ๋ยถูกจังหวะ คุมหญ้า และจัดการน้ำ</div></div>
+          <div class="src">📚 วารสารเกษตรพระวรุณ 15(1) 2561 (ม.มหาสารคาม)</div>
+        </div></details>
+
+        <div class="w-warn">⚠️ ผลิตภัณฑ์ "ฮอร์โมน" ในท้องตลาดจำนวนมากไม่ระบุสารออกฤทธิ์ชัดเจน ก่อนซื้อให้ดูชื่อสามัญ ความเข้มข้น และเลขทะเบียนบนฉลาก · พ่นตามอัตราฉลาก ไม่ผสมเข้มเกิน</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ปลอดภัย ══ -->
+  <div class="hsec" id="hs-safe">
+    <div class="card"><div class="ch"><div class="chi">🦺</div><h3>ใช้สารเคมีให้ได้ผลและปลอดภัย</h3></div>
+      <div class="cb">
+        <div class="g2" style="gap:9px">
+          <div class="ri"><div class="ri-l">ก่อนซื้อ</div><div class="ri-v">ดู<b>เลขทะเบียนวัตถุอันตราย</b> ชื่อสามัญ % สารออกฤทธิ์ และพืชที่ขึ้นทะเบียนบนฉลาก · ซื้อจากร้านที่มีใบอนุญาต</div></div>
+          <div class="ri"><div class="ri-l">ก่อนผสม</div><div class="ri-v">อ่านฉลากทุกครั้ง · ใช้ถ้วยตวง ไม่กะด้วยสายตา · ผสมเท่าที่ใช้หมดในวันนั้น</div></div>
+          <div class="ri"><div class="ri-l">ขณะพ่น</div><div class="ri-v">สวมหน้ากาก ถุงมือ แว่น เสื้อแขนยาว รองเท้าบูท · พ่นเช้าหรือเย็น ลมสงบ ยืนเหนือลม · ห้ามกิน ดื่ม สูบบุหรี่</div></div>
+          <div class="ri"><div class="ri-l">ยาฆ่าหญ้า</div><div class="ri-v"><b>แยกถังพ่น</b>จากยาแมลง/ยาเชื้อรา · ใช้หัวพ่นแบบพัด แรงดันต่ำ มีครอบกันละออง</div></div>
+          <div class="ri"><div class="ri-l">หลังพ่น</div><div class="ri-v">อาบน้ำ เปลี่ยนเสื้อผ้าทันที ซักแยก · ล้างภาชนะ 3 ครั้ง เทน้ำล้างลงถังพ่น · ห้ามนำขวดไปใช้ซ้ำ</div></div>
+          <div class="ri"><div class="ri-l">ก่อนเก็บเกี่ยว</div><div class="ri-v">เว้นระยะตามที่ฉลากกำหนด (ระยะปลอดภัยก่อนเก็บเกี่ยว) ทุกครั้ง</div></div>
+        </div>
+        <div class="w-tip">📌 ตัวเลขอัตราในแอปนี้มาจากเอกสารวิชาการ แต่<b>ฉลากของผลิตภัณฑ์ที่ซื้อมาคือข้อกำหนดตามกฎหมาย</b> ถ้าไม่ตรงกันให้ยึดฉลาก</div>
+        <div class="src">หัวข้อนี้เป็นหลักปฏิบัติทั่วไปในการใช้วัตถุอันตรายทางการเกษตร</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+<div id="toast"></div>
+<script>
+// ── DATA ──
+const RECS=[
+  {id:1,date:"2024-07-12",type:"ยาฆ่าแมลง",prod:"อะบาเมกติน (6)",rate:"",stage:"",ph:"",note:""},
+  {id:2,date:"2024-07-12",type:"ยาเชื้อรา",prod:"ฟังกูราน คอปเปอร์ไฮดร็อกไซด์ (M1)",rate:"",stage:"",ph:"",note:""},
+  {id:3,date:"2024-07-12",type:"ยาเชื้อรา",prod:"เมทาแลคซิล",rate:"",stage:"",ph:"",note:""},
+  {id:4,date:"2024-07-22",type:"ยาเชื้อรา",prod:"ฟอสอีทิล อลูมิเนียม(33)",rate:"",stage:"",ph:"",note:""},
+  {id:5,date:"2024-08-06",type:"ปุ๋ยทางใบ",prod:"พ่นMix+Zn+Fe+Mn+อะมิโน",rate:"",stage:"",ph:"",note:""},
+  {id:6,date:"2024-08-06",type:"ยาเชื้อรา",prod:"ฟังกูราน คอปเปอร์ไฮดร็อกไซด์(M1)",rate:"",stage:"",ph:"",note:""},
+  {id:7,date:"2024-08-06",type:"ปุ๋ยทางใบ",prod:"ปุ๋ยน้ำ 20-4-4 สารจับใบ",rate:"",stage:"",ph:"",note:""},
+  {id:8,date:"2024-08-06",type:"ยาเชื้อรา",prod:"เมทาแลคซิล (4)",rate:"",stage:"",ph:"",note:""},
+  {id:9,date:"2024-08-08",type:"ปรับปรุงดิน",prod:"โรยโดโลไมด์",rate:"",stage:"",ph:"",note:""},
+  {id:10,date:"2024-08-11",type:"ปุ๋ยทางใบ",prod:"สาหร่าย",rate:"",stage:"",ph:"",note:""},
+  {id:11,date:"2024-08-11",type:"ยาฆ่าแมลง",prod:"พิโฟรนิล(2B)+แลมป์ดา(3A)",rate:"",stage:"",ph:"",note:""},
+  {id:12,date:"2024-08-13",type:"ปุ๋ยทางใบ",prod:"โฟร์ฮิวมิคB1+แอดซอยปรับปรุงดิน",rate:"",stage:"",ph:"",note:""},
+  {id:13,date:"2024-08-15",type:"ปุ๋ยทางดิน",prod:"ใส่ปุ๋ยตามกรมวิชาการเกษตรแนะนำ 46-0-0 18-46-0 0-0-60 = 40G",rate:"",stage:"",ph:"",note:""},
+  {id:14,date:"2024-08-18",type:"ปุ๋ยทางใบ",prod:"พ่นปุ๋ย Zn+Hi ca+mix+อะมิโนทะเลลึก+จิ๊บ+สาหร่าย+Sugar",rate:"",stage:"",ph:"",note:""},
+  {id:15,date:"2024-08-18",type:"ยาฆ่าแมลง",prod:"ไซเพอเมทิน(3A)+โพรฟีโนฟอส(1B)+ลาแทม+แอนเทอร์",rate:"",stage:"",ph:"",note:""},
+  {id:16,date:"2024-08-19",type:"ปุ๋ยทางดิน",prod:"ใส่ปุ๋ยตามกรมวิชาการเกษตรแนะนำ 46-0-0 18-46-0 0-0-60 = 40G (ส่วนด้านบนแท้งน้ำ)",rate:"",stage:"",ph:"",note:""},
+  {id:17,date:"2024-08-19",type:"ปรับปรุงดิน",prod:"โรยปูนขาวปรับสภาพดิน",rate:"",stage:"",ph:"",note:""},
+  {id:18,date:"2024-08-27",type:"ปุ๋ยทางใบ",prod:"mix+zn+ca+อะมิโน+น้ำตาลทางด่วน+อะโทนิค+13เสมอ",rate:"",stage:"",ph:"",note:""},
+  {id:19,date:"2024-08-27",type:"ยาฆ่าแมลง",prod:"ไทอะมีทอกแซม(4A)+ลาแทม+แอนเทอร์",rate:"",stage:"",ph:"",note:""},
+  {id:20,date:"2024-08-27",type:"ยาเชื้อรา",prod:"พาโม่(ไพราโคสโตรบิน) กลุ่ม11",rate:"",stage:"",ph:"",note:""},
+  {id:21,date:"2024-09-01",type:"ปุ๋ยทางดิน",prod:"ใส่ปุ๋ยตามกรมวิชาการเกษตรแนะนำ 46-0-0 18-46-0 0-0-60 + ปุ๋ยอินทรีย์",rate:"",stage:"",ph:"",note:""},
+  {id:22,date:"2024-09-19",type:"ปุ๋ยทางใบ",prod:"ฉีดพ่นปุ๋ย Mix+Zn+Mg+Fe+Mn+อะมิโน+สาหร่าย",rate:"",stage:"",ph:"",note:""},
+  {id:23,date:"2024-09-19",type:"ยาฆ่าแมลง",prod:"อะบาเมกติน (6)",rate:"",stage:"",ph:"",note:""},
+  {id:24,date:"2024-09-19",type:"ยาเชื้อรา",prod:"พาโม่(ไพราโคสโตรบิน) กลุ่ม11",rate:"",stage:"",ph:"",note:""},
+  {id:25,date:"2024-09-30",type:"ปุ๋ยทางใบ",prod:"ฮิวมิค+B1",rate:"",stage:"",ph:"",note:""},
+  {id:26,date:"2024-09-30",type:"ยาฆ่าแมลง",prod:"พิโพรนิล (2B)",rate:"",stage:"",ph:"",note:""},
+  {id:27,date:"2024-09-30",type:"ยาเชื้อรา",prod:"กรดฟอสฟอริก แอซิด",rate:"",stage:"",ph:"",note:""},
+  {id:28,date:"2024-10-01",type:"ปุ๋ยทางดิน",prod:"ใส่ปุ๋ยตามกรมวิชาการเกษตรแนะนำ 46-0-0 18-46-0 0-0-60 + ปุ๋ยอินทรีย์",rate:"",stage:"",ph:"",note:""},
+  {id:29,date:"2024-10-16",type:"ปุ๋ยทางใบ",prod:"21-4-4+mg+zn+mix+mn+อะโทรนิค+สาหร่าย+อะมิโนทุเรียน+สารจับใบ",rate:"",stage:"",ph:"",note:""},
+  {id:30,date:"2024-10-16",type:"ยาฆ่าแมลง",prod:"ไทอะมีทอกแซม(4A)+โอเมโทเอต(1B)+ลาแทมแอนเทอ",rate:"",stage:"",ph:"",note:""},
+  {id:31,date:"2024-11-02",type:"ปุ๋ยทางดิน",prod:"ใส่ปุ๋ย 6-3-3+พลูโตใบโอกรีน(บางต้น)",rate:"",stage:"",ph:"",note:""},
+  {id:32,date:"2024-11-02",type:"ยาเชื้อรา",prod:"แมนโคเซป (40)",rate:"",stage:"",ph:"",note:""},
+  {id:33,date:"2024-11-08",type:"ปุ๋ยทางใบ",prod:"20-4-4 Zn Fe Mn Mg Ca Mix สาหร่าย ปุ๋ยน้ำค้างคาวดี",rate:"",stage:"",ph:"",note:""},
+  {id:34,date:"2024-11-08",type:"ยาฆ่าแมลง",prod:"พิโพรนิล(2B) + ไวต์ออยล์",rate:"",stage:"",ph:"",note:""},
+  {id:35,date:"2024-11-08",type:"ปุ๋ยทางดิน",prod:"พลูโตใบโอกรีน 10mg",rate:"",stage:"",ph:"",note:""},
+  {id:36,date:"2024-11-22",type:"ปุ๋ยทางใบ",prod:"ปุ๋ยน้ำค้างคาว+ไนโตร+หัวเชื้อบำรุงใบ+อะโทนิค",rate:"",stage:"",ph:"",note:""},
+  {id:37,date:"2024-11-22",type:"ยาฆ่าแมลง",prod:"ไซเพอเมทิน(3A)+โพรฟีโนฟอส(1B)+ลาแทม+แอนเทอร์",rate:"",stage:"",ph:"",note:""},
+  {id:38,date:"2024-11-24",type:"ปรับปรุงดิน",prod:"คลุมฟางโคนต้นทุเรียน ต้นละ 1 ก้อน",rate:"",stage:"",ph:"",note:""},
+  {id:39,date:"2024-12-06",type:"ปุ๋ยทางใบ",prod:"ชุดจุลธาตุอาจารย์สั้น+ซุปเปอร์โนว่า+โปรเวท",rate:"",stage:"",ph:"",note:""},
+  {id:40,date:"2024-12-06",type:"ยาฆ่าแมลง",prod:"อะบาเมกติน(6)+บูโพเฟซิน(16)+ลาแทม+แอนเทอร์",rate:"",stage:"",ph:"",note:""},
+  {id:41,date:"2024-12-18",type:"ปุ๋ยทางใบ",prod:"ชุดจุลธาตุอาจารย์สั้น+ซุปเปอร์โนว่า+โปรเวท",rate:"",stage:"",ph:"",note:""},
+  {id:42,date:"2024-12-18",type:"ยาฆ่าแมลง",prod:"โอเมโทเอต(1)+ไทอะมีทอกแซม(4)",rate:"",stage:"",ph:"",note:""},
+  {id:43,date:"2024-12-22",type:"ปุ๋ยทางดิน",prod:"ปุ๋ยดิน 15-15-15",rate:"",stage:"",ph:"",note:""},
+  {id:44,date:"2024-12-26",type:"ยาเชื้อรา",prod:"คาร์เบนดาซิม (1)",rate:"",stage:"",ph:"",note:""},
+  {id:45,date:"2025-01-06",type:"ยาเชื้อรา",prod:"ไดฟีโนโครนาโซล+โพรพิโคนาโซล (3)",rate:"",stage:"",ph:"",note:""},
+  {id:46,date:"2025-01-08",type:"ปุ๋ยทางดิน",prod:"เคลียฟางออกจากต้น ใส่ปุ๋ย 16-16-16 (สูตรละลายช้า)",rate:"",stage:"",ph:"",note:""},
+  {id:47,date:"2025-01-11",type:"ยาเชื้อรา",prod:"ราดฟอสอีทิล อลูมิเนียมแถว 1-4 + ราดเมทาแลกซิลแถว 5-7",rate:"",stage:"",ph:"",note:""},
+  {id:48,date:"2025-01-15",type:"ปุ๋ยทางใบ",prod:"ฉีดพ่น 20-4-4 + MIX + Zn + จิ๊บ + อะโทนิค + ซันรูท + สารจับใบ",rate:"",stage:"",ph:"",note:""},
+  {id:49,date:"2025-01-15",type:"ยาฆ่าแมลง",prod:"คลอฟีนาเพอร์(13)",rate:"",stage:"",ph:"",note:""},
+  {id:50,date:"2025-02-02",type:"ปุ๋ยทางใบ",prod:"ชุดจุลธาตุอาจารย์สั้น+20-4-4+อะมิโน+ค้างคาวดี+น้ำตาลทางด่วน+ซันรูท",rate:"",stage:"",ph:"",note:""},
+  {id:51,date:"2025-02-02",type:"ยาฆ่าแมลง",prod:"ไซเพอเมทิน(3A)+โพรฟีโนฟอส(1B)+ลาแทม+แอนเทอร์",rate:"",stage:"",ph:"",note:""},
+  {id:52,date:"2025-02-21",type:"ปุ๋ยทางใบ",prod:"20-4-4+Mix+Zn+Ca+อะโทรนิค+ค้างคาวดี+อะมิโน",rate:"",stage:"",ph:"",note:""},
+  {id:53,date:"2025-02-21",type:"ยาฆ่าแมลง",prod:"พิโพรนิล(2B)",rate:"",stage:"",ph:"",note:""},
+  {id:54,date:"2025-03-26",type:"ปุ๋ยทางใบ",prod:"13-13-13+mix+ca+amino+อะโทรนิค",rate:"",stage:"",ph:"",note:""},
+  {id:55,date:"2025-03-26",type:"ยาฆ่าแมลง",prod:"ไทอะมีทอกแซม(4A)+คลอฟีนาเพอ(13)",rate:"",stage:"",ph:"",note:""},
+  {id:56,date:"2025-03-26",type:"ยาเชื้อรา",prod:"ไพราโคสโตรบิน",rate:"",stage:"",ph:"",note:""},
+  {id:57,date:"2025-03-30",type:"ปุ๋ยทางดิน",prod:"ปุ๋ยดิน 6-3-3",rate:"",stage:"",ph:"",note:""},
+  {id:58,date:"2025-05-22",type:"ปุ๋ยทางดิน",prod:"ปุ๋ยดิน 6-3-3",rate:"",stage:"",ph:"",note:""},
+  {id:59,date:"2025-05-28",type:"ปุ๋ยทางใบ",prod:"ฉีดพ่นธาตุอาหารทางใบ สูตรอาจารย์สั้น",rate:"",stage:"",ph:"",note:""},
+  {id:60,date:"2025-05-28",type:"ยาฆ่าแมลง",prod:"พิโพรนิล(2B)",rate:"",stage:"",ph:"",note:""},
+  {id:61,date:"2025-05-28",type:"ยาเชื้อรา",prod:"ไพราโคสโตรบิน",rate:"",stage:"",ph:"",note:""},
+  {id:62,date:"2025-06-02",type:"ปรับปรุงดิน",prod:"ปุ๋ยทางดิน ยิปมัน",rate:"",stage:"",ph:"",note:""},
+  {id:63,date:"2025-06-09",type:"ปุ๋ยทางดิน",prod:"ปุ๋ยดิน 6-3-3",rate:"",stage:"",ph:"",note:""},
+  {id:64,date:"2025-06-10",type:"ยาเชื้อรา",prod:"โรยไตรโคเดอมา อัดเม็ด",rate:"",stage:"",ph:"",note:""},
+  {id:65,date:"2025-06-11",type:"ปรับปรุงดิน",prod:"ตัดหญ้าสวน",rate:"",stage:"",ph:"",note:""},
+  {id:66,date:"2025-06-18",type:"ปุ๋ยทางใบ",prod:"ฉีดพ่นธาตุอาหารทางใบ สูตรอาจารย์สั้น",rate:"",stage:"",ph:"",note:""},
+  {id:67,date:"2025-06-18",type:"ยาฆ่าแมลง",prod:"ไซเพอเมทิน(3A)+โพรฟีโนฟอส(1B)",rate:"",stage:"",ph:"",note:""},
+  {id:68,date:"2025-06-18",type:"ปุ๋ยทางใบ",prod:"ราดฮิวมิค+B1+จุลินทรีย์สังเคราะห์แสง+แอดซอย ระบบน้ำแวนจูรี่",rate:"",stage:"",ph:"",note:""},
+  {id:69,date:"2025-07-02",type:"ปุ๋ยทางดิน",prod:"ใส่ปุ๋ยทางดิน ปุ๋ยซัลเฟต 17-17-17",rate:"",stage:"",ph:"",note:""},
+  {id:70,date:"2025-07-04",type:"ยาเชื้อรา",prod:"ไดฟีโนโคนาโซล + โพรพิโคนาโซล",rate:"",stage:"",ph:"",note:""},
+  {id:71,date:"2025-07-15",type:"ปุ๋ยทางใบ",prod:"ฉีดพ่น 18-18-18 + Mix+Mn+Zn+Fe+จิบฯ+อะโทนิค+ซุปเปอโนวา",rate:"",stage:"",ph:"",note:""},
+  {id:72,date:"2025-07-15",type:"ยาฆ่าแมลง",prod:"ลูเฟนนูรอน(15)+อีมาเมกตินเบนโซเอต(6)",rate:"",stage:"",ph:"",note:""},
+  {id:73,date:"2025-07-19",type:"ปุ๋ยทางดิน",prod:"ปุ๋ยดิน 6-3-3",rate:"",stage:"",ph:"",note:""},
+  {id:74,date:"2025-07-23",type:"ยาฆ่าแมลง",prod:"บูโพเฟซิน(16)",rate:"",stage:"",ph:"",note:""},
+  {id:75,date:"2025-07-23",type:"ยาเชื้อรา",prod:"คาร์เบนดาซิม",rate:"",stage:"",ph:"",note:""},
+  {id:76,date:"2025-08-04",type:"ปุ๋ยทางดิน",prod:"ปุ๋ยดิน 6-3-3",rate:"",stage:"",ph:"",note:""},
+  {id:77,date:"2025-08-09",type:"ปุ๋ยทางใบ",prod:"ฮิวมิค+B1+จุลินทรีย์สังเคราะห์แสง+แอดซอย",rate:"",stage:"",ph:"",note:""},
+  {id:78,date:"2025-08-18",type:"ปุ๋ยทางดิน",prod:"ปุ๋ยดิน 29-9-9",rate:"",stage:"",ph:"",note:""},
+  {id:79,date:"2025-08-20",type:"ปุ๋ยทางใบ",prod:"ฉีดพ่น 20-4-4 + Mix +สาหร่าย + จิบ + อะโทนิค +ซุปเปอโนวา",rate:"",stage:"",ph:"",note:""},
+  {id:80,date:"2025-08-20",type:"ยาฆ่าแมลง",prod:"พิโพรนิล(2B) +ไทอะมีทอกแซม(4A)",rate:"",stage:"",ph:"",note:""},
+  {id:81,date:"2025-08-27",type:"ปุ๋ยทางใบ",prod:"ฉีดพ่นธาตุอาหารทางใบ สูตรอาจารย์สั้น",rate:"",stage:"",ph:"",note:""},
+  {id:82,date:"2025-08-27",type:"ยาฆ่าแมลง",prod:"ไซเพอเมทิน(3A)+โพรฟีโนฟอส(1B)",rate:"",stage:"",ph:"",note:""},
+  {id:83,date:"2025-08-27",type:"ยาเชื้อรา",prod:"ไพราโคสโตรบิน",rate:"",stage:"",ph:"",note:""},
+  {id:84,date:"2025-09-06",type:"ปุ๋ยทางดิน",prod:"ปุ๋ยดิน 6-3-3",rate:"",stage:"",ph:"",note:""},
+  {id:85,date:"2025-09-16",type:"ปุ๋ยทางใบ",prod:"ฉีดพ่น 13-13-13 +Mix+Mn,Zn,Fe",rate:"",stage:"",ph:"",note:""},
+  {id:86,date:"2025-09-16",type:"ยาฆ่าแมลง",prod:"ไทอะมีทอกแซม(4A)+แลมป์ดา(3A)",rate:"",stage:"",ph:"",note:""},
+  {id:87,date:"2025-10-05",type:"ปุ๋ยทางดิน",prod:"ปุ๋ยดิน 6-3-3",rate:"",stage:"",ph:"",note:""},
+  {id:88,date:"2025-10-29",type:"ปุ๋ยทางดิน",prod:"ปุ๋ยดิน 6-3-3",rate:"",stage:"",ph:"",note:""},
+  {id:89,date:"2025-11-21",type:"ปุ๋ยทางใบ",prod:"13-13-13 + Zn + Mn + Fe",rate:"",stage:"",ph:"",note:""},
+  {id:90,date:"2025-11-21",type:"ยาฆ่าแมลง",prod:"ไซเพอเมทิน(3A)+โพรฟีโนฟอส(1B)",rate:"",stage:"",ph:"",note:""},
+  {id:91,date:"2025-12-03",type:"ปุ๋ยทางดิน",prod:"ปุ๋ยดิน 6-3-3",rate:"",stage:"",ph:"",note:""},
+  {id:92,date:"2026-01-01",type:"ปุ๋ยทางดิน",prod:"ปุ๋ยดิน 6-3-3",rate:"",stage:"",ph:"",note:""},
+  {id:93,date:"2026-01-16",type:"ยาเชื้อรา",prod:"ไดฟีโนโคนาโซล+โพรพิโคนาโซล",rate:"",stage:"",ph:"",note:""},
+  {id:94,date:"2026-01-29",type:"ยาเชื้อรา",prod:"ไพราโคสโตรบิน",rate:"",stage:"",ph:"",note:""},
+  {id:95,date:"2026-03-01",type:"ปุ๋ยทางดิน",prod:"ใส่ปุ๋ยทางดิน ปุ๋ยซัลเฟต 17-17-17",rate:"",stage:"",ph:"",note:""},
+  {id:96,date:"2026-03-19",type:"ปุ๋ยทางใบ",prod:"20-4-4+Mix+Zn+Mn+Fe",rate:"",stage:"",ph:"",note:""},
+  {id:97,date:"2026-03-19",type:"ยาฆ่าแมลง",prod:"พิโพรนิล(2B)+ไทอะมีทอกแซม(4A)",rate:"",stage:"",ph:"",note:""},
+  {id:98,date:"2026-03-29",type:"อื่นๆ",prod:"ยาฆ่าหญ้ากลูโฟซิเนต",rate:"",stage:"",ph:"",note:""},
+  {id:99,date:"2026-04-05",type:"ปุ๋ยทางดิน",prod:"ปุ๋ยดิน 6-3-3",rate:"",stage:"",ph:"",note:""},
+];
+// ── LOCAL STORAGE — บันทึกลงเครื่อง ไม่หายเมื่อปิดเว็บ ──
+// ══════════════════════════════════════════════════════════════
+// FIREBASE FIRESTORE — sync ข้ามเครื่อง real-time
+// ══════════════════════════════════════════════════════════════
+// ⚠️ ต้องแทนค่า firebaseConfig ด้วยค่าจาก Firebase Console ของคุณ
+// ดูวิธีได้ที่ท้ายไฟล์ส่วน "วิธีตั้งค่า Firebase"
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyBp69c70orDZS5ip9fJNtxX8FAFjJgV8nY",
+  authDomain:        "suandurian-61dfb.firebaseapp.com",
+  projectId:         "suandurian-61dfb",
+  storageBucket:     "suandurian-61dfb.firebasestorage.app",
+  messagingSenderId: "184413371173",
+  appId:             "1:184413371173:web:a137c9849226cb54a438cc"
+};
+
+// Firebase SDK โหลดจาก <head>
+let db = null;
+let fbReady = false;
+
+// รอให้ SDK โหลดเสร็จด้วย script onload event
+function waitForFirebase() {
+  return new Promise((resolve) => {
+    if (typeof firebase !== 'undefined') { resolve(true); return; }
+    // รอ script โหลดเสร็จ max 10 วินาที
+    let tries = 0;
+    const check = setInterval(() => {
+      tries++;
+      if (typeof firebase !== 'undefined') {
+        clearInterval(check);
+        resolve(true);
+      } else if (tries >= 50) { // 50 * 200ms = 10 วินาที
+        clearInterval(check);
+        resolve(false);
+      }
+    }, 200);
+  });
+}
+
+async function setupFirebase() {
+  if (FIREBASE_CONFIG.apiKey === 'PASTE_YOUR_API_KEY_HERE') {
+    showSyncStatus('');
+    return;
+  }
+
+  showSyncStatus('☁️ กำลัง sync...');
+
+  const ok = await waitForFirebase();
+  if (!ok) {
+    showSyncStatus('⚠️ โหลด Firebase ช้า');
+    return;
+  }
+
+  // Timeout 10 วินาที ถ้า Firestore ไม่ตอบ
+  const fbTimeout = setTimeout(() => {
+    if (!fbReady) showSyncStatus('⚠️ Firebase ช้า — ลองรีเฟรช');
+  }, 10000);
+
+  try {
+    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.firestore();
+    fbReady = true;
+
+    db.collection('suandurian_logs')
+      .onSnapshot(snapshot => {
+        clearTimeout(fbTimeout);
+        const fbRecs = [];
+        snapshot.forEach(doc => fbRecs.push({ ...doc.data(), _fbId: doc.id }));
+        const baseIds = new Set(RECS.map(r => r.id));
+        // รวม: Firebase records + records ที่บันทึกใน localStorage (ยังไม่ได้ sync)
+        const cloudRecs = fbRecs.filter(r => !baseIds.has(r.id));
+        // ดึง local records ที่ยังไม่มีใน Firebase
+        let localExtra = [];
+        try {
+          const saved = localStorage.getItem('suandurian_recs');
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            const cloudIds = new Set(cloudRecs.map(r => r.id));
+            localExtra = parsed.filter(r => !baseIds.has(r.id) && !cloudIds.has(r.id));
+            // upload local records ที่ยังไม่ได้ sync ขึ้น Firebase
+            localExtra.forEach(r => { if(db) db.collection('suandurian_logs').add(r).catch(()=>{}); });
+          }
+        } catch(e) {}
+        const allNew = [...cloudRecs, ...localExtra];
+        allNew.sort((a,b) => b.date.localeCompare(a.date));
+        recs = [...allNew, ...RECS];
+        nid = Math.max(100, ...allNew.map(r => (r.id||0) + 1), 100);
+        saveLocal(); // sync local ให้ตรงกับ cloud เสมอ
+        renderDash(); renderLog();
+        const t = new Date().toLocaleTimeString('th-TH', {hour:'2-digit',minute:'2-digit'});
+        showSyncStatus('☁️ sync ' + t);
+      }, err => {
+        clearTimeout(fbTimeout);
+        const msg = err.code || err.message || 'unknown';
+        if (err.code === 'permission-denied') {
+          showSyncStatus('⚠️ Rules: permission-denied');
+        } else if (err.code === 'unavailable') {
+          showSyncStatus('⚠️ ไม่มีสัญญาณ');
+        } else {
+          showSyncStatus('⚠️ ' + msg);
+        }
+      });
+  } catch(e) {
+    clearTimeout(fbTimeout);
+    showSyncStatus('⚠️ Firebase error');
+  }
+}
+
+function showSyncStatus(msg) {
+  let el = document.getElementById('sync-status');
+  if (!el) return;
+  el.textContent = msg;
+}
+
+async function saveCloud(rec) {
+  if (!fbReady || !db) { saveLocal(); return; }
+  try {
+    await db.collection('suandurian_logs').add(rec);
+  } catch(e) {
+    console.error('Save cloud error:', e);
+    saveLocal();
+    toast('⚠️ บันทึกเฉพาะเครื่องนี้ (ออฟไลน์)');
+  }
+}
+
+async function deleteCloud(rec) {
+  if (!fbReady || !db) { saveLocal(); return; }
+  if (!rec._fbId) return; // เป็น record ต้นฉบับ ไม่ต้องลบ
+  try {
+    await db.collection('suandurian_logs').doc(rec._fbId).delete();
+  } catch(e) {
+    console.error('Delete cloud error:', e);
+  }
+}
+
+// localStorage เป็น fallback
+function saveLocal(){
+  try{localStorage.setItem('suandurian_recs',JSON.stringify(recs));
+      localStorage.setItem('suandurian_nid',String(nid));}
+  catch(e){}
+}
+function loadLocal(){
+  try{
+    const saved=localStorage.getItem('suandurian_recs');
+    const savedNid=localStorage.getItem('suandurian_nid');
+    if(saved){
+      const parsed=JSON.parse(saved);
+      if(Array.isArray(parsed)&&parsed.length>0){
+        const baseIds=new Set(RECS.map(r=>r.id));
+        const newRecs=parsed.filter(r=>!baseIds.has(r.id));
+        recs=[...newRecs,...RECS];
+      }
+    }
+    if(savedNid) nid=Math.max(100,parseInt(savedNid)||100);
+  }catch(e){}
+  renderDash(); renderLog();
+}
+let recs=[...RECS],nid=100;
+
+// ── STAGE INFO ──
+const SI={
+  'แทงยอด':{d:'ตาแตก ยาว 0–2 ซม. ระยะเปราะที่สุด',f:'ยังไม่พ่นปุ๋ยใบ รอหางปลา ให้น้ำสม่ำเสมอ',p:'⚠ เพลี้ยไฟอันตรายสูงสุด โจมตีทันทีที่ตาแตก',pr:'ไทอะมีทอกแซม (4A) หรือ พิโพรนิล (2B) ก่อนตาแตก 1–2 วัน 20 มล./20 ล.',fu:'Phytophthora เสี่ยงถ้าดินชื้น',fr:'ราดฟอสอีทิล-Al รอบโคน ทุก 30 วัน'},
+  'หางปลา':{d:'ใบยาว 3–6 ซม. สีแดงส้มเปลี่ยนเป็นเขียว',f:'เริ่มพ่นปุ๋ยใบ Mix+Zn+Fe+Mn ½ อัตรา',p:'⚠ เพลี้ยไฟ + ไรสีแดง + หนอนม้วนใบ',pr:'ไทอะมีทอกแซม (4A) 20 มล./20 ล. สลับ พิโพรนิล (2B) ทุก 5–7 วัน | ไร: อะบาเมกติน (6)',fu:'ราน้ำฝน Phytophthora บนใบอ่อน',fr:'คอปเปอร์ M1 30 ก./20 ล. พ่นเบาๆ'},
+  'ใบดาบ':{d:'ใบยาว 7–15 ซม. สีเขียวอ่อน ยังนิ่ม ดูดซึมได้ดีขึ้น',f:'พ่นปุ๋ยใบเต็มอัตรา Mix+Zn+Fe+Mn+อะมิโน ทางดิน 25-7-7 300–400 ก./ต้น',p:'เพลี้ยไฟ + หนอนกินใบ + เพลี้ยอ่อน',pr:'หนอน: อีมาเมกติน (6) 10 มล./20 ล. | เพลี้ยอ่อน: พิโพรนิล (2B)',fu:'แอนแทรคโนส จุดน้ำตาลขอบเหลือง',fr:'ไดฟีโนโคนาโซล (FRAC 3) 10 มล./20 ล.'},
+  'ใบอ่อนตั้ง':{d:'ใบตั้งตรง สีเขียวอ่อน กำลังสร้างคลอโรฟิลล์ ดูดซึมสูงสุด',f:'ปุ๋ยใบเต็มอัตรา Mix+Zn+Fe+Mn+Ca+อะมิโน จุลธาตุครบ ทุก 7–10 วัน',p:'เพลี้ยไฟลดลง ระวังหนอนกัดใบ + เพลี้ยหอยสะสม',pr:'หนอน: ลูเฟนนูรอน (15) 20 มล./20 ล. | เพลี้ยหอย: บูโพเฟซิน (16)',fu:'ราจุดใบ Cercospora + แอนแทรคโนส',fr:'ไพราโคสโตรบิน (FRAC 11) สลับ ไดฟีโนโคนาโซล (FRAC 3)'},
+  'ใบแก่เขียว':{d:'ใบแก่เต็มที่ สีเขียวสด สังเคราะห์อาหารเต็มที่ ระยะสะสมอาหาร',f:'ทางดิน 15-15-15 หรือ 16-16-16 300–400 ก./ต้น | ทางใบ Ca+Mg+Zn+Mix ทุก 14 วัน',p:'ไรแดง (แล้ง) + เพลี้ยหอย + เพลี้ยแป้ง',pr:'ไร: อะบาเมกติน (6) + น้ำมัน | เพลี้ยหอย: บูโพเฟซิน (16) + ไวต์ออยล์',fu:'รากเน่า Phytophthora (ฝน) + ราแป้ง (แล้ง)',fr:'ฝน: ราดฟอสอีทิล-Al | แล้ง: ไดฟีโนโคนาโซล (FRAC 3)'},
+  'ใบแก่เข้ม':{d:'ใบแก่เขียวเข้ม สะสมแป้งมาก เตรียมพักตัว',f:'ลด N: 13-13-21 หรือ 6-3-3 ฮิวมิค+B1 บำรุงราก งด N ทางใบ',p:'เพลี้ยหอย เพลี้ยแป้งสะสมซอกกิ่ง',pr:'บูโพเฟซิน (16) + ไวต์ออยล์ 20 มล./20 ล.',fu:'ราสีชมพู Corticium ช่วงฝน',fr:'ทากิ่งด้วยคอปเปอร์ออกซีคลอไรด์ | พ่น ไพราโคสโตรบิน (FRAC 11)'},
+  'พักตัว':{d:'ต้นไม่มีใบอ่อน สะสมแป้งในลำต้น-ราก',f:'ปุ๋ยอินทรีย์ + 6-3-3 บำรุงรักษา ฮิวมิค+B1 ราดดิน',p:'เพลี้ยหอย เพลี้ยแป้ง ไรแดงใต้ใบแก่',pr:'ตรวจใต้ใบทุกสัปดาห์ บูโพเฟซิน ถ้าพบ',fu:'Phytophthora ต้องราดป้องกันก่อนฝน',fr:'ราดฟอสอีทิล-Al 30–50 ก./ต้น ทุก 30–45 วัน ไตรโคเดอม่าในดิน'},
+  'เตรียมแตกใบ':{d:'ตาบวมโป่ง สีน้ำตาลแดง จะแตกใบใน 3–7 วัน',f:'เตรียม Mix+Zn+Fe+Mn รออีก 3–5 วันหลังตาแตก ห้ามใส่ปุ๋ยดินช่วงนี้',p:'⚠⚠ วิกฤต เพลี้ยไฟโจมตีทันทีที่ตาแตก',pr:'ไทอะมีทอกแซม (4A) หรือ พิโพรนิล (2B) ก่อนตาแตก 1–2 วัน',fu:'Phytophthora ดิน ตรวจโคนก่อนฝน',fr:'ราดฟอสอีทิล-Al 50 ก./ต้น ก่อนฝนมา คอปเปอร์ M1 พ่นกิ่ง'}
+};
+
+// ── DIAG DB ──
+const DD={
+  'ยอดกุด':{icon:'🚨',causes:[{st:['แทงยอด','หางปลา','ใบดาบ','ใบอ่อนตั้ง','เตรียมแตกใบ'],n:'เพลี้ยไฟ (Thrips palmi)',sev:'high',ref:'กรมวิชาการเกษตร 2560',sym:'ยอดหยุดยืด ปลายแห้งดำ ใบบิดงอ เส้นใบมีรอยเงิน',rx:'<b>ด่วน:</b> ไทอะมีทอกแซม (4A) 20 มล./20 ล. + สารจับใบ · พ่นซ้ำ 5–7 วัน สลับ พิโพรนิล (2B)',ex:'พ่นเช้า 6–9 น. ให้ถึงยอด+ใต้ใบ | ระบาดหนักพ่น 2 วัน/ครั้ง 3 ครั้งติด'},{st:['แทงยอด','หางปลา'],n:'หนอนเจาะยอด (Conogethes)',sev:'med',ref:'',sym:'รูเล็กที่ยอด ขอบรูมีมูลน้ำตาล ยอดแห้งทั้งหน่อ',rx:'คลอฟีนาเพอร์ (13) 10 มล./20 ล. หรือ ลูเฟนนูรอน (15)',ex:'ตัดยอดที่ถูกเจาะออก เผาทำลาย'}]},
+  'ยอดหงิก':{icon:'⚠️',causes:[{st:['แทงยอด','หางปลา','ใบดาบ','เตรียมแตกใบ'],n:'เพลี้ยไฟ ระยะแรก',sev:'high',ref:'กรมวิชาการเกษตร',sym:'ยอดหงิกงอ ใบไม่คลี่ ขอบใบสีเงิน-น้ำตาล',rx:'ไทอะมีทอกแซม (4A) 20 มล./20 ล. พ่นทุก 5 วัน 3 รอบ',ex:''},{st:['แทงยอด','หางปลา'],n:'ไรสี่ขา (Eriophyid mites)',sev:'med',ref:'',sym:'ยอดหงิกคล้ายเพลี้ยไฟ แต่ขอบม้วนลง ไม่มีสีเงิน',rx:'อะบาเมกติน (6) 10 มล./20 ล. + น้ำมันพาราฟิน 40 มล./20 ล.',ex:'ดูด้วยแว่นขยาย จะเห็นตัวเล็กมาก'}]},
+  'ใบม้วน':{icon:'🌀',causes:[{st:['ใบดาบ','ใบอ่อนตั้ง','หางปลา'],n:'หนอนม้วนใบ (Archips sp.)',sev:'med',ref:'',sym:'ใบม้วนเป็นหลอด ข้างในมีหนอนสีเขียวอ่อน มูลเขียว',rx:'อีมาเมกตินเบนโซเอต (6) 10 มล./20 ล.',ex:'คลี่ใบดู บีบทำลายก่อนพ่นยา'},{st:['ใบแก่เขียว','ใบแก่เข้ม'],n:'ขาดน้ำ/อากาศร้อน',sev:'low',ref:'',sym:'ใบม้วนเข้าหาเส้นกลาง ยังเขียว ไม่มีแมลง',rx:'เพิ่มความถี่ให้น้ำ คลุมฟางโคนต้น',ex:''}]},
+  'ใบอ่อนแหว่ง':{icon:'🐛',causes:[{st:['ใบดาบ','ใบอ่อนตั้ง','หางปลา'],n:'หนอนกัดใบ (Hyposidra talaca)',sev:'med',ref:'กรมวิชาการเกษตร 2556',sym:'ใบถูกกัดเป็นแผ่น เหลือเส้นใบ มูลเม็ดสีเขียวดำใต้ต้น',rx:'อีมาเมกตินเบนโซเอต (6) 10 มล./20 ล. หรือ สไปโนแซด 20 มล./20 ล.',ex:'พ่นตอนเย็น 17–19 น. หนอนออกกลางคืน'}]},
+  'ใบอ่อนมีจุด':{icon:'🔴',causes:[{st:['ใบดาบ','ใบอ่อนตั้ง'],n:'แอนแทรคโนส (Colletotrichum gloeosporioides)',sev:'med',ref:'กรมวิชาการเกษตร 2563',sym:'จุดน้ำตาลเล็ก ขอบเหลือง ขยายช้า',rx:'ไดฟีโนโคนาโซล (FRAC 3) 10 มล./20 ล. ทุก 7–10 วัน',ex:'สลับ ไพราโคสโตรบิน (FRAC 11)'}]},
+  'ใบเหลืองซีด':{icon:'🟡',causes:[{st:['ใบแก่เขียว','ใบแก่เข้ม','ใบอ่อนตั้ง'],n:'รากเน่า Phytophthora ระยะแรก',sev:'high',ref:'กรมวิชาการเกษตร 2557',sym:'ใบเหลืองทั้งต้น โทรม ขุดดูรากจะดำ',rx:'<b>ด่วน:</b> ราดฟอสอีทิล-Al 50 ก./ต้น + เมทาแลคซิล 30 ก./ต้น รอบโคน ซ้ำ 15–21 วัน',ex:'ตรวจโคนต้น ถ้ายางไหล: ขูดออก ทาฟอสอีทิล-Al ข้น ห้ามน้ำขัง'},{st:['ใบแก่เขียว'],n:'ขาดไนโตรเจน (N)',sev:'low',ref:'',sym:'ใบเหลืองจากใบแก่ก้านล่าง เส้นใบเหลืองด้วย',rx:'ปุ๋ยทางดิน 25-7-7 หรือ 46-0-0 200–300 ก./ต้น',ex:'ตรวจ pH ถ้า > 6.5 N ดูดซึมยาก'}]},
+  'ใบเหลืองเส้น':{icon:'🍂',causes:[{st:['ใบแก่เขียว','ใบอ่อนตั้ง'],n:'ขาดธาตุเหล็ก (Fe — Interveinal Chlorosis)',sev:'med',ref:'กรมวิชาการเกษตร',sym:'เส้นใบเขียว เนื้อระหว่างเส้นเหลือง ชัดเจนในใบอ่อน',rx:'พ่นคีเลตเหล็ก (Fe-EDTA) 10 ก./20 ล. ทุก 7–10 วัน ปรับ pH < 6.5',ex:'โดโลไมด์มากเกิน pH สูง Fe ไม่ละลาย'}]},
+  'ใบเหลืองขอบ':{icon:'🍁',causes:[{st:['ใบแก่เขียว','ใบแก่เข้ม'],n:'ขาดแมกนีเซียม (Mg)',sev:'low',ref:'กรมวิชาการเกษตร',sym:'ใบแก่เหลืองจากขอบเข้าใน เส้นกลางยังเขียว',rx:'โดโลไมด์ 200 ก./ต้น ทางดิน พ่น MgSO₄ 20 ก./20 ล.',ex:'ถ้า pH < 5.0 Mg ไม่ละลาย'}]},
+  'ใบด่างขาว':{icon:'⚪',causes:[{st:['ใบแก่เขียว','ใบแก่เข้ม'],n:'ราแป้ง (Powdery Mildew)',sev:'med',ref:'',sym:'ผงขาวบนผิวใบ ลบออกได้ ระบาดเย็นแล้ง',rx:'กำมะถัน 40 ก./20 ล. หรือ ไตรฟลอกซีสโตรบิน 10 มล./20 ล.',ex:'ห้ามพ่นกำมะถันตอนอากาศร้อน > 35°C'}]},
+  'ขอบใบไหม้น้ำตาล':{icon:'🔥',causes:[{st:['ใบแก่เขียว','ใบแก่เข้ม','ใบอ่อนตั้ง'],n:'ขาดโพแทสเซียม (K) / แคลเซียม (Ca)',sev:'med',ref:'กรมวิชาการเกษตร',sym:'ขอบและปลายใบน้ำตาล แห้ง ไม่มีสปอร์เชื้อรา',rx:'พ่น KNO₃ 20 ก./20 ล. + Hi-Ca 20 มล./20 ล. ทางดิน 13-13-21',ex:'ตรวจ pH ถ้า > 6.5 K-Ca ดูดซึมลด'}]},
+  'ปลายใบไหม้ดำ':{icon:'⬛',causes:[{st:['ใบแก่เขียว','ใบแก่เข้ม'],n:'แอนแทรคโนส บนใบแก่',sev:'med',ref:'',sym:'ปลายใบดำ มีเส้นแบ่งชัด มีวงเหลือง',rx:'ไดฟีโนโคนาโซล (FRAC 3) 10 มล./20 ล. หรือ คาร์เบนดาซิม',ex:''}]},
+  'ขอบใบไหม้เงิน':{icon:'🥈',causes:[{st:['แทงยอด','หางปลา','ใบดาบ','ใบอ่อนตั้ง','เตรียมแตกใบ'],n:'เพลี้ยไฟ (Thrips) — อาการเด่น',sev:'high',ref:'กรมวิชาการเกษตร 2560',sym:'ขอบและปลายใบอ่อนเป็นสีเงินแวววาว ใบหงิกงอ พบตัวเล็กสีเหลืองใต้ใบ',rx:'<b>ด่วน:</b> ไทอะมีทอกแซม (4A) 20 มล./20 ล. + สารจับใบ สลับ พิโพรนิล (2B) ทุก 5–7 วัน',ex:'เคาะกิ่งลงกระดาษขาว ถ้า > 10 ตัว/กิ่ง ให้พ่นทันที'}]},
+  'จุดน้ำตาลวงเหลือง':{icon:'🔵',causes:[{st:['ใบแก่เขียว','ใบแก่เข้ม','ใบอ่อนตั้ง'],n:'แอนแทรคโนส (Colletotrichum gloeosporioides)',sev:'med',ref:'กรมวิชาการเกษตร 2563',sym:'จุดกลมน้ำตาล ขอบวงเหลืองชัด ขยายช้า',rx:'ไดฟีโนโคนาโซล (FRAC 3) สลับ ไพราโคสโตรบิน (FRAC 11) ทุก 7–10 วัน',ex:''}]},
+  'จุดฉ่ำน้ำ':{icon:'💧',causes:[{st:['ใบแก่เขียว','ใบแก่เข้ม'],n:'โรคแบคทีเรีย (Xanthomonas)',sev:'med',ref:'',sym:'จุดฉ่ำน้ำ เขียวเข้ม-น้ำตาล ขอบไม่ชัด ช่วงฝน',rx:'คอปเปอร์ M1 30 ก./20 ล. สเตรปโตมัยซิน',ex:''},{st:['หางปลา','ใบดาบ'],n:'Phytophthora บนใบอ่อน',sev:'high',ref:'',sym:'จุดฉ่ำน้ำ ขยายเร็ว เนื้อพัง ใบร่วง',rx:'<b>ด่วน:</b> เมทาแลคซิล (FRAC 4) 20 ก./20 ล. + คอปเปอร์ M1',ex:'ห้ามน้ำขัง ทำระบบระบายน้ำ'}]},
+  'แผลเน่าชื้น':{icon:'🟤',causes:[{st:['ใบแก่เขียว','ใบแก่เข้ม','พักตัว','เตรียมแตกใบ'],n:'รากเน่าโคนเน่า Phytophthora palmivora',sev:'high',ref:'กรมวิชาการเกษตร 2557',sym:'โคนต้นแผลน้ำตาล เปียกชื้น ยางไหล เปลือกนุ่ม',rx:'<b>ด่วน:</b> ขูดแผลออก ทาฟอสอีทิล-Al ข้น ราดเมทาแลคซิล 30 ก./ต้น ทำซ้ำ 15 วัน 3 รอบ',ex:'ห้ามน้ำขัง ทำทางระบายน้ำ'}]},
+  'พบไร':{icon:'🕷️',causes:[{st:['ใบแก่เขียว','ใบแก่เข้ม','ใบอ่อนตั้ง'],n:'ไรสีแดง (Tetranychus sp.)',sev:'med',ref:'กรมวิชาการเกษตร',sym:'เส้นใยขาวใต้ใบ จุดขาวๆ บนใบ ใบซีดเป็นจุดเหลือง',rx:'อะบาเมกติน (6) 10 มล./20 ล. + น้ำมันพาราฟิน 40 มล./20 ล. พ่นใต้ใบ',ex:'ฉีดน้ำแรงล้างก่อนพ่นยา ไม่ใช้ 3A ทำลายศัตรูธรรมชาติ'}]},
+  'พบเพลี้ย':{icon:'🦟',causes:[{st:['แทงยอด','หางปลา','ใบดาบ','ใบอ่อนตั้ง'],n:'เพลี้ยไฟ (Thrips palmi)',sev:'high',ref:'กรมวิชาการเกษตร 2560',sym:'ตัวเล็กสีเหลือง-น้ำตาล ซ่อนยอด+ใต้ใบ',rx:'ไทอะมีทอกแซม (4A) สลับ พิโพรนิล (2B) ทุก 5–7 วัน',ex:'ห้ามใช้กลุ่มเดิมซ้ำ > 2 รอบ'},{st:['ใบแก่เขียว'],n:'เพลี้ยอ่อน (Aphid)',sev:'low',ref:'',sym:'กลุ่มแมลงสีเขียว/ดำ มีมดเดินตาม',rx:'พิโพรนิล (2B) กำจัดมดด้วย',ex:''}]},
+  'พบหนอน':{icon:'🐛',causes:[{st:['ใบดาบ','ใบอ่อนตั้ง','ใบแก่เขียว'],n:'หนอนกัดใบ (ผีเสื้อกลางคืน)',sev:'med',ref:'',sym:'มูลเม็ดสีเขียว-น้ำตาลใต้ต้น ใบถูกกัด',rx:'อีมาเมกตินเบนโซเอต (6) 10 มล./20 ล.',ex:'พ่นตอนเย็น หนอนออกกลางคืน'},{st:['แทงยอด','หางปลา'],n:'หนอนเจาะยอด (Conogethes)',sev:'med',ref:'',sym:'รูเล็กโคนยอด ยอดแห้ง ขี้เลื่อยน้ำตาล',rx:'คลอฟีนาเพอร์ (13) 10 มล./20 ล.',ex:'ตัดยอดเสียออก เผาทำลาย'}]},
+  'พบเพลี้ยหอย':{icon:'🐚',causes:[{st:['ใบแก่เขียว','ใบแก่เข้ม','พักตัว'],n:'เพลี้ยหอย (Diaspididae)',sev:'med',ref:'กรมวิชาการเกษตร',sym:'เกล็ดน้ำตาล/ขาวติดกิ่ง ราดำตาม มดเดิน',rx:'บูโพเฟซิน (16) 20 มล./20 ล. + ไวต์ออยล์ 20 มล./20 ล. 2 รอบ ห่างกัน 7–10 วัน',ex:'กำจัดมดด้วย'}]},
+  'โคนเน่า':{icon:'🚨',causes:[{st:['ใบแก่เขียว','ใบแก่เข้ม','พักตัว','เตรียมแตกใบ'],n:'รากเน่าโคนเน่า Phytophthora palmivora',sev:'high',ref:'กรมวิชาการเกษตร 2557',sym:'น้ำยางน้ำตาลไหล เปลือกนุ่มดำ กดยุบ กลิ่นเหม็น',rx:'<b>ด่วน:</b> ขูดเนื้อเน่าออก ทาฟอสอีทิล-Al ข้น ราดเมทาแลคซิล รอบโคน ซ้ำ 15 วัน 3 รอบ',ex:'ห้ามน้ำขัง ทำร่องระบายน้ำ ถ้าลึก > 5 ซม. ปรึกษานักวิชาการ'}]},
+  'รากดำ':{icon:'⚫',causes:[{st:['ใบแก่เขียว','ใบแก่เข้ม','พักตัว'],n:'Pythium / Phytophthora ในราก',sev:'high',ref:'',sym:'รากดำ-น้ำตาล เปื่อย ต้นซีดโทรม',rx:'ราดฟอสอีทิล-Al 50 ก./ต้น + เมทาแลคซิล 30 ก./ต้น ทุก 15–21 วัน ไตรโคเดอม่า',ex:'ปรับระบายน้ำ'}]}
+};
+
+// ── WATER · สูตรกรมส่งเสริมการเกษตร ──
+// น้ำ (ล./ต้น/วัน) = ค่าสัมประสิทธิ์ตามระยะ × อัตราการระเหย (มม./วัน) × พื้นที่ใต้ทรงพุ่ม (ตร.ม.)
+// ETo จ.มุกดาหาร (กรมชลประทาน, Penman-Monteith, ข้อมูล 2524–2553) มม./วัน ม.ค.→ธ.ค.
+const ETO_MUK=[3.65,4.18,5.00,5.15,4.11,3.64,3.56,3.43,3.57,3.80,3.95,3.53];
+const KP=0.75; // ค่าสัมประสิทธิ์ถาดวัดการระเหยโดยทั่วไป (FAO-56) : ระเหยจากถาด ≈ ETo ÷ 0.75
+const MON_TH=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const W_STAGE={
+  veg:{n:'เจริญเติบโตทางใบ/กิ่งก้าน',k:0.60},
+  induce:{n:'ชักนำดอก (งดน้ำ)',k:0},
+  flower:{n:'ระยะดอก',k:0.75},
+  set:{n:'ติดผล',k:0.50},
+  young:{n:'ผลอ่อน',k:0.60},
+  grow:{n:'ผลเจริญเติบโต',k:0.85},
+  ripe:{n:'ผลเริ่มสุกแก่',k:0.75}
+};
+// อัตราไหลตั้งต้นเป็น "ค่าทั่วไปโดยประมาณ" ของหัวแต่ละชนิด — ค่าจริงขึ้นกับรุ่นและแรงดัน
+const SPK={
+  cobra:{n:'หัวดูเห่า / หัวฉีดครึ่งวงกลม 180° (ที่ใช้อยู่)',flow:60,heads:2,rg:'40–80'},
+  mini:{n:'มินิสปริงเกอร์ 360° (หัวเหวี่ยงเล็ก) · กรมฯ แนะนำ',flow:120,heads:1,rg:'35–300'},
+  micro:{n:'ไมโครสเปรย์ / หัวพ่นฝอย',flow:70,heads:2,rg:'30–120'},
+  drip:{n:'หัวน้ำหยด',flow:4,heads:4,rg:'2–8'},
+  big:{n:'สปริงเกอร์ใหญ่ (หัวอิมแพค)',flow:600,heads:1,rg:'300–2,000'},
+  custom:{n:'กำหนดเอง',flow:null,heads:null,rg:''}
+};
+const W_KEY='suandurian_water';
+let wset={plant:'2024-10',can:'',tr:'1',stage:'veg',type:'cobra',flow:'60',heads:'2',int:'1'};
+function wLoad(){try{const s=JSON.parse(localStorage.getItem(W_KEY)||'null');if(s&&typeof s==='object')wset=Object.assign(wset,s);}catch(e){}}
+function wSave(){try{localStorage.setItem(W_KEY,JSON.stringify(wset));}catch(e){}}
+function $v(id){return document.getElementById(id).value;}
+function numv(id){const v=parseFloat(String($v(id)).replace(',','.'));return isFinite(v)?v:NaN;}
+function fmt(n,d){return Number(n).toLocaleString('th-TH',{minimumFractionDigits:d||0,maximumFractionDigits:d||0});}
+function fmtMin(m){if(m<1)return Math.max(1,Math.round(m*60))+' วินาที';if(m<60)return fmt(m,m<10?1:0)+' นาที';const h=Math.floor(m/60),r=Math.round(m-h*60);return h+' ชม.'+(r?' '+r+' นาที':'');}
+
+function ageMonths(){
+  const p=String(wset.plant||'2024-10').split('-').map(Number),n=new Date();
+  if(!p[0]||!p[1])return 0;
+  return Math.max(0,(n.getFullYear()-p[0])*12+(n.getMonth()+1-p[1]));
+}
+function ageTxt(mo){const y=Math.floor(mo/12),m=mo%12;if(!y)return m+' เดือน';return y+' ปี'+(m?' '+m+' เดือน':'');}
+function estCan(ageY){return Math.round(Math.min(8,Math.max(0.5,0.8*ageY))*10)/10;} // ค่าประมาณ ไม่ใช่ค่าจากงานวิจัย
+function evapOf(mi){return Math.round(ETO_MUK[mi]/KP*10)/10;}
+function areaOf(d){return Math.PI*d*d/4;}
+
+function updateAge(){
+  const mo=ageMonths(),t=ageTxt(mo),bearing=mo>=48;
+  const chip=document.getElementById('age-chip');if(chip)chip.textContent='🌱 อายุ '+t;
+  const h=document.getElementById('age-h');if(h)h.textContent=t;
+  const st=document.getElementById('age-st');
+  if(st)st.innerHTML=bearing
+    ?`ทุเรียนอายุ <b style="color:var(--g)">${t}</b> เข้าสู่ <b style="color:var(--gold)">ช่วงอายุที่เริ่มให้ผลผลิตได้</b><br>ดูความสมบูรณ์ของต้นก่อนชักนำดอก · ปรับระยะของต้นในหน้า 💧 ระบบน้ำ เพื่อคำนวณน้ำให้ตรงระยะ`
+    :`ทุเรียนอายุ <b style="color:var(--g)">${t}</b> อยู่ในระยะ <b style="color:var(--gold)">สร้างพุ่มและสะสมอาหาร</b><br>ยังไม่พร้อมออกดอก — ทุเรียนเริ่มให้ผลเมื่ออายุราว <b>4 ปีขึ้นไป</b> ช่วงนี้เน้นสร้างกิ่ง ใบ และราก`;
+  const box=document.getElementById('w-agebox');if(box)box.textContent=t;
+}
+
+function initWater(){
+  wLoad();
+  document.getElementById('w-type').innerHTML=Object.keys(SPK).map(k=>`<option value="${k}">${SPK[k].n}</option>`).join('');
+  document.getElementById('w-mon').innerHTML=MON_TH.map((m,i)=>`<option value="${i}">${m}</option>`).join('');
+  document.getElementById('w-mon').value=new Date().getMonth();
+  document.getElementById('w-plant').value=wset.plant;
+  document.getElementById('w-can').value=wset.can;
+  document.getElementById('w-tr').value=wset.tr;
+  document.getElementById('w-stage').value=wset.stage;
+  document.getElementById('w-type').value=SPK[wset.type]?wset.type:'cobra';
+  document.getElementById('w-flow').value=wset.flow;
+  document.getElementById('w-heads').value=wset.heads;
+  document.getElementById('w-int').value=wset.int;
+  updateAge();calcW();
+}
+function onPlant(){const v=$v('w-plant');if(v){wset.plant=v;wSave();}updateAge();calcW();}
+function onMon(){document.getElementById('w-ev').value='';calcW();}
+function onSpkType(){
+  const s=SPK[$v('w-type')];
+  if(s&&s.flow!=null){document.getElementById('w-flow').value=s.flow;document.getElementById('w-heads').value=s.heads;}
+  calcW();
+}
+function bucket(){
+  const l=numv('w-bl'),s=numv('w-bs'),r=document.getElementById('w-bres'),b=document.getElementById('w-bbtn');
+  if(l>0&&s>0){const f=l/s*3600;r.innerHTML=`= <b style="color:var(--sky)">${fmt(f,0)} ลิตร/ชม.</b> ต่อหัว`;b.style.display='inline-flex';b.dataset.f=Math.round(f);}
+  else{r.textContent='';b.style.display='none';}
+}
+function useBucket(){const f=document.getElementById('w-bbtn').dataset.f;if(f){document.getElementById('w-flow').value=f;calcW();toast('✓ ใช้อัตราไหล '+f+' ล./ชม.');}}
+
+function calcW(){
+  const mo=ageMonths(),ageY=mo/12,bearing=mo>=48;
+  const stSel=document.getElementById('w-stage');
+  [...stSel.options].forEach(o=>{o.disabled=!bearing&&o.value!=='veg';});
+  if(!bearing&&stSel.value!=='veg')stSel.value='veg';
+  const mi=parseInt($v('w-mon'))||0;
+  const canAuto=estCan(ageY),evAuto=evapOf(mi);
+  document.getElementById('w-can').placeholder=canAuto+' (ประมาณ)';
+  document.getElementById('w-ev').placeholder=evAuto+' (อัตโนมัติ)';
+  let can=numv('w-can');const canIsAuto=!(can>0);if(canIsAuto)can=canAuto;
+  let ev=numv('w-ev');if(!(ev>0))ev=evAuto;
+  let tr=Math.round(numv('w-tr'));if(!(tr>0))tr=1;
+  const flow=numv('w-flow'),heads=Math.round(numv('w-heads'));
+  const itv=parseInt($v('w-int'))||1;
+  const st=W_STAGE[stSel.value]||W_STAGE.veg;
+  const type=$v('w-type'),spk=SPK[type]||SPK.custom;
+  const rain=numv('w-rain');
+  // save
+  wset.can=$v('w-can');wset.tr=$v('w-tr');wset.stage=stSel.value;wset.type=type;wset.flow=$v('w-flow');wset.heads=$v('w-heads');wset.int=$v('w-int');wSave();
+
+  document.getElementById('w-canhint').innerHTML=canIsAuto
+    ?`ยังไม่ได้กรอกทรงพุ่ม → ใช้ค่าประมาณ <b>${canAuto} ม.</b> จากอายุต้น · <b>วัดจริงแล้วกรอกจะแม่นกว่า</b> (วัดความกว้างพุ่มใบจากปลายใบด้านหนึ่งถึงอีกด้าน)`
+    :`ใช้ค่าที่วัดจริง ${can} ม. · พื้นที่ใต้ทรงพุ่ม ${fmt(areaOf(can),2)} ตร.ม.`;
+  document.getElementById('w-typehint').innerHTML=(spk.rg?`อัตราไหลทั่วไปของหัวชนิดนี้ราว <b>${spk.rg} ล./ชม.</b> (ค่าประมาณ ขึ้นกับรุ่นและแรงดัน) · `:'')+'ดูค่าจริงที่ซอง/สเปกของหัว หรือวัดด้วยถังด้านล่าง';
+
+  const area=areaOf(can);
+  const daily=st.k*ev*area;           // ล./ต้น/วัน
+  const perW=daily*itv;               // ล./ต้น/ครั้ง
+  const okSpk=flow>0&&heads>0;
+  const totFlow=okSpk?flow*heads:0;   // ล./ชม./ต้น
+  const mins=okSpk?perW/totFlow*60:NaN;
+  const res=document.getElementById('w-res');
+  const itvTxt={1:'ทุกวัน',2:'วันเว้นวัน',3:'ทุก 3 วัน'}[itv];
+  const formula=`<div class="w-fx">${st.k.toFixed(2)} × ${ev} มม./วัน × ${fmt(area,2)} ตร.ม. = <b>${fmt(daily,1)} ลิตร/ต้น/วัน</b></div>`;
+  let html='';
+  if(st.k===0){
+    html=`<div class="w-ok" style="margin-top:0">🌸 <b>ช่วงชักนำดอก: งดให้น้ำ 10–14 วัน</b> ให้ต้นเครียดน้ำเพื่อกระตุ้นการออกดอก<br>เมื่อเห็นตาดอกแล้วค่อยกลับมาให้น้ำ โดยเริ่มให้ก่อนดอกบาน 7–10 วัน (เปลี่ยนระยะเป็น "ระยะดอก")</div>`;
+  }else{
+    html=`
+    <div class="g3" style="gap:9px;margin-bottom:10px">
+      <div class="w-big"><div class="w-big-n">${fmt(daily,1)}</div><div class="w-big-u">ลิตร / ต้น / วัน</div></div>
+      <div class="w-big"><div class="w-big-n">${okSpk?fmtMin(mins):'–'}</div><div class="w-big-u">เปิดน้ำต่อครั้ง (${itvTxt})</div></div>
+      <div class="w-big"><div class="w-big-n">${fmt(perW*tr,0)}</div><div class="w-big-u">ลิตร / ครั้ง · ${fmt(tr)} ต้น</div></div>
+    </div>
+    <div class="w-sec-t">วิธีคิด</div>
+    ${formula}
+    <div class="g2" style="gap:8px;margin-top:10px">
+      <div class="ri"><div class="ri-l">ต้น</div><div class="ri-v">อายุ ${ageTxt(mo)} · ทรงพุ่ม ${can} ม.${canIsAuto?' (ประมาณ)':''}<br>${st.n} (ค่า ${st.k.toFixed(2)})</div></div>
+      <div class="ri"><div class="ri-l">อากาศ · ${MON_TH[mi]}</div><div class="ri-v">ระเหย ${ev} มม./วัน${ev===evAuto?` (ETo ${ETO_MUK[mi]} ÷ 0.75)`:' (กำหนดเอง)'}</div></div>
+      <div class="ri"><div class="ri-l">หัวสปริงเกอร์</div><div class="ri-v">${okSpk?`${fmt(flow,flow<10?1:0)} ล./ชม. × ${heads} หัว = <b>${fmt(totFlow,totFlow<10?1:0)} ล./ชม./ต้น</b>`:'<span style="color:var(--red)">กรุณาใส่อัตราไหลและจำนวนหัว</span>'}</div></div>
+      <div class="ri"><div class="ri-l">ทั้งสวน ${fmt(tr)} ต้น</div><div class="ri-v">${fmt(perW*tr,0)} ล./ครั้ง (${fmt(perW*tr/1000,2)} ลบ.ม.)${okSpk?`<br>เปิดพร้อมกันทั้งหมด ปั๊มต้องจ่าย ≥ ${fmt(totFlow*tr,0)} ล./ชม.`:''}</div></div>
+    </div>`;
+    if(okSpk&&mins<2)html+=`<div class="w-tip">💡 เวลาเปิดน้ำสั้นมาก (${fmtMin(mins)}) เพราะต้นยังเล็กแต่หัวจ่ายน้ำมาก — ควบคุมยาก น้ำกระจายไม่ทั่ว ลองเลือกรอบ "วันเว้นวัน/ทุก 3 วัน" หรือใช้หัวที่อัตราไหลต่ำลง</div>`;
+    if(okSpk&&mins>180)html+=`<div class="w-warn">⚠️ ต้องเปิดนานกว่า 3 ชม./ครั้ง — หัวจ่ายน้ำน้อยเกินไปสำหรับต้นขนาดนี้ ควรเพิ่มจำนวนหัวหรือเปลี่ยนหัวที่อัตราไหลสูงขึ้น</div>`;
+    if(rain>0){
+      const rl=rain*area,days=daily>0?Math.floor(rl/daily):0;
+      html+=`<div class="w-ok">🌧 ฝน ${rain} มม. = น้ำ ${fmt(rl,0)} ลิตรใต้ทรงพุ่ม (1 มม. = 1 ลิตร/ตร.ม.) → ${days>=1?`<b>งดให้น้ำได้ประมาณ ${days} วัน</b>`:'ยังไม่พอสำหรับ 1 วัน ให้น้ำเสริมตามปกติ'}<br><small>ค่าประมาณ ยังไม่หักน้ำที่ไหลบ่าหรือซึมลึกเลยราก — ดูความชื้นดินจริงประกอบ</small></div>`;
+    }
+    if(st.k>=0.85)html+=`<div class="w-warn">⚠️ ระยะผลเจริญเติบโต (8–12 สัปดาห์หลังดอกบาน) เป็นช่วงวิกฤต ห้ามขาดน้ำ</div>`;
+    html+=`<div class="hint" style="margin:10px 0 0">ทั้งปีต้นขนาดนี้ต้องการน้ำราว ${fmt(area*850,0)}–${fmt(area*900,0)} ลิตร (850–900 ล./ตร.ม. ใต้ทรงพุ่ม)</div>`;
+  }
+  res.innerHTML=html;
+
+  // ตารางรายเดือน
+  const kT=st.k>0?st.k:0.60,curM=new Date().getMonth();
+  document.getElementById('wtb').innerHTML=ETO_MUK.map((e,i)=>{
+    const evm=evapOf(i),d=kT*evm*area,mn=okSpk?d*itv/totFlow*60:NaN;
+    const c=(typeof CAL!=='undefined'&&CAL[i]&&typeof CAL[i].rain==='number')?fmt(CAL[i].rain):'–';
+    return`<tr class="${i===mi?'cur':''}"><td>${i===mi?`<b style="color:var(--sky)">${MON_TH[i]}</b>`:MON_TH[i]}${i===curM?' 📍':''}</td><td>${e.toFixed(2)}</td><td>${evm.toFixed(1)}</td><td><b>${fmt(d,1)}</b></td><td>${okSpk?fmtMin(mn):'–'}</td><td style="color:var(--txt3)">${c}</td></tr>`;
+  }).join('');
+
+  // ตารางตามอายุ
+  const ages=[0.5,1,2,3,4,5,6,8,10];
+  let cur=-1;ages.forEach((a,i)=>{if(ageY>=a)cur=i;});
+  document.getElementById('wage').innerHTML=ages.map((a,i)=>{
+    const dC=estCan(a),ar=areaOf(dC),d=0.60*ev*ar,mn=okSpk?d/totFlow*60:NaN;
+    return`<tr class="${i===cur?'cur':''}"><td>${i===cur?`<b style="color:var(--sky)">${a<1?'6 เดือน':a+' ปี'} 📍</b>`:(a<1?'6 เดือน':a+' ปี')}</td><td>${dC.toFixed(1)}</td><td>${fmt(ar,1)}</td><td><b>${fmt(d,1)}</b></td><td>${okSpk?fmtMin(mn):'–'}</td></tr>`;
+  }).join('');
+  if(window._ready)renderDash();
+}
+
+// ── CAL ──
+const CAL=[
+  {m:1,n:'มกราคม',ico:'❄️',s:'แล้ง',stage:'พักตัว / ออกใบอ่อน',fsoil:'6-3-3 หรือ 13-13-21 · 200–300 ก./ต้น',ffoliar:'ฮิวมิค+B1+อะมิโน',pest:'เพลี้ยไฟ: พิโพรนิล (2B) · เพลี้ยหอย: บูโพเฟซิน+ไวต์ออยล์',fung:'ราดฟอสอีทิล-Al รอบโคน ทุก 30 วัน',warn:'อากาศแล้ง ตรวจเพลี้ยไฟใต้ใบอ่อน',tip:'ให้น้ำสม่ำเสมอ ต้นเล็กขาดน้ำโทรมเร็ว',rain:5,temp:22,humid:64,rainDays:1},
+  {m:2,n:'กุมภาพันธ์',ico:'🌤️',s:'แล้ง',stage:'ออกใบอ่อน ชุดที่ 1',fsoil:'25-7-7 หรือ 20-8-8 · 300–400 ก./ต้น',ffoliar:'Mix+Zn+Fe+Mn+อะมิโน ทุก 7–10 วัน',pest:'เพลี้ยไฟ: ไทอะมีทอกแซม (4A) · ไรแดง: อะบาเมกติน (6)',fung:'คอปเปอร์ M1 พ่นป้องกันใบอ่อน',warn:'ไรแดงระบาดช่วงแล้ง ตรวจใต้ใบ',tip:'ตัดกิ่งแห้ง เปิดทรงพุ่มก่อนใบออก',rain:13,temp:25,humid:60,rainDays:2},
+  {m:3,n:'มีนาคม',ico:'☀️',s:'แล้งร้อน',stage:'ใบสมบูรณ์ / ออกใบอ่อน ชุดที่ 2',fsoil:'15-15-15 · 300–400 ก./ต้น',ffoliar:'Ca+Mg+Zn+Mix ทุก 14 วัน',pest:'ไรแดง+เพลี้ยหอย: อะบาเมกติน + ไวต์ออยล์',fung:'ไดฟีโนโคนาโซล (FRAC 3)',warn:'ร้อนมาก ให้น้ำเพิ่มเป็น 1 ครั้ง/วัน',tip:'คลุมฟางโคนต้น รักษาความชื้นดิน',rain:25,temp:28,humid:58,rainDays:4},
+  {m:4,n:'เมษายน',ico:'🔥',s:'แล้งร้อนสุด',stage:'ใบสมบูรณ์ – เตรียมพักตัว',fsoil:'6-3-3 + ปุ๋ยอินทรีย์ · 200–300 ก./ต้น',ffoliar:'ฮิวมิค+B1 บำรุงราก',pest:'เพลี้ยหอย: บูโพเฟซิน (16)',fung:'ราดฟอสอีทิล-Al ก่อนฝนมา',warn:'ร้อนสุดขีด ห้ามพ่นยาช่วง 10–15 น.',tip:'ใส่ไตรโคเดอม่าในดิน เตรียมรับฝน',rain:64,temp:29,humid:62,rainDays:9},
+  {m:5,n:'พฤษภาคม',ico:'🌧️',s:'ต้นฝน',stage:'ออกใบอ่อน ชุดที่ 2–3',fsoil:'25-7-7 หรือ 29-9-9 · 300–500 ก./ต้น',ffoliar:'Mix+Zn+Fe+Mn+อะมิโน ทุก 7–10 วัน',pest:'เพลี้ยไฟ: พิโพรนิล (2B) · หนอนม้วนใบ: อีมาเมกติน',fung:'คอปเปอร์ M1 + เมทาแลคซิล · ราดฟอสอีทิล-Al',warn:'ต้นฝน เชื้อรา+เพลี้ยไฟระบาดพร้อม',tip:'ทำทางระบายน้ำ ห้ามน้ำขังโคนต้น',rain:150,temp:28,humid:74,rainDays:16},
+  {m:6,n:'มิถุนายน',ico:'⛈️',s:'ฝน',stage:'ใบสมบูรณ์ – สะสมอาหาร',fsoil:'16-16-16 หรือ 15-15-15 · 300–400 ก./ต้น',ffoliar:'Ca+Mg+Zn+Mix ทุก 14 วัน',pest:'เพลี้ยหอย: บูโพเฟซิน · หนอนกินใบ: คลอฟีนาเพอร์ (13)',fung:'ไพราโคสโตรบิน (11) สลับ ไดฟีโนโคนาโซล (3)',warn:'ฝนชุก รากเน่าระบาด ตรวจโคนทุกสัปดาห์',tip:'ฉีดพ่นเช้า 6–9 น. หรือเย็น 15–18 น.',rain:188,temp:28,humid:80,rainDays:17},
+  {m:7,n:'กรกฎาคม',ico:'🌊',s:'ฝนชุก',stage:'ออกใบอ่อน ชุดที่ 3 / สะสมอาหาร',fsoil:'25-7-7 หรือ 17-17-17 · 300–500 ก./ต้น',ffoliar:'Mix+Zn+Fe+Mn+อะมิโน+สาหร่าย',pest:'เพลี้ยแป้ง: ไทอะมีทอกแซม (4A) · ไรแดง: อะบาเมกติน+น้ำมัน',fung:'ราดฟอสอีทิล-Al + เมทาแลคซิล · คอปเปอร์ M1 พ่นกิ่ง',warn:'ฝนชุกที่สุด รากเน่าโคนเน่าระบาดหนัก',tip:'ตรวจโคนทุกอาทิตย์ พบแผล: ขูด+ทาฟอสอีทิล-Al ทันที',rain:208,temp:27,humid:83,rainDays:19},
+  {m:8,n:'สิงหาคม',ico:'🌧️',s:'ฝน',stage:'ใบสมบูรณ์ ชุดที่ 3 / สะสมอาหาร',fsoil:'15-15-15 + ปุ๋ยอินทรีย์ · 300–400 ก./ต้น',ffoliar:'Mix+Zn+Mg+Fe+Mn+อะมิโน ทุก 14 วัน',pest:'เพลี้ยไฟ: พิโพรนิล (2B)+ไทอะมีทอกแซม (4A) สลับ',fung:'คาร์เบนดาซิม (1) สลับ คอปเปอร์ M1',warn:'เพลี้ยไฟ+รา ระบาดพร้อม',tip:'โรยโดโลไมด์ปรับ pH ถ้าเกิน 6.5',rain:254,temp:27,humid:86,rainDays:21},
+  {m:9,n:'กันยายน',ico:'🌦️',s:'ปลายฝน',stage:'ออกใบอ่อน ชุดที่ 4 / เตรียมพักตัว',fsoil:'13-13-21 หรือ 6-3-3 · ลด N เพิ่ม K',ffoliar:'Mix+Zn+Ca+Mg ทุก 14 วัน',pest:'เพลี้ยแป้ง: โอเมโทเอต (1B) · ไรแดง: อะบาเมกติน',fung:'ไพราโคสโตรบิน (11) · ราดฟอสอีทิล-Al',warn:'ปลายฝน อย่าให้ N มากเกิน',tip:'ตรวจใบชุดล่าสุดให้เขียวเข้มก่อนพักตัว',rain:198,temp:27,humid:85,rainDays:17},
+  {m:10,n:'ตุลาคม',ico:'🍃',s:'ปลายฝน/แล้ง',stage:'พักตัว – สะสมแป้ง',fsoil:'6-3-3 หรืองดชั่วคราว · ปุ๋ยอินทรีย์',ffoliar:'ฮิวมิค+B1 งด N ทางใบ',pest:'เพลี้ยหอย: บูโพเฟซิน + ไวต์ออยล์',fung:'ราดฟอสอีทิล-Al รอบโคน',warn:'เริ่มแล้ง ลดน้ำให้สะสมอาหาร',tip:'ตรวจ trunk girth เก็บข้อมูลการเติบโต',rain:71,temp:26,humid:78,rainDays:7},
+  {m:11,n:'พฤศจิกายน',ico:'🌸',s:'แล้ง',stage:'พักตัว / เตรียมพักตัวรอบถัดไป',fsoil:'6-3-3 บำรุงรักษา · 200–300 ก./ต้น',ffoliar:'จุลธาตุ+ซุปเปอร์โนว่า+โปรเวท',pest:'เพลี้ยหอย: บูโพเฟซิน · เพลี้ยไฟ: ไทอะมีทอกแซม ถ้าพบ',fung:'ไดฟีโนโคนาโซล + โพรพิโคนาโซล (FRAC 3)',warn:'ยังไม่ออกดอก (ต้องปีที่ 4+) อย่าชักนำดอกเร็ว',tip:'บันทึกอัตราเติบโต ความสูง เส้นรอบวงลำต้น',rain:10,temp:24,humid:68,rainDays:2},
+  {m:12,n:'ธันวาคม',ico:'⭐',s:'แล้ง',stage:'พักตัว / ออกใบอ่อนชุดใหม่',fsoil:'13-13-21 + ปุ๋ยอินทรีย์ · 300 ก./ต้น',ffoliar:'จุลธาตุ+Mix+อะมิโน',pest:'เพลี้ยหอย+เพลี้ยแป้ง: บูโพเฟซิน (16) + โอเมโทเอต',fung:'คาร์เบนดาซิม (1) + คอปเปอร์ M1',warn:'อากาศเย็น เพลี้ยหอยสะสมในซอกกิ่ง',tip:'เตรียมแผนปุ๋ยปีถัดไป',rain:3,temp:22,humid:62,rainDays:1},
+];
+
+// ── ROADMAP ──
+const RM=[
+  {a:'2024-10',b:'2025-04',period:'ต.ค.2024–เม.ย.2025',label:'ผ่านมา',cls:'ro',title:'ปีที่ 1 · ปลูก – สร้างราก',fsoil:'46-0-0+18-46-0+0-0-60 (ตามกรมฯ) + 6-3-3',ffoliar:'Mix+Zn+Fe+Mn+อะมิโน · ฮิวมิค+B1',pest:'อะบาเมกติน, พิโพรนิล (2B), ไทอะมีทอกแซม (4A)',note:'เป้า: สร้างระบบราก ต้นทนแล้ง แตกใบ 2–3 ชุด'},
+  {a:'2025-05',b:'2025-10',period:'พ.ค.–ต.ค.2025',label:'ผ่านมา',cls:'ro',title:'ปีที่ 1–2 · สร้างพุ่มรอบแรก',fsoil:'25-7-7, 29-9-9, 17-17-17, 6-3-3 สลับ',ffoliar:'Mix+Zn+Fe+Mn+Ca+Mg+อะมิโน+สาหร่าย',pest:'สลับกลุ่ม 1B/2B/3A/4A/6',note:'เป้า: แตกใบชุดที่ 3–4 สร้างโครงกิ่งหลัก'},
+  {a:'2025-11',b:'2026-05',period:'พ.ย.2025–พ.ค.2026',label:'ปัจจุบัน',cls:'rn',title:'ปีที่ 2 ช่วงแรก · สะสมอาหาร',fsoil:'6-3-3 ต่อเนื่อง · 13-13-21 ช่วงพักตัว · 17-17-17 ช่วงใบออก',ffoliar:'จุลธาตุ+ซุปเปอร์โนว่า+อะมิโน · ฮิวมิค+B1',pest:'เพลี้ยหอย: บูโพเฟซิน · เพลี้ยไฟ: ไทอะมีทอกแซม · รา: FRAC 3+11 สลับ',note:'⭐ ห้ามชักนำดอก ยังเล็กเกินไป · มุ่งสร้างโครงกิ่ง 4–5 กิ่งหลัก'},
+  {a:'2026-06',b:'2026-10',period:'มิ.ย.–ต.ค.2026',label:'แผนถัดไป',cls:'rx',title:'ปีที่ 2 · สร้างพุ่มสมบูรณ์',fsoil:'25-7-7 (ใบอ่อน) → 15-15-15 (ใบสมบูรณ์) → 6-3-3 (พักตัว)',ffoliar:'Mix+Zn+Mg+Fe+Mn+Ca ครบชุด',pest:'หมุนเวียนกลุ่มยาทุก 2–3 รอบ',note:'เป้า: ต้นสูง 1.5–2 ม. trunk girth ≥ 10 ซม.'},
+  {a:'2026-11',b:'2027-10',period:'พ.ย.2026–ต.ค.2027',label:'แผนถัดไป',cls:'rx',title:'ปีที่ 3 · สะสมอาหารก่อนออกดอก',fsoil:'ลด N: 13-13-21 หรือ 6-3-3 + อินทรีย์ เพิ่ม K',ffoliar:'KNO₃+Ca+Mg งด N ทางใบ',pest:'เพลี้ยหอย+เพลี้ยไฟ ระวังมาก',note:'เงื่อนไขก่อนออกดอก: trunk girth ≥ 15 ซม. + อายุ ≥ 4 ปี + ใบเขียวเข้ม'},
+  {a:'2027-11',b:'2028-03',period:'พ.ย.2027–มี.ค.2028',label:'เป้าหมาย',cls:'rg',title:'ปีที่ 4+ · ชักนำดอกครั้งแรก',fsoil:'งดน้ำ 10–14 วัน ก่อนชักนำ · 8-24-24 หรือ 0-0-60+18-46-0',ffoliar:'KNO₃ (13-0-46)+Ca+Mg งดพ่น N',pest:'⚠ เพลี้ยไฟ สำคัญมาก ทุก 5–7 วัน ช่วงออกดอก',note:'🎯 ผลผลิตครั้งแรก คาดเก็บเกี่ยว พ.ค.–ส.ค. 2028'},
+];
+
+// ── INIT ──
+function goToLog(filter){
+  // Set filter and switch to log tab
+  document.getElementById('stype').value = filter || '';
+  document.getElementById('scrop').value = '';
+  renderLog();
+  go('log');
+}
+window.onload=()=>{
+  document.getElementById('dchip').textContent=new Date().toLocaleDateString('th-TH',{weekday:'short',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('i-date').value=todayISO();
+  initWater();renderRoad();renderCal();renderDisLists();
+  showAdv();renderTiles();
+  renderDash();renderLog(); // render ด้วย RECS ก่อน
+  window._ready=true;
+  setupFirebase();           // จากนั้น Firebase จะ override เมื่อโหลดเสร็จ
+};
+
+function todayISO(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function go(id){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb,.bb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  const nb=document.getElementById('nb-'+id);
+  if(nb){nb.classList.add('on');try{nb.scrollIntoView({inline:'center',block:'nearest'});}catch(e){}}
+  (document.getElementById('bb-'+id)||document.getElementById('bb-menu')).classList.add('on');
+  try{window.scrollTo(0,0);}catch(e){}
+}
+const MENU=[
+  ['dash','🏠','ภาพรวม','สรุปเดือนนี้'],['log','📝','บันทึก','ปุ๋ย · ยา'],['water','💧','ให้น้ำ','คำนวณสปริงเกอร์'],
+  ['dis','🔬','โรค & แมลง','อาการ · ตัวยา'],['cal','📅','ปฏิทิน 12 เดือน','งานรายเดือน'],['road','🗺','แผนดูแล','ตามอายุต้น'],
+  ['ph','⬡','pH ดิน','วิเคราะห์ · ปรับดิน'],['crop','🌾','พืชอื่น','ยาง อ้อย มัน ข้าว'],['chem','🧴','สารเคมี','ยาหญ้า · กลุ่มยา']
+];
+function renderTiles(){
+  const h=MENU.map(m=>`<button class="tile" onclick="go('${m[0]}')"><i>${m[1]}</i><b>${m[2]}</b><small>${m[3]}</small></button>`).join('');
+  document.getElementById('tiles-menu').innerHTML=h;
+  document.getElementById('tiles-dash').innerHTML=MENU.slice(1).map(m=>`<button class="tile" onclick="go('${m[0]}')"><i>${m[1]}</i><b>${m[2]}</b><small>${m[3]}</small></button>`).join('');
+}
+
+// ── ความเสี่ยงรายเดือน ──
+// ประเมินจาก ฝน/อุณหภูมิ/ความชื้นเฉลี่ยรายเดือนของ อ.คำชะอี (ตาราง CAL) + ช่วงระบาดของศัตรูพืชแต่ละชนิด
+// เป็นหลักประมาณ ไม่ใช่พยากรณ์อากาศจริง
+function clim(m){const c=CAL[m-1];return{c,m,wet:c.rain>=100,dry:c.rain<50,trans:c.rain>=50&&c.rain<100,cool:c.temp<=25,hot:c.temp>=27};}
+const RISK=[
+  {t:'pest',n:'เพลี้ยไฟ',lv:k=>k.dry?'hi':((k.trans||k.m===5||k.m===6)?'med':'low'),
+   w:'อากาศแห้ง ฝนน้อย เพิ่มจำนวนเร็ว ทำลายหนักช่วงแตกใบอ่อน',
+   x:'สลับกลุ่ม: ไทอะมีทอกแซม (4A) → สไปนีโทแรม (5) → อะบาเมกติน (6) → ฟิโพรนิล (2B)'},
+  {t:'pest',n:'เพลี้ยหอย · เพลี้ยแป้ง',lv:k=>k.dry?'hi':(k.trans?'med':'low'),
+   w:'สะสมตามกิ่งและซอกใบในฤดูแล้ง มดเป็นตัวพาไป',
+   x:'บูโพรเฟซิน (16) + ไวต์ออยล์ → ไทอะมีทอกแซม (4A) · กำจัดมดก่อน'},
+  {t:'pest',n:'ไรแดง',lv:k=>((k.dry||k.trans)&&k.hot)?'hi':(k.dry?'med':'low'),
+   w:'ระบาดเมื่ออากาศร้อนและแห้ง ดูใต้ใบแก่',
+   x:'อะบาเมกติน (6) → เฟนไพรอกซิเมต/ไพริดาเบน (21A) → เฮกซีไทอะซอกซ์ (10A) · งดไพรีทรอยด์'},
+  {t:'pest',n:'ด้วงหนวดยาวเจาะลำต้น',lv:k=>[10,11,12,1,2].includes(k.m)?'med':'low',
+   w:'ช่วงตัวเต็มวัยออกวางไข่ ตรวจโคนต้นและกิ่งหลักทุก 2 สัปดาห์ หาขุยไม้',
+   x:'พ่นลำต้น–กิ่งหลัก: อิมิดาโคลพริด/ไทอะมีทอกแซม (4A) · เกี่ยวหนอนออกจากรู'},
+  {t:'pest',n:'เพลี้ยไก่แจ้',lv:k=>'med',
+   w:'พบได้ทั้งปี ทำลายเฉพาะช่วงแตกใบอ่อน',
+   x:'ตรวจยอดอ่อนทุกครั้งที่แตกใบ · ตัวยาดูในแท็บโรค & แมลง'},
+  {t:'pest',n:'หนอนกินใบ · หนอนม้วนใบ',lv:k=>k.wet?'hi':(k.trans?'med':'low'),
+   w:'ระบาดช่วงฝน ใบอ่อนถูกกัดแหว่ง',
+   x:'อีมาเมกตินเบนโซเอต (6) → ลูเฟนนูรอน (15) → คลอแรนทรานิลิโพรล (28) · Bt'},
+  {t:'pest',n:'มอดเจาะลำต้น',lv:k=>k.wet?'med':'low',
+   w:'พบช่วงฝน โดยเฉพาะต้นที่อ่อนแอ',
+   x:'ตัดกิ่งที่ถูกเจาะไปเผาทำลาย'},
+  {t:'dis',n:'รากเน่าโคนเน่า (ไฟทอฟธอรา)',lv:k=>k.wet?'hi':(k.trans?'med':'low'),
+   w:'เชื้อลามเมื่อฝนชุก ดินแฉะ น้ำขัง',
+   x:'ฟอสอีทิล-Al / กรดฟอสฟอรัส (P07) สลับ เมทาแลกซิล (4) · ระบายน้ำ อย่าให้น้ำขังโคน'},
+  {t:'dis',n:'ใบติด · แอนแทรคโนส · ใบจุด',lv:k=>k.wet?'hi':(k.trans?'med':'low'),
+   w:'ต้องการความชื้นสูงและฝนต่อเนื่อง',
+   x:'แมนโคเซบ (M03) / คอปเปอร์ (M01) สลับ ไดฟีโนโคนาโซล (3) หรือ ไพราโคลสโตรบิน (11)'},
+  {t:'dis',n:'ราสีชมพู · จุดสาหร่าย',lv:k=>k.wet?'hi':(k.trans?'med':'low'),
+   w:'เกิดในทรงพุ่มทึบ ชื้น ช่วงฝน',
+   x:'ตัดแต่งทรงพุ่มให้โปร่ง · คอปเปอร์ออกซีคลอไรด์ (M01) ทา/พ่นกิ่ง'},
+  {t:'dis',n:'ราแป้ง',lv:k=>(k.dry&&k.cool)?'med':'low',
+   w:'ชอบอากาศเย็นและแห้ง มักเป็นกับดอกและผลอ่อน ต้นเล็กยังเสี่ยงน้อย',
+   x:'กำมะถัน (M02) · ไดฟีโนโคนาโซล (3)'}
+];
+function riskOf(m){const k=clim(m),o={hi:[],med:[],low:[],k};RISK.forEach(r=>o[r.lv(k)].push(r));return o;}
+function riskRows(m,max){
+  const r=riskOf(m),rows=[...r.hi.map(x=>['hi',x]),...r.med.map(x=>['med',x])];
+  const lim=max?rows.slice(0,max):rows;
+  let h=lim.map(([lv,x])=>`<div class="rk"><div class="rk-l ${lv}">${lv==='hi'?'สูง':'ระวัง'}</div><div><div class="rk-n">${x.t==='dis'?'🍄':'🐛'} ${x.n}</div><div class="rk-w">${x.w}</div><div class="rk-x">💊 ${x.x}</div></div></div>`).join('');
+  if(max&&rows.length>max)h+=`<div class="rk-w" style="padding-top:9px">และเฝ้าระวังอีก ${rows.length-max} รายการ: ${rows.slice(max).map(z=>z[1].n).join(' · ')}</div>`;
+  if(r.low.length)h+=`<div class="rk-low"><b>เสี่ยงต่ำเดือนนี้:</b> ${r.low.map(x=>x.n).join(' · ')}<br>${r.k.dry?'เพราะฝนน้อย ดินและใบแห้ง — ยังไม่จำเป็นต้องพ่น/ราดยาป้องกัน ยกเว้นจุดที่น้ำขังหรือพบอาการจริง':'ตรวจตามปกติ พ่นเมื่อพบอาการ'}</div>`;
+  return h;
+}
+function riskTxt(m,t){
+  const r=riskOf(m),f=a=>a.filter(x=>x.t===t).map(x=>x.n);
+  const hi=f(r.hi),med=f(r.med);
+  return (hi.length?`<b style="color:var(--red)">เสี่ยงสูง:</b> ${hi.join(' · ')}`:'ไม่มีรายการเสี่ยงสูง')+(med.length?`<br><b style="color:var(--amb)">เฝ้าระวัง:</b> ${med.join(' · ')}`:'');
+}
+function wxChips(m){const c=CAL[m-1];return`<div class="adv-wx"><span>${c.ico} ${c.s}</span><span>🌧 ฝนเฉลี่ย ${c.rain} มม.</span><span>☔ ฝนตก ~${c.rainDays} วัน</span><span>🌡 ${c.temp}°C</span><span>💦 ชื้น ${c.humid}%</span></div>`;}
+const CROP_SEASON={
+  'ยางพารา':k=>[[1,2,3,4].includes(k.m)?'🍄 ช่วงโรคราแป้ง (ม.ค.–เม.ย. ยางผลิใบใหม่) — ยางเล็กใช้กำมะถัน หรือ คาร์เบนดาซิม':'',
+    k.wet?'🍄 ฤดูฝน: ระวังใบร่วงไฟทอฟธอรา — เมทาแลกซิล หรือ ฟอสอีทิล-Al':'',
+    k.m===5?'🌱 ต้นฝน: รอบใส่ปุ๋ยยาง — ยางเล็ก 20-10-12/20-10-17 · ยางเปิดกรีด 30-5-18 500 ก./ต้น':'',
+    (k.m===9||k.m===10)?'🌱 ปลายฝน: รอบใส่ปุ๋ยครั้งที่ 2 (ยางเล็กภาคอีสานราว ต.ค. · ยางเปิดกรีด ก.ย.–ต.ค.)':'',
+    k.dry?'🌱 ช่วงแล้ง ดินไม่ชื้น: ยังไม่ควรใส่ปุ๋ย รอต้นฤดูฝน (ราว พ.ค.)':''],
+  'มันสำปะหลัง':k=>[k.dry?'🕷 ฤดูแล้ง: ระวังไรแดง — สลับกลุ่มยา พ่นสารเดิมติดกันไม่เกิน 2–3 ครั้ง':'',
+    k.wet?'🦠 ฤดูฝน: ระวังรากเน่า หัวเน่า ในแปลงที่น้ำขัง':'',
+    '🌱 ใส่ปุ๋ยได้เฉพาะตอนดินชื้นพอ'],
+  'อ้อย':k=>[[3,4,5,6].includes(k.m)?'🐛 มี.ค.–มิ.ย.: ช่วงหนอนกออ้อยระบาด โดยเฉพาะเมื่อดินแห้ง — ตรวจยอดเหี่ยว':'',
+    k.m===6?'🐛 กลาง มิ.ย.: หนอนแมลงนูนหลวงเริ่มฟัก':''],
+  'ข้าว':k=>[]
+};
+// ระยะของพืชอื่น: f=ปุ๋ยหลัก m=ธาตุรอง/เสริม/ปรับดิน h=ฮอร์โมน/สารเร่ง i=แมลง d=โรค w=วัชพืช
+// สรุปจากเอกสารกรมวิชาการเกษตร กรมส่งเสริมการเกษตร กรมการข้าว กยท. (รายละเอียดและแหล่งอ้างอิงอยู่ในแท็บพืชอื่น)
+const NA='<span style="color:var(--txt3)">ยังไม่มีคำแนะนำทางวิชาการที่ตรวจสอบได้ — ถามเกษตรอำเภอ</span>';
+const NN='<span style="color:var(--txt3)">ไม่ต้องใช้ในระยะนี้</span>';
+const H_CANE='กรมวิชาการเกษตรยังไม่มีคำแนะนำให้ใช้ฮอร์โมนในอ้อยทั่วไป · มีงานวิจัยในไทยเรื่อง<b>เอทีฟอน</b>เพิ่มผลผลิตน้ำตาล แต่ยังเป็นระดับงานทดลอง จึงไม่ใส่อัตรา';
+const H_RICE='กรมการข้าวไม่มีคำแนะนำให้พ่นฮอร์โมนในนาข้าว · งานทดลองในกระถาง (ม.มหาสารคาม) พ่น<b>บราสสิโนสเตอรอยด์</b> 0.005–0.04 ppm ช่วยข้าวขาวดอกมะลิ 105 ทนแล้ง แต่ผลไม่สม่ำเสมอ ยังไม่ควรลงทุนในแปลงจริง';
+const H_CAS='เอกสารกรมวิชาการเกษตรไม่มีคำแนะนำฮอร์โมนในระยะนี้';
+// ทุเรียน: สารเสริม/ฮอร์โมนตามระยะใบ (คู่มือการผลิตทุเรียน สวพ.8 กรมวิชาการเกษตร — เขียนสำหรับต้นให้ผล นำมาใช้กับต้นเล็กได้เฉพาะส่วนบำรุงใบ)
+const DUR_H={
+  'แทงยอด':'ยังไม่พ่น รอใบคลี่',
+  'หางปลา':'สารสกัดสาหร่าย 50 มล./น้ำ 200 ล. พ่นพร้อมยาแมลง–ยาเชื้อรา ช่วยใบอ่อนคลี่สม่ำเสมอ',
+  'ใบดาบ':'สารสกัดสาหร่าย 50 มล./น้ำ 200 ล. พ่นพร้อมยาแมลง–ยาเชื้อรา',
+  'ใบอ่อนตั้ง':'ใบคลี่–เพสลาด: ปุ๋ยเกล็ด 21-21-21 1 กก. + แคลเซียม-โบรอน 200 มล. + แมกนีเซียม-สังกะสี 200 มล. ต่อน้ำ 200 ล.',
+  'ใบแก่เขียว':'แคลเซียม-โบรอน 200 มล. + แมกนีเซียม-สังกะสี 200 มล. ต่อน้ำ 200 ล. ถ้าใบซีดหรือเส้นใบเขียวเนื้อใบเหลือง',
+  'ใบแก่เข้ม':'ไม่จำเป็น',
+  'พักตัว':'ไม่จำเป็น',
+  'เตรียมแตกใบ':'ไม่จำเป็น — เตรียมสารสกัดสาหร่ายไว้พ่นเมื่อใบเริ่มคลี่'
+};
+const CROP_STAGE={
+  'ยางพารา':[
+    ['ยางเล็ก ก่อนเปิดกรีด',{
+      f:'20-10-12 (ดินร่วนเหนียว) หรือ 20-10-17 (ดินร่วนทราย) 60–330 ก./ต้น/ครั้ง ตามอายุ (ตารางในแท็บพืชอื่น) · ภาคอีสานใส่ช่วง <b>พ.ค.</b> และ <b>ต.ค.</b> ขณะดินชื้น · กำจัดหญ้าก่อนใส่ ใส่รอบโคนตามรัศมีทรงพุ่ม',
+      m:'ตอนปลูกรองก้นหลุมด้วยร็อกฟอสเฟตคลุกดิน · ธาตุรอง/จุลธาตุ: '+NA,
+      h:'ไม่ใช้ — สารเร่งน้ำยางใช้กับยางที่เปิดกรีดแล้วเท่านั้น',
+      i:NA,
+      d:'<b>ราแป้ง</b> (ม.ค.–เม.ย.): กำมะถัน 80% WP หรือ คาร์เบนดาซิม 50% WP 20 ก./น้ำ 20 ล. ทุก 4–7 วัน · <b>ใบร่วงไฟทอฟธอรา</b> (ฤดูฝน): เมทาแลกซิล 25% WP หรือ ฟอสอีทิล-Al 80% WP 40 ก./น้ำ 20 ล.',
+      w:'ตัด/ถากรอบโคน ปลูกพืชคลุมดินตระกูลถั่วระหว่างแถว · อัตรายาหญ้า: '+NA}],
+    ['ผลัดใบ – ผลิใบใหม่',{
+      f:'ยังไม่ใส่ — ช่วงแล้งดินไม่ชื้น ปุ๋ยไม่ละลาย รอใส่<b>ต้นฤดูฝน (ราว พ.ค.)</b> หลังใบชุดใหม่แก่',
+      m:NN,
+      h:'ยางเปิดกรีด: ควรพักกรีดและงดสารเร่งน้ำยางจนใบชุดใหม่แก่ (หลักปฏิบัติทั่วไป)',
+      i:NA,
+      d:'<b>ราแป้ง</b> เข้าทำลายใบอ่อนช่วงนี้ (ม.ค.–เม.ย.): ยางเล็กพ่นกำมะถัน 80% WP หรือ คาร์เบนดาซิม 50% WP 20 ก./น้ำ 20 ล. ทุก 4–7 วัน',
+      w:NN}],
+    ['ใบแก่ / เปิดกรีด',{
+      f:'30-5-18 (หรือ 29-5-18) รวม 1 กก./ต้น/ปี แบ่ง 2 ครั้ง ครั้งละ 500 ก.: <b>ต้นฝน (พ.ค.)</b> และ <b>ปลายฝน (ก.ย.–ต.ค.)</b> · หว่านห่างแถวยางราว 1 ม. ขณะดินชื้น · งดใส่ 3–5 ปีก่อนโค่น',
+      m:NA,
+      h:'สารเร่งน้ำยาง <b>เอทธิฟอน 2.5%</b> ทาครั้งละราว 1 ก. เป็นแถบกว้าง 1 ซม. ที่หน้ากรีด · ไม่เกิน 6 ครั้ง/ปี (กยท.) · ใช้กับระบบกรีดห่าง (วันเว้นสองวัน) ไม่ใช้คู่กับการกรีดถี่ เสี่ยงเปลือกแห้ง · ทำให้เนื้อยางแห้งลดลง 3–6% · ฤดูฝนได้ผลไม่ดี',
+      i:NA,
+      d:'<b>ใบร่วงไฟทอฟธอรา</b> (ฤดูฝน): ใบร่วงเกิน 50% ให้หยุด/ลดกรีด · <b>รากขาว</b>: เฮกซะโคนาโซล 5% EC 10–20 มล. หรือ โพรพิโคนาโซล 25% EC 4–8 มล. ต่อน้ำ 2 ล. ราดโคน ทุก 4–6 เดือน',
+      w:'ตัดหญ้าระหว่างแถวก่อนใส่ปุ๋ย · อัตรายาหญ้า: '+NA}],
+    ['พักกรีด',{
+      f:'ใส่ตามรอบปกติ (ต้นฝน/ปลายฝน) ถ้าดินชื้น',m:NN,
+      h:'งดสารเร่งน้ำยาง',i:NA,
+      d:'<b>เปลือกแห้ง</b>: หยุดกรีด 3–6 เดือน · ตรวจโคนต้นหา<b>รากขาว</b> ขุดคูกั้นราก 30×60 ซม. รอบต้นที่เป็น',w:NN}]],
+  'อ้อย':[
+    ['ปลูกใหม่ / แต่งตอ',{
+      f:'ครั้งแรกราว 20 กก./ไร่ พร้อมปลูกหรือหลังแต่งตอ: 15-15-15 / 16-16-16 (ดินเหนียว) หรือ 14-14-21 / 13-13-13 (ดินทราย)',
+      m:'แนะนำวิเคราะห์ดิน (อินทรียวัตถุ ฟอสฟอรัส โพแทสเซียม) แล้วใส่ตามตารางในแท็บพืชอื่น · ธาตุรอง/จุลธาตุ: '+NA,
+      h:H_CANE,
+      i:'<b>ด้วงหนวดยาว · แมลงนูนหลวง · ปลวก</b>: ฟิโพรนิล 5% SC 80 มล./น้ำ 20 ล. พ่นบนท่อนพันธุ์/ตามร่องตอนปลูกแล้วกลบดิน',
+      d:'ใช้ท่อนพันธุ์สะอาดจากแปลงที่ไม่เป็นโรค',
+      w:'<b>ยาคุมหญ้าก่อนงอก</b> ขณะดินชื้น: อะทราซีน · ไดยูรอน · เฮกซะซิโนน+ไดยูรอน (อัตราตามฉลาก)'}],
+    ['งอก – แตกกอ',{
+      f:'ครั้งที่ 2 เมื่ออายุ 60 วัน: ปุ๋ยสูตรเดิมส่วนที่เหลือ + 21-0-0 30–40 กก. หรือ 46-0-0 15–20 กก./ไร่',
+      m:NA,h:H_CANE,
+      i:'<b>หนอนกออ้อย</b> (ยอดเหี่ยวถึง 10% ช่วง มี.ค.–มิ.ย.): อินดอกซาคาร์บ 15% EC 15 มล. · อีมาเมกตินเบนโซเอต 1.92% EC 10 มล. · คลอแรนทรานิลิโพรล 5.17% SC 20 มล. · เดลทาเมทริน 3% EC 10 มล. ต่อน้ำ 20 ล. พ่น 2–3 ครั้ง ห่าง 14 วัน สลับกลุ่ม · หรือปล่อยแตนเบียนไข่',
+      d:'<b>ยอดเน่า</b>: คอปเปอร์ออกซีคลอไรด์ตามฉลาก',
+      w:'คุมหญ้าให้อยู่ถึง 4–5 เดือนแรก · ยาหลังงอกใช้เมื่ออ้อยมีใบมากกว่า 5 ใบ'}],
+    ['ย่างปล้อง',{
+      f:'ใส่ครบแล้ว ไม่ต้องเพิ่ม',m:NN,h:H_CANE,
+      i:'<b>หนอนกอลายจุดใหญ่</b>: พบไข่ 0.2–1 กลุ่ม/ต้น พ่นปิโตรเลียมสเปรย์ออยล์ 83.9% EC 100 มล./น้ำ 20 ล. ตอนเย็น · <b>ไรแมงมุม</b>: อะมิทราซ 20% EC 40 มล./น้ำ 20 ล.',
+      d:'ตรวจยอดเน่า',w:'อ้อยคลุมร่องแล้ว หญ้าเป็นปัญหาน้อยลง'}],
+    ['สุกแก่ – เก็บเกี่ยว',{f:'งดปุ๋ย',m:NN,h:H_CANE,i:'งดสารเคมี',d:'งดสารเคมี',w:NN}]],
+  'มันสำปะหลัง':[
+    ['เตรียมท่อนพันธุ์ / ปลูก',{
+      f:'ยังไม่ใส่ปุ๋ยเคมี (ใส่หลังปลูก 1–3 เดือน)',
+      m:'ปุ๋ยคอก (มูลไก่/สุกร/โค) 500–1,000 กก./ไร่ หว่านแล้วไถกลบ · ถ้า pH ดินต่ำกว่า 5 หว่านโดโลไมต์ 100 กก./ไร่',
+      h:'<b>งานวิจัย ม.นครพนม (พันธุ์ระยอง 9):</b> แช่ท่อนพันธุ์ใน <b>NAA 1,000 มก./ล.</b> นาน 30 นาทีก่อนปลูก ได้น้ำหนักหัวมากกว่าไม่แช่ · เป็นผลทดลอง 1 ฤดู ยังไม่ใช่คำแนะนำของกรมวิชาการเกษตร ถ้าจะลองให้ทำแปลงเล็กเทียบก่อน · เข้มข้นกว่านี้ (2,000–4,000) ได้ผลแย่ลง',
+      i:'<b>ชุบท่อนพันธุ์ 5–10 นาที</b> กันเพลี้ยแป้ง: ไทอะมีทอกแซม 25% WG 4 ก. หรือ อิมิดาโคลพริด 70% WG 4 ก. หรือ ไดโนทีฟูแรน 10% WP 40 ก. ต่อน้ำ 20 ล.',
+      d:'ใช้ท่อนพันธุ์สะอาด ไม่เป็นใบด่าง · พื้นที่เคยรากเน่า: แช่ท่อนพันธุ์เมทาแลกซิล 20–40 ก./น้ำ 20 ล.',
+      w:'<b>ยาคุมหญ้า</b>ภายใน 3 วันหลังปลูก ดินต้องชื้น: อะลาคลอร์ หรือ เมโทลาคลอร์ 500–750 ซีซี/ไร่ (หรือ 300 ซีซี + ไดยูรอน 100 ก.)'}],
+    ['อายุ 1–4 เดือน',{
+      f:'ใส่ครั้งเดียวหลังปลูก 1–3 เดือน ขณะดินชื้น: <b>15-7-18</b> 100 กก./ไร่ (ดินทราย/ร่วนทราย) หรือ 50 กก./ไร่ (ดินร่วนเหนียว) · ดินเหนียวปนกรวดใช้ 15-15-15 30–40 กก./ไร่ · โรยสองข้างต้นแล้วกลบ',
+      m:'เอกสารกรมวิชาการเกษตรบอกอาการขาดธาตุรอง/จุลธาตุ (Mg Ca S Zn Cu Mn Fe) แต่ไม่ได้ให้อัตราใช้ — '+NA,
+      h:H_CAS,
+      i:'<b>แมลงหวี่ขาว · เพลี้ยแป้ง</b>: อิมิดาโคลพริด 70% WG หรือ ไทอะมีทอกแซม 25% WG 4 ก./น้ำ 20 ล. (ระบาดรุนแรง 12 ก.) · <b>เพลี้ยหอย</b>: สารเดียวกัน + ไวต์ออยล์ 50 มล. · <b>ไรแดง</b>: ไพริดาเบน 20% WP 10 ก. · สไปโรมีซิเฟน 24% SC 6 ซีซี · อะมิทราซ 20% EC 40 ซีซี · สารเดิมติดกันไม่เกิน 3 ครั้ง',
+      d:'<b>ใบด่าง</b>: ถอนทำลายต้นที่เป็น กำจัดแมลงหวี่ขาว · <b>ใบไหม้</b>: สารประกอบทองแดงตามฉลาก',
+      w:'ช่วงวิกฤต ห้ามให้หญ้าคลุม · ใช้จอบดาย · ยังไม่ควรพ่นยาฆ่าหญ้าหลังงอกโดนต้นมัน'}],
+    ['อายุ 4–8 เดือน',{
+      f:'ถ้าแบ่งใส่ 2 ครั้ง (ตามงานทดลอง ม.ขอนแก่น): ครั้งที่ 2 ที่อายุ 5.5 เดือน',
+      m:NA,h:H_CAS,
+      i:'เหมือนระยะ 1–4 เดือน · ฤดูแล้งตรวจ<b>ไรแดง</b>และ<b>เพลี้ยแป้ง</b>ถี่ขึ้น · ปล่อยแมลงช้างปีกใส/แตนเบียนเมื่อเริ่มพบ',
+      d:'<b>รากเน่า หัวเน่า</b> (ที่น้ำขัง): ฟอสอีทิล-Al 50 ก./น้ำ 20 ล. ราด 300 ซีซี/ต้น',
+      w:'ใช้ยาฆ่าหญ้าหลังงอกได้เมื่อมันสูงเกิน 70 ซม. ต้องครอบหัวฉีด'}],
+    ['ใกล้เก็บเกี่ยว',{f:'งดปุ๋ย',m:NN,h:H_CAS,i:'งดสารเคมี · คัดต้นไม่มีเพลี้ย/โรคไว้ทำท่อนพันธุ์',d:'คัดต้นไม่เป็นใบด่างไว้ทำพันธุ์',w:NN}]],
+  'ข้าว':[
+    ['หว่าน / กล้า (0–20 วัน)',{
+      f:'ยังไม่ใส่ปุ๋ยเคมี (ครั้งแรก 20–30 วันหลังข้าวงอก)',
+      m:'ก่อนปลูก: ปุ๋ยอินทรีย์ 600 กก.(แห้ง)/ไร่ หรือไถกลบปุ๋ยพืชสด (เมล็ดถั่ว 5–10 กก./ไร่)',
+      h:H_RICE,i:NA,d:NN,
+      w:'<b>เลือกยาตามวันหลังหว่าน</b>: 0–4 วัน เพรทิลาคลอร์ · 4–6 วัน บิวทาคลอร์/ออกซาไดอะซอน · 8–12 วัน เพนดิเมทาลิน · 8–30 วัน บิสไพริแบก-โซเดียม · หลังพ่น 3 วันไขน้ำเข้านา'}],
+    ['แตกกอ (20–40 วัน)',{
+      f:'<b>ครั้งที่ 1</b>: ดินทราย 16-16-8 20–25 กก. (ข้าวไวแสง) หรือ 30–35 กก. (ไม่ไวแสง) + 0-0-60 5–10 กก./ไร่ · ดินเหนียว 16-20-0 อัตราเดียวกัน',
+      m:NA,h:H_RICE,
+      i:'<b>เพลี้ยกระโดดสีน้ำตาล</b> (พบ 1 ตัว/ต้น หรือ 10 ตัว/กอ): บูโพรเฟซิน 10% WP 25 ก./น้ำ 20 ล. · ห้ามใช้ไพรีทรอยด์',
+      d:'<b>โรคไหม้</b>: แผล 5% ของพื้นที่ใบ พ่นไตรไซคลาโซล หรือ ไอโซโพรไทโอเลน ตามฉลาก · อย่าใส่ไนโตรเจนเกิน',
+      w:'ยาหลังงอก: 15–30 วัน 2,4-ดี · 20 วัน ควินคลอแรก · 20–30 วัน ฟีนอกซาพรอป'}],
+    ['กำเนิดช่อดอก – ตั้งท้อง',{
+      f:'<b>ครั้งที่ 2</b> (ราว 30 วันก่อนออกดอก): ยูเรีย 10 กก./ไร่ (ข้าวไวแสง) หรือ 20 กก./ไร่ (ไม่ไวแสง)',
+      m:NA,h:H_RICE,
+      i:'<b>เพลี้ยกระโดดสีน้ำตาล</b> (ข้าวอายุ 41–80 วัน): ไดโนทีฟูแรน 10% WP 15 ก. หรือ ไพมีโทรซีน 50% WG 10 ก./น้ำ 20 ล. · ระบายน้ำออกเป็นช่วง',
+      d:'<b>โรคไหม้คอรวง</b>: เฝ้าระวังในพันธุ์อ่อนแอ (ขาวดอกมะลิ 105, กข15, กข6)',w:NN}],
+    ['ออกรวง – สุกแก่',{f:'งดปุ๋ย',m:NN,h:H_RICE,i:'งดสารเคมีตามระยะปลอดภัยบนฉลาก',d:'งดสารเคมีตามระยะปลอดภัยบนฉลาก',
+      w:'<b>ข้าวดีด</b>: ลูบรวงด้วย กลูโฟซิเนต 15% SL หรือ ควิซาโลฟอป-พี-เอทิล 5% EC ห้ามโดนข้าวปลูก'}]]
+};
+function stageHTML(a){
+  const rows=[['🌱','ปุ๋ยหลัก',a.f],['🧪','ธาตุรอง · เสริม · ปรับดิน',a.m],['💧','ฮอร์โมน · สารเร่ง',a.h],['🐛','แมลง · ไร',a.i],['🍄','โรค',a.d],['🌿','วัชพืช',a.w]];
+  return rows.map(r=>`<div class="sg"><div class="sg-t">${r[0]} ${r[1]}</div><div class="sg-c">${r[2]}</div></div>`).join('');
+}
+function wQuick(){
+  const mo=ageMonths(),mi=new Date().getMonth();
+  let can=parseFloat(String(wset.can).replace(',','.'));if(!(can>0))can=estCan(mo/12);
+  const st=(mo>=48&&W_STAGE[wset.stage])?W_STAGE[wset.stage]:W_STAGE.veg;
+  const daily=st.k*evapOf(mi)*areaOf(can),f=parseFloat(wset.flow),h=parseInt(wset.heads),itv=parseInt(wset.int)||1;
+  return{daily,itv,st,mins:(f>0&&h>0)?daily*itv/(f*h)*60:NaN};
+}
+function lastDays(test){
+  const t=recs.filter(r=>(r.crop||'ทุเรียน')==='ทุเรียน'&&test(r.type||'')).map(r=>r.date).sort().pop();
+  if(!t)return'ยังไม่มีบันทึก';
+  const d=Math.round((new Date(todayISO())-new Date(t))/864e5);
+  return d<=0?'วันนี้':(d+' วันก่อน');
+}
+
+function renderDash(){
+  const tot=recs.length,pest=recs.filter(r=>r.type==='ยาฆ่าแมลง').length,
+        fung=recs.filter(r=>r.type==='ยาเชื้อรา').length,fert=recs.filter(r=>(r.type||'').includes('ปุ๋ย')).length;
+  document.getElementById('sw').innerHTML=`
+    <div class="stat g" style="cursor:pointer" onclick="goToLog('')"><div class="sl">บันทึกทั้งหมด</div><div class="sv">${tot}</div><div class="ss">รายการ</div></div>
+    <div class="stat t" style="cursor:pointer" onclick="goToLog('ปุ๋ย')"><div class="sl">ใส่ปุ๋ย</div><div class="sv">${fert}</div><div class="ss">ล่าสุด ${lastDays(t=>t.includes('ปุ๋ย'))}</div></div>
+    <div class="stat o" style="cursor:pointer" onclick="goToLog('ยาฆ่าแมลง')"><div class="sl">พ่นยาแมลง</div><div class="sv">${pest}</div><div class="ss">ล่าสุด ${lastDays(t=>t==='ยาฆ่าแมลง')}</div></div>
+    <div class="stat b" style="cursor:pointer" onclick="goToLog('ยาเชื้อรา')"><div class="sl">พ่นยาเชื้อรา</div><div class="sv">${fung}</div><div class="ss">ล่าสุด ${lastDays(t=>t==='ยาเชื้อรา')}</div></div>`;
+  const now=new Date(),m=now.getMonth()+1,c=CAL[m-1];
+  document.getElementById('today').innerHTML=`
+    <div class="hero">
+      <div class="hero-top">
+        <div><div class="hero-d">${now.toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>
+        <div class="hero-t">${c.ico} ${c.n} · ${c.s}</div></div>
+        <div class="hero-age">🌱 ${ageTxt(ageMonths())}</div>
+      </div>
+      <div class="wx">
+        <div><b>${c.rain}</b><span>ฝน มม./เดือน</span></div>
+        <div><b>${c.rainDays}</b><span>วันฝนตก</span></div>
+        <div><b>${c.temp}°</b><span>อุณหภูมิ</span></div>
+        <div><b>${c.humid}%</b><span>ความชื้น</span></div>
+      </div>
+      <div class="hero-n">ค่าเฉลี่ยของเดือนนี้ที่ อ.คำชะอี จ.มุกดาหาร — ไม่ใช่พยากรณ์อากาศวันนี้ ถ้าปีนี้ฝนมาผิดฤดูให้ดูสภาพจริงประกอบ</div>
+    </div>`;
+  document.getElementById('risk-c').innerHTML=riskRows(m,4)+`<div style="margin-top:11px"><a href="#" onclick="go('dis');return false" style="color:var(--sky);font-size:.8rem;font-weight:600;text-decoration:none">ดูอาการและอัตรายาทั้งหมด →</a></div>`;
+  const w=wQuick(),itvT={1:'ทุกวัน',2:'วันเว้นวัน',3:'ทุก 3 วัน'}[w.itv];
+  document.getElementById('todo-c').innerHTML=`
+    <div class="td"><i>💧</i><div><b>ให้น้ำ ${w.st.k===0?'— ช่วงชักนำดอก งดน้ำ':fmt(w.daily,1)+' ลิตร/ต้น/วัน'}</b>${w.st.k>0&&isFinite(w.mins)?` · เปิด ${fmtMin(w.mins)} ${itvT}`:''} <a href="#" onclick="go('water');return false">ปรับ →</a></div></div>
+    <div class="td"><i>🌱</i><div><b>ปุ๋ยทางดิน:</b> ${c.fsoil}</div></div>
+    <div class="td"><i>🍃</i><div><b>ปุ๋ยทางใบ:</b> ${c.ffoliar}</div></div>
+    <div class="td"><i>🌿</i><div><b>ระยะต้นช่วงนี้:</b> ${c.stage}</div></div>
+    <div class="td"><i>💡</i><div>${c.warn} · ${c.tip}</div></div>`;
+  const s=[...recs].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6);
+  document.getElementById('rtb').innerHTML=s.map(r=>`<tr><td style="white-space:nowrap;color:var(--txt3);font-size:.75rem">${fd(r.date)}</td><td>${tt(r.type)}</td><td style="max-width:190px;font-size:.78rem">${r.prod}</td></tr>`).join('');
+}
+
+function addRec(){
+  const d=document.getElementById('i-date').value,p=document.getElementById('i-prod').value.trim();
+  if(!d||!p){toast('กรุณากรอกวันที่และชื่อสาร');return;}
+  const newRec={id:nid++,date:d,crop:document.getElementById('i-crop').value,type:document.getElementById('i-type').value,prod:p,
+    rate:document.getElementById('i-rate').value,stage:document.getElementById('i-stage').value,
+    ph:document.getElementById('i-ph').value,note:document.getElementById('i-note').value};
+  clrForm();
+
+  // บันทึก localStorage ทันทีเสมอ — ไม่หายแน่นอน
+  recs.unshift(newRec);
+  renderLog(); renderDash();
+  saveLocal();
+
+  // พยายาม sync cloud ด้วย (ถ้า Firebase พร้อม)
+  if(fbReady && db){
+    saveCloud(newRec).then(()=>{
+      showSyncStatus('☁️ sync แล้ว · '+new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}));
+    }).catch(()=>{});
+    toast('✓ บันทึกแล้ว ☁️');
+  } else {
+    toast('✓ บันทึกแล้ว 💾');
+  }
+}
+
+function delRec(id){
+  if(!confirm('ลบ?'))return;
+  const rec=recs.find(r=>r.id===id);
+  recs=recs.filter(r=>r.id!==id);
+  renderLog(); renderDash();
+  saveLocal();
+  if(fbReady && db && rec && rec._fbId) deleteCloud(rec);
+  toast('ลบแล้ว');
+}
+function clrForm(){['i-prod','i-rate','i-ph','i-note'].forEach(x=>document.getElementById(x).value='');document.getElementById('i-stage').value='';document.getElementById('i-date').value=todayISO();showAdv();}
+
+function renderLog(){
+  const q=(document.getElementById('sq').value||'').toLowerCase(),t=document.getElementById('stype').value,cr=document.getElementById('scrop').value;
+  let f=[...recs].filter(r=>(!cr||(r.crop||'ทุเรียน')===cr)&&(!q||(r.prod||'').toLowerCase().includes(q)||(r.note||'').toLowerCase().includes(q))&&(!t||r.type===t||(t==='ปุ๋ย'&&r.type.includes('ปุ๋ย'))));
+  f.sort((a,b)=>b.date.localeCompare(a.date));
+  const em=document.getElementById('lem'),tb=document.getElementById('ltb');
+  if(!f.length){tb.innerHTML='';em.style.display='block';return;}
+  em.style.display='none';
+  tb.innerHTML=f.map((r,i)=>`<tr>
+    <td style="color:var(--txt3);font-size:.72rem">${i+1}</td>
+    <td style="white-space:nowrap;font-size:.74rem;color:var(--txt3)">${fd(r.date)}</td>
+    <td style="font-size:.74rem;white-space:nowrap">${r.crop||'ทุเรียน'}</td>
+    <td>${tt(r.type)}</td>
+    <td style="max-width:190px;font-size:.77rem">${r.prod}</td>
+    <td style="font-size:.74rem;color:var(--txt3)">${r.rate||'–'}</td>
+    <td style="font-size:.74rem;color:var(--txt3)">${r.stage||'–'}</td>
+    <td style="font-size:.74rem">${r.ph?`<b style="color:var(--g)">${r.ph}</b>`:'–'}</td>
+    <td style="max-width:120px;font-size:.72rem;color:var(--txt3)">${r.note||'–'}</td>
+    <td><button class="btn btn-r btn-sm" onclick="delRec(${r.id})">✕</button></td>
+  </tr>`).join('');
+}
+function expCSV(){
+  const h=['วันที่','พืช','ประเภท','สาร/ปุ๋ย/ยา','อัตรา','ระยะ','pH','หมายเหตุ'];
+  const rows=recs.map(r=>[r.date,r.crop||'ทุเรียน',r.type,r.prod,r.rate,r.stage,r.ph,r.note].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(','));
+  const b=new Blob(['\uFEFF'+[h.join(','),...rows].join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='สวนทุเรียน_'+todayISO()+'.csv';a.click();
+}
+
+function showAdv(){
+  const d=document.getElementById('i-date').value||todayISO();
+  const m=Math.min(12,Math.max(1,parseInt(d.split('-')[1])||new Date().getMonth()+1));
+  const crop=document.getElementById('i-crop').value,stSel=document.getElementById('i-stage');
+  if(!window._durStage)window._durStage=stSel.innerHTML;
+  if(stSel.dataset.crop!==crop){
+    stSel.dataset.crop=crop;
+    const L=CROP_STAGE[crop];
+    stSel.innerHTML=crop==='ทุเรียน'?window._durStage:'<option value="">-- เลือกระยะ --</option>'+(L||[]).map(x=>`<option value="${x[0]}">${x[0]}</option>`).join('')+'<option value="อื่นๆ">อื่นๆ</option>';
+    stSel.value='';
+    document.getElementById('i-stage-l').textContent=crop==='ทุเรียน'?'ระยะใบ':'ระยะของพืช';
+  }
+  const stage=stSel.value,ph=parseFloat(document.getElementById('i-ph').value);
+  const c=CAL[m-1],k=clim(m);
+  document.getElementById('log-adv-t').textContent='💡 คำแนะนำเดือน'+c.n+' · '+crop;
+  let h=wxChips(m);
+  if(crop==='ทุเรียน'){
+    h+=riskRows(m,Math.max(2,riskOf(m).hi.length));
+    const info=SI[stage];
+    if(info){
+      h+=`<div class="adv-st"><b>ระยะใบ: ${stage}</b> — ${info.d}<br>🌱 <b>ปุ๋ย:</b> ${info.f}<br>🐛 <b>แมลงที่มากับระยะนี้:</b> ${info.p}<br>💊 <b>ยา:</b> ${info.pr}<br>💧 <b>ฮอร์โมน · ธาตุเสริมทางใบ:</b> ${DUR_H[stage]||'–'}${ageMonths()<48?'<br><span style="color:var(--txt3)">ต้นยังไม่ถึงวัยให้ผล จึงยังไม่ใช้สารชักนำดอก (พาโคลบิวทราโซล) และสารชะลอใบอ่อน (เมพิควอตคลอไรด์) — ดูรายละเอียดในแท็บ 🧴 สารเคมี → ฮอร์โมน</span>':''}</div>`;
+    }else{
+      h+=`<div class="rk-w" style="margin-top:9px">เลือก "ระยะใบ" เพื่อดูคำแนะนำปุ๋ยและแมลงเฉพาะระยะเพิ่ม</div>`;
+    }
+  }else{
+    const f=CROP_SEASON[crop],notes=f?f(k).filter(Boolean):[];
+    h+=notes.length?notes.map(n=>`<div style="margin-bottom:5px">${n}</div>`).join(''):`<div class="rk-w">เดือนนี้ไม่มีรายการเฝ้าระวังตามฤดูกาลของ${crop==='อื่นๆ'?'พืชนี้':crop}ในฐานข้อมูล</div>`;
+    const sg=(CROP_STAGE[crop]||[]).find(x=>x[0]===stage);
+    if(sg)h+=`<div class="adv-st"><b>ระยะ: ${sg[0]}</b>${stageHTML(sg[1])}</div>`;
+    else if(CROP_STAGE[crop])h+=`<div class="w-tip" style="margin-top:9px">👆 เลือก <b>"ระยะของพืช"</b> เพื่อดูคำแนะนำ ปุ๋ย · ธาตุเสริม · ฮอร์โมน · แมลง · โรค · วัชพืช ของระยะนั้น</div>`;
+    if(crop!=='อื่นๆ')h+=`<div style="margin-top:8px"><a href="#" onclick="go('crop');showCrop('${{'ยางพารา':'rubber','อ้อย':'cane','มันสำปะหลัง':'cassava','ข้าว':'rice'}[crop]}');return false" style="color:var(--sky);font-weight:600;text-decoration:none">ดูปุ๋ย · ยาคุมหญ้า · โรค · แมลง ของ${crop} →</a></div>`;
+  }
+  if(!isNaN(ph)){
+    if(ph<5.5)h+=`<div class="adv-st">⚗️ <b>pH ${ph} เป็นกรด:</b> N, P, K ดูดซึมลดลง · พิจารณาโดโลไมต์ 200–500 ก./ต้น</div>`;
+    else if(ph>6.5)h+=`<div class="adv-st">⚗️ <b>pH ${ph} สูงเกิน:</b> Fe, Mn, Zn ละลายน้อย · พิจารณากำมะถันผง 50–100 ก./ต้น</div>`;
+    else h+=`<div class="adv-st">✅ <b>pH ${ph} เหมาะสม</b></div>`;
+  }
+  document.getElementById('log-adv-c').innerHTML=h;
+}
+
+function renderRoad(){
+  const m={'ro':'tgold','rn':'tg','rx':'ts','rg':'tr'};
+  const l={'ro':'ผ่านมา','rn':'ปัจจุบัน','rx':'แผนถัดไป','rg':'เป้าหมาย'};
+  const nowYM=todayISO().slice(0,7);
+  document.getElementById('road-c').innerHTML=RM.map((r0,i)=>{const r=Object.assign({},r0,{cls:r0.b<nowYM?'ro':(r0.a<=nowYM?'rn':(i===RM.length-1?'rg':'rx'))});return`
+    <div class="rc ${r.cls==='rn'?'now-r':''}">
+      <div class="rc-head">
+        <span class="tag ${m[r.cls]}">${l[r.cls]}</span>
+        <span class="rc-t">${r.title}</span>
+        <span class="rc-p">${r.period}</span>
+      </div>
+      <div class="rc-g">
+        <div class="ri"><div class="ri-l">🌱 ปุ๋ยทางดิน</div><div class="ri-v">${r.fsoil}</div></div>
+        <div class="ri"><div class="ri-l">💧 ปุ๋ยทางใบ</div><div class="ri-v">${r.ffoliar}</div></div>
+        <div class="ri"><div class="ri-l">🐛 ยา</div><div class="ri-v">${r.pest}</div></div>
+        <div class="ri" style="${r.cls==='rn'?'background:var(--g3)':''}"><div class="ri-l">📌 เป้าหมาย</div><div class="ri-v" style="${r.cls==='rn'?'color:var(--g)':''}">${r.note}</div></div>
+      </div>
+    </div>`;}).join('');
+}
+
+function renderCal(){
+  const m=new Date().getMonth()+1;
+  document.getElementById('cal-c').innerHTML=CAL.map(c=>`
+    <div class="cc ${c.m===m?'now':''}" onclick="this.querySelector('.cc-body').classList.toggle('open')">
+      <div class="cc-top">
+        <span class="cc-ico">${c.ico}</span>
+        <div><div class="cc-mn">${c.m===m?'📍 ':''}${c.n}</div><div class="cc-st">${c.stage}</div></div>
+        <div class="cc-bdg"><span class="tag ${c.s.includes('ฝน')?'ts':c.s.includes('แล้ง')?'ta':'tg'}">${c.s}</span></div>
+      </div>
+      <div class="cc-body ${c.m===m?'open':''}">
+        <div class="ci"><div class="ci-t">🌱 ปุ๋ยทางดิน</div><div class="ci-c">${c.fsoil}</div></div>
+        <div class="ci"><div class="ci-t">💧 ปุ๋ยทางใบ</div><div class="ci-c">${c.ffoliar}</div></div>
+        <div class="ci"><div class="ci-t">🌦 อากาศเฉลี่ย</div><div class="ci-c">ฝน ${c.rain} มม. (~${c.rainDays} วัน) · ${c.temp}°C · ชื้น ${c.humid}%</div></div>
+        <div class="ci"><div class="ci-t">🌿 ระยะต้น</div><div class="ci-c">${c.stage}</div></div>
+        <div class="ci"><div class="ci-t">🐛 แมลง</div><div class="ci-c">${riskTxt(c.m,'pest')}</div></div>
+        <div class="ci"><div class="ci-t">🍄 โรค</div><div class="ci-c">${riskTxt(c.m,'dis')}</div></div>
+        <div class="ci ci-w"><div class="ci-t">⚠️ คำเตือน</div><div class="ci-c">${c.warn}</div></div>
+        <div class="ci ci-tip"><div class="ci-t">💡 เคล็ดลับ</div><div class="ci-c">${c.tip}</div></div>
+      </div>
+    </div>`).join('');
+}
+
+function doPh(){
+  const ph=parseFloat(document.getElementById('ph-v').value),st=document.getElementById('ph-s').value;
+  if(isNaN(ph)||ph<3||ph>9){document.getElementById('ph-r').innerHTML='<p style="color:var(--red);margin-top:10px">ป้อนค่า 3–9</p>';return;}
+  let msg,col;const pct=((ph-3)/6*100).toFixed(0);
+  if(ph<4.5){msg='<b>กรดรุนแรงมาก</b> · โดโลไมด์ 1–2 กก./ต้น + ปูนขาว 500 ก.–1 กก./ต้น';col='var(--red)';}
+  else if(ph<5.5){msg='<b>กรดปานกลาง</b> · โดโลไมด์ 500 ก.–1 กก./ต้น · เพิ่มปุ๋ยอินทรีย์+ฮิวมิค';col='var(--amb)';}
+  else if(ph<=6.5){msg='<b>เหมาะสมที่สุด ✓</b> · รักษาด้วยปุ๋ยอินทรีย์+ฮิวมิค · ทุกธาตุดูดซึมได้ดีสุด';col='var(--g)';}
+  else if(ph<=7.5){msg='<b>ด่างเล็กน้อย</b> · หยุดโดโลไมด์ · กำมะถัน 50–100 ก./ต้น · ปุ๋ย Ammonium form';col='var(--amb)';}
+  else{msg='<b>ด่างรุนแรง</b> · กำมะถัน 100–200 ก./ต้น · แอมโมเนียมซัลเฟต (21-0-0) · ปรึกษาผู้เชี่ยวชาญ';col='var(--red)';}
+  const sr={'ใบอ่อน':'25-7-7 หรือ 20-8-8 + Mix+Zn+Fe+Mn ทางใบ','ใบสมบูรณ์':'15-15-15 หรือ 16-16-16 + Ca+Mg','พักตัว':'6-3-3 หรือ 13-13-21 + ฮิวมิค+B1'}[st]||'';
+  document.getElementById('ph-r').innerHTML=`
+    <div class="ph-box">
+      <div style="font-size:.77rem;color:var(--txt3);margin-bottom:8px">ผลการวิเคราะห์ pH <b style="color:${col};font-size:1rem">${ph}</b></div>
+      <div style="margin:13px 0"><div class="ph-bar"><div class="ph-th" style="left:${pct}%"></div></div><div class="ph-lb"><span>3.0 กรด</span><span>5.5</span><span>6.5</span><span>9.0 ด่าง</span></div></div>
+      <div style="font-size:.82rem;line-height:1.7;margin-bottom:10px;color:var(--txt2)">${msg}</div>
+      <div style="background:var(--g3);border:1.5px solid var(--bdr2);border-radius:7px;padding:8px 11px;font-size:.78rem">
+        <div style="font-size:.62rem;color:var(--txt3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:2px">ปุ๋ยแนะนำ · ระยะ${st}</div>
+        <div style="color:var(--txt)">${sr}</div>
+      </div>
+    </div>`;
+}
+
+function doDx(){
+  const stage=document.getElementById('dis-st').value,sym=document.getElementById('sym-s').value;
+  const ctx=document.getElementById('stage-ctx'),res=document.getElementById('dis-r');
+  if(stage&&SI[stage]){ctx.style.display='block';ctx.innerHTML=`<b>ระยะใบ: ${stage}</b> · ${SI[stage].d} · <span style="color:var(--amb)">${SI[stage].p}</span>`;}
+  else ctx.style.display='none';
+  if(!sym){res.innerHTML='';return;}
+  const entry=DD[sym];
+  if(!entry){res.innerHTML='<p style="color:var(--txt3);padding:12px">ไม่พบข้อมูล</p>';return;}
+  let causes=entry.causes;
+  if(stage){
+    const f=causes.filter(c=>!c.st||c.st.includes(stage));
+    if(f.length)causes=f;
+    else{res.innerHTML=`<div style="background:var(--amb2);border:1.5px solid #f0c890;border-radius:9px;padding:10px 13px;margin-top:9px;font-size:.8rem;color:var(--amb)">${entry.icon} อาการ "<b>${sym}</b>" ไม่ค่อยพบในระยะ <b>${stage}</b> · ลองตรวจสอบระยะใบอีกครั้ง</div>`;return;}
+  }
+  res.innerHTML='<div style="margin-top:9px">'+causes.map(c=>`
+    <div class="dc" style="border-left:3px solid ${c.sev==='high'?'var(--red)':c.sev==='med'?'var(--amb)':'var(--g)'}">
+      <div class="dc-n">${entry.icon} ${c.n}
+        <span class="tag ${c.sev==='high'?'tr':c.sev==='med'?'ta':'tg'}">${c.sev==='high'?'⚠ สูง':c.sev==='med'?'⚡ กลาง':'✓ ต่ำ'}</span>
+        ${c.st?`<span style="margin-left:auto;font-size:.65rem;color:var(--txt3)">ระยะ: ${c.st.join(', ')}</span>`:''}
+      </div>
+      <div class="dc-s">🔎 ${c.sym}</div>
+      <div class="dc-r">💊 ${c.rx}${c.ex?`<br><span style="color:var(--txt3)">📌 ${c.ex}</span>`:''}${c.ref?`<br><span style="font-size:.69rem;color:var(--txt3)">📚 ${c.ref}</span>`:''}</div>
+    </div>`).join('')+'</div>';
+}
+
+function renderDisLists(){
+  // ══════════════════════════════════════════════════════════════════
+  // แมลงและไรศัตรูทุเรียน — อ้างอิง: กรมวิชาการเกษตร เอกสารวิชาการแมลง-ไรศัตรูทุเรียน 2562
+  // สำนักวิจัยพัฒนาการอารักขาพืช + ศูนย์ส่งเสริมเทคโนโลยีการเกษตรด้านอารักขาพืช
+  // ══════════════════════════════════════════════════════════════════
+  const PESTS = [
+    // ── กลุ่มปากดูด ──
+    {cat:'ปากดูด',sev:'high',
+     n:'เพลี้ยไฟทุเรียน (Thrips palmi / Scirtothrips dorsalis)',
+     sci:'Thripidae · IRAC: หมุนเวียนสลับกลุ่ม 4A → 5 → 6 → 2B → 28',
+     when:'พ.ค.–มิ.ย. / พ.ย.–ม.ค. (แล้ง+ใบอ่อน)',
+     sym:'ยอดหงิกงอ ใบม้วน ขอบใบสีเงิน ใบอ่อนแห้งดำ ผลมีรอยขีดสีน้ำตาล',
+     chem:`<b>กลุ่ม 4A (Neonics):</b> ไทอะมีทอกแซม 25%WG 10–20 ก./20 ล. | อิมิดาโคลพริด 70%WG 5 ก./20 ล.<br>
+<b>กลุ่ม 5 (Spinosyns):</b> สไปนีโทแรม 25%WG 15–20 ก./20 ล. | สไปโนแซด 12%SC 30–40 มล./20 ล.<br>
+<b>กลุ่ม 6 (Avermectins):</b> อะบาเมกติน 1.8%EC 50–60 มล./20 ล. | อีมาเมกตินเบนโซเอต 5%SG 20–30 ก./20 ล.<br>
+<b>กลุ่ม 2B (Phenylpyrazoles):</b> พิโพรนิล 5%SC 20 มล./20 ล.<br>
+<b>กลุ่ม 28 (Diamides):</b> ไซแอนทรานิลิโพรล 10%OD 30 มล./20 ล.<br>
+<b>กลุ่ม 29 (Flonicamid):</b> ฟลอนิคามิด 50%WG 12 ก./20 ล. (เฉพาะปากดูด)<br>
+⚠ <b>แผนหมุนเวียน:</b> รอบ 1=4A → รอบ 2=5 → รอบ 3=6 → รอบ 4=2B → กลับรอบ 1`,
+     tip:'พ่นใต้ใบ เช้า 6–9 น. · เคาะกิ่งบนกระดาษขาว >10 ตัว/กิ่ง ให้พ่นทันที · ห้ามใช้กลุ่มเดิม >2 รอบติดต่อกัน'},
+    {cat:'ปากดูด',sev:'high',
+     n:'เพลี้ยไก่แจ้ทุเรียน (Durian Psyllid)',
+     sci:'Allocaridara malayensis Crawford · IRAC: หมุนเวียน 4A → 5 → 1B',
+     when:'ตลอดปี โดยเฉพาะช่วงใบอ่อน',
+     sym:'ใบอ่อนม้วนงอ จุดสีเหลือง มีขี้ผึ้งขาว ราดำตาม ใบร่วงเมื่อระบาดหนัก',
+     chem:`<b>กลุ่ม 4A:</b> ไทอะมีทอกแซม 25%WG 10–20 ก./20 ล. | อิมิดาโคลพริด 70%WG 5–10 ก./20 ล.<br>
+<b>กลุ่ม 5:</b> สไปนีโทแรม 25%WG 15–20 ก./20 ล. (ผสมกับ 4A ได้ = Hamper)<br>
+<b>กลุ่ม 1B (Organophosphates):</b> ไดเมโทเอต 40%EC 30 มล./20 ล. | โอเมโทเอต 50%SL 30 มล./20 ล.<br>
+<b>กลุ่ม 2B:</b> พิโพรนิล 5%SC 20 มล./20 ล.<br>
+<b>กลุ่ม 29:</b> ฟลอนิคามิด 50%WG 12 ก./20 ล.<br>
+⚠ <b>แผนหมุนเวียน:</b> รอบ 1=4A → รอบ 2=5 → รอบ 3=1B → รอบ 4=2B`,
+     tip:'พ่นตั้งแต่ตาแตก · บังคับใบอ่อนพร้อมกันทั้งสวน กำจัดได้ง่ายขึ้น · เก็บใบแก่ร่วงออกจากแปลง'},
+    {cat:'ปากดูด',sev:'med',
+     n:'เพลี้ยหอยเกล็ดทุเรียน (Durian Scale)',
+     sci:'Pseudaulacaspis sp., Diaspididae · IRAC: 16 → M+ออยล์ → 4A',
+     when:'พ.ย.–เม.ย. (ฤดูแล้ง)',
+     sym:'เกล็ดสีน้ำตาล/ขาวครีมเกาะกิ่ง ใบ ผล ราดำตาม ต้นทรุดโทรม',
+     chem:`<b>กลุ่ม 16 (Buprofezin · ยับยั้งการลอกคราบ):</b> บูโพรเฟซิน 25%WP 20 ก./20 ล. + ไวต์ออยล์ 20 มล./20 ล.<br>
+<b>กลุ่ม Multi-site (M):</b> ไวต์ออยล์/ปิโตรเลียมออยล์ 40 มล./20 ล. (ใช้ตัวเดียวก็ได้ช่วงตัวอ่อน)<br>
+<b>กลุ่ม 4A:</b> ไทอะมีทอกแซม 25%WG 10 ก./20 ล. (กรณีระบาดหนัก)<br>
+<b>กลุ่ม 1B:</b> มาลาไทออน 83%EC อัตราตามฉลาก (สลับในฤดูกาลถัดไป) · <span style="color:var(--red)">คลอร์ไพริฟอสห้ามใช้แล้ว</span><br>
+⚠ <b>พ่น 2 รอบ ห่างกัน 7–10 วัน</b> ให้ตรงช่วงตัวอ่อน crawler`,
+     tip:'กำจัดมดด้วย — มดปกป้องเพลี้ยหอยจากศัตรูธรรมชาติ · ตัวเต็มวัยมีเกราะป้องกัน ยาเข้าไม่ถึง'},
+    {cat:'ปากดูด',sev:'med',
+     n:'เพลี้ยแป้ง (Mealybug)',
+     sci:'Pseudococcus sp., Ferrisia virgata · IRAC: 4A → 1B → 16',
+     when:'ต.ค.–ก.พ.',
+     sym:'แป้งขาวปกคลุมกิ่ง ซอกใบ ราดำตาม มดเดิน ผลเน่าช่วงติดผล',
+     chem:`<b>กลุ่ม 4A:</b> ไทอะมีทอกแซม 25%WG 10–20 ก./20 ล. | อิมิดาโคลพริด 70%WG 10 ก./20 ล.<br>
+<b>กลุ่ม 1B:</b> มาลาไทออน 83%EC อัตราตามฉลาก | ไดเมโทเอต 40%EC 30 มล./20 ล. · <span style="color:var(--red)">คลอร์ไพริฟอสห้ามใช้แล้ว</span><br>
+<b>กลุ่ม 16:</b> บูโพรเฟซิน 25%WP 20 ก./20 ล. + ไวต์ออยล์<br>
+<b>สารชีวภัณฑ์:</b> บิวเวอเรีย บาสเซียนา 10⁸ cfu/มล. 50–100 มล./20 ล. (ป้องกันดื้อยา ปลอดภัย)<br>
+⚠ <b>แผนหมุนเวียน:</b> รอบ 1=4A → รอบ 2=1B → รอบ 3=16+ออยล์ → รอบ 4=บิวเวอเรีย`,
+     tip:'กำจัดมดก่อนด้วยเหยื่อพิษ — มดคือ "คนพา" เพลี้ยแป้ง · ฉีดน้ำแรงล้างก่อนพ่นยา'},
+    {cat:'ปากดูด',sev:'med',
+     n:'ไรแดงแอฟริกัน / ไรสีแดง (Red Spider Mite)',
+     sci:'Tetranychus urticae, T. cinnabarinus · IRAC: 6 → 21A → 10A → ออยล์',
+     when:'มี.ค.–มิ.ย. (ฤดูแล้ง)',
+     sym:'ใต้ใบมีเส้นใยขาว จุดขาวเหลืองบนใบ ใบซีด ใบร่วง',
+     chem:`<b>กลุ่ม 6 (Avermectins):</b> อะบาเมกติน 1.8%EC 50–60 มล./20 ล. + น้ำมัน 40 มล./20 ล.<br>
+<b>กลุ่ม 21A (METI acaricides):</b> เฟนไพรอกซิเมต 5%EC 10 มล./20 ล. | ไพริดาเบน 20%WP 15 ก./20 ล.<br>
+<b>กลุ่ม 10A (ยับยั้งการเจริญของไร):</b> เฮกซีไทอะซอกซ์ 10%WP 10 ก./20 ล. (กลุ่มเดียวกับโคลเฟนเทซีน ไม่นับเป็นการสลับ)<br>
+<b>กลุ่ม 10A (Clofentezine):</b> โคลเฟนเทซีน 50%SC 20 มล./20 ล. (ได้ผลดีกับไข่และตัวอ่อน)<br>
+<b>น้ำมันพาราฟิน M:</b> 60–80 มล./20 ล. (ใช้คู่กับกลุ่มอื่น)<br>
+⚠ <b>ห้ามใช้ไพรีทรอยด์ (3A)</b> ทำลายศัตรูธรรมชาติของไร · แผน: รอบ 1=6 → รอบ 2=21A → รอบ 3=10A`,
+     tip:'>3 ตัว/ใบ ให้พ่น · ฉีดน้ำแรงล้างก่อน · พ่นใต้ใบเน้น ไรอยู่ใต้ใบ'},
+    {cat:'ปากดูด',sev:'low',
+     n:'ไรสี่ขา (Eriophyid Mite)',
+     sci:'Eriophyidae · IRAC: 6 → M',
+     when:'ช่วงแล้ง ใบอ่อน',
+     sym:'ยอดหงิกงอคล้ายเพลี้ยไฟ แต่ขอบม้วนลง ไม่มีสีเงิน',
+     chem:`<b>กลุ่ม 6:</b> อะบาเมกติน 1.8%EC 50 มล./20 ล. + น้ำมันพาราฟิน 40 มล./20 ล.<br>
+<b>กลุ่ม 21A:</b> เฟนไพรอกซิเมต 5%EC 10 มล./20 ล.`,
+     tip:'ต้องใช้แว่นขยาย 10x ดูจึงจะแยกจากเพลี้ยไฟได้ · ตัวเล็กมาก สีขาวครีม'},
+    // ── กลุ่มกัดกิน (Chewing insects) ──
+    {cat:'กัดกิน',sev:'high',
+     n:'ด้วงหนวดยาวเจาะลำต้น (Longhorn Borer)',
+     sci:'Batocera sp., Cerambycidae · IRAC: 4A, 4A+3A (พ่นลำต้น)',
+     when:'ต.ค.–ก.พ. (ออกผสมพันธุ์กลางคืน)',
+     sym:'รูกลมขนาดนิ้วก้อยที่โคนลำต้น ขุยเลื่อยสีน้ำตาลที่โคน ต้นทรุดโทรม กิ่งแห้ง',
+     chem:`<b>กำจัดหนอนในรู:</b> ใช้มีดถากเปลือกหรือลวดเกี่ยวหนอนออกมาทำลาย · <span style="color:var(--red)">คลอร์ไพริฟอสที่เคยใช้ฉีดเข้ารู ห้ามใช้แล้วตั้งแต่ 1 มิ.ย. 2563</span><br>
+<b>พ่นลำต้น (ป้องกัน):</b> ไทอะมีทอกแซม/แลมบ์ดา-ไซฮาโลทริน (4A+3A) 2 ครั้ง ห่างกัน 14 วัน<br>
+<b>อิมิดาโคลพริด (4A):</b> 70%WG 10 ก./น้ำ 20 ล. พ่นลำต้น-กิ่งหลัก<br>
+<b>ทางชีววิธี:</b> เชื้อราเขียว เมทาไรเซียม 10⁸ cfu/มล. 100 มล./20 ล. ฉีดรอบโคน`,
+     tip:'ตรวจต้นทุก 2 สัปดาห์ · ใช้ลวดแหย่ฆ่าหนอนในรู · ทาปูนขาวโคนต้นสูง 60 ซม.ป้องกันวางไข่ · สวนที่ระบาดพ่นก่อนช่วง ต.ค.'},
+    {cat:'กัดกิน',sev:'high',
+     n:'หนอนเจาะเมล็ดทุเรียน (Durian Seed Borer)',
+     sci:'Mudaria luteileprosa Holloway (Noctuidae) · IRAC: 15 → 6 → 28',
+     when:'ช่วงผลพัฒนา (อายุผล 6–8 สัปดาห์หลังดอกบาน)',
+     sym:'รูเล็กที่ผล มีมูลสีน้ำตาลไหลออก ผลร่วงก่อนกำหนด เมล็ดถูกกัดกิน',
+     chem:`<b>กลุ่ม 15 (IGR):</b> คลอร์ฟลูอาซูรอน 5%EC 10–15 มล./20 ล. ทุก 10 วัน | ลูเฟนนูรอน 5%EC 20 มล./20 ล.<br>
+<b>กลุ่ม 13:</b> คลอร์ฟีนาพีร์ 24%SC 10 มล./20 ล.<br>
+<b>กลุ่ม 28 (Diamides):</b> ไซแอนทรานิลิโพรล 10%OD 30 มล./20 ล. | คลอแรนทรานิลิโพรล (ริแอล) 20%SC 5 มล./20 ล.<br>
+<b>วิธีกายภาพ:</b> ห่อผลด้วยถุงตั้งแต่อายุ 4 สัปดาห์ ป้องกันได้ 95%+<br>
+⚠ <b>แผน:</b> สัปดาห์ที่ 4=ห่อผล + 15 → สัปดาห์ที่ 6=13 → สัปดาห์ที่ 8=28`,
+     tip:'ห่อผลดีที่สุด ไม่ต้องพ่นยา · ถ้าพ่นยาให้พ่นช่วงเย็น หนอนออกกินกลางคืน'},
+    {cat:'กัดกิน',sev:'high',
+     n:'หนอนเจาะผลทุเรียน (Durian Fruit Borer)',
+     sci:'Conogethes punctiferalis Guenée (Crambidae) · IRAC: 13 → 15 → 28',
+     when:'ช่วงผลอ่อน–แก่',
+     sym:'รูเจาะเข้าผล มูลร่วงใต้ต้น ผลเน่าและร่วง',
+     chem:`<b>กลุ่ม 13 (Chlorfenapyr):</b> คลอร์ฟีนาพีร์ 24%SC 10 มล./20 ล.<br>
+<b>กลุ่ม 15:</b> ลูเฟนนูรอน 5%EC 20 มล./20 ล. | คลอร์ฟลูอาซูรอน 5%EC 15 มล./20 ล.<br>
+<b>กลุ่ม 28:</b> ไซแอนทรานิลิโพรล 10%OD 30 มล./20 ล. | คลอแรนทรานิลิโพรล 20%SC 5 มล./20 ล.<br>
+<b>กลุ่ม 6:</b> อีมาเมกตินเบนโซเอต 5%SG 20 ก./20 ล.<br>
+<b>ชีวภัณฑ์:</b> Bacillus thuringiensis (Bt) WP 50–100 ก./20 ล. (ช่วงตัวอ่อนเล็ก)`,
+     tip:'ห่อผลป้องกันได้ดีที่สุด · พ่นยาช่วงเย็น 17–19 น. · สลับกลุ่มยาทุก 2 รอบ'},
+    {cat:'กัดกิน',sev:'med',
+     n:'หนอนกินใบทุเรียน (Durian Leaf Caterpillar)',
+     sci:'Hyposidra talaca Walker (Geometridae) · IRAC: 6 → 5 → 28 → Bt',
+     when:'พ.ค.–ก.ย. (ช่วงฝน)',
+     sym:'ใบถูกกัดจนเหลือเส้นกลางใบ มูลเม็ดกลมสีเขียว-น้ำตาลใต้ต้น',
+     chem:`<b>กลุ่ม 6:</b> อีมาเมกตินเบนโซเอต 5%SG 20–30 ก./20 ล.<br>
+<b>กลุ่ม 5:</b> สไปนีโทแรม 25%WG 15 ก./20 ล. | สไปโนแซด 12%SC 30 มล./20 ล.<br>
+<b>กลุ่ม 28:</b> คลอแรนทรานิลิโพรล 20%SC 5 มล./20 ล.<br>
+<b>กลุ่ม 15:</b> ลูเฟนนูรอน 5%EC 20 มล./20 ล.<br>
+<b>ชีวภัณฑ์:</b> Bacillus thuringiensis (Bt) WP 50–100 ก./20 ล. (ปลอดภัยสูง)<br>
+⚠ <b>แผน:</b> รอบ 1=Bt → รอบ 2=6 → รอบ 3=5 → รอบ 4=28`,
+     tip:'พ่นตอนเย็น หนอนออกกินกลางคืน · ระบาดเป็นรอบๆ ทุก 4–6 สัปดาห์'},
+    {cat:'กัดกิน',sev:'med',
+     n:'หนอนม้วนใบ (Leaf Roller)',
+     sci:'Archips sp. (Tortricidae) · IRAC: 6 → 13 → 28',
+     when:'ช่วงใบอ่อน',
+     sym:'ใบม้วนเป็นหลอด มีใยขาวเชื่อม หนอนสีเขียวอ่อน',
+     chem:`<b>กลุ่ม 6:</b> อีมาเมกตินเบนโซเอต 5%SG 20 ก./20 ล.<br>
+<b>กลุ่ม 13:</b> คลอร์ฟีนาพีร์ 24%SC 10 มล./20 ล.<br>
+<b>กลุ่ม 28:</b> ไซแอนทรานิลิโพรล 10%OD 30 มล./20 ล.`,
+     tip:'คลี่ใบดู บีบทำลายหนอนก่อนพ่นยา'},
+    {cat:'กัดกิน',sev:'med',
+     n:'มอดเจาะลำต้น (Shot-hole Borer)',
+     sci:'Xylosandrus sp. (Scolytidae) · IRAC: ไม่มีสารทดแทนที่ยืนยันได้ · เน้นตัดเผา',
+     when:'ช่วงฝน ต้นอ่อน',
+     sym:'รูกลมเล็กมาก ขุยไม้สีขาวรอบรู กิ่งแห้งและตาย',
+     chem:`<b>วิธีหลัก:</b> ตัดกิ่ง/ส่วนที่ถูกเจาะไปเผาทำลาย · <span style="color:var(--red)">คลอร์ไพริฟอสที่เคยแนะนำ ห้ามใช้แล้ว</span> — สารทดแทนให้สอบถามเกษตรอำเภอและใช้ตามฉลากที่ขึ้นทะเบียน<br>
+<b>ชีวภัณฑ์:</b> เมทาไรเซียม อะนิโซพลีเอ 10⁸ cfu/มล. ฉีดรอบโคนต้น`,
+     tip:'ตัดกิ่งที่ถูกเจาะออก เผาทำลาย · ต้นอ่อนอายุน้อยเสี่ยงมากกว่า · ป้องกันด้วยทาปูนขาวกิ่ง'},
+    {cat:'กัดกิน',sev:'low',
+     n:'หนอนเจาะยอด (Shoot Borer)',
+     sci:'Conogethes punctiferalis (ระยะต้นเล็ก) · IRAC: 13 → 15',
+     when:'ช่วงแตกยอดอ่อน',
+     sym:'รูเล็กที่โคนยอด ขุยไม้น้ำตาลรอบรู ยอดแห้งทั้งหน่อ',
+     chem:`<b>กลุ่ม 13:</b> คลอร์ฟีนาพีร์ 24%SC 10 มล./20 ล.<br>
+<b>กลุ่ม 15:</b> ลูเฟนนูรอน 5%EC 20 มล./20 ล.`,
+     tip:'ตัดยอดที่ถูกเจาะออก เผาทำลายทันที อย่าทิ้งไว้ในแปลง'},
+    // ── กลุ่มพิเศษ ──
+    {cat:'พิเศษ',sev:'low',
+     n:'แมลงวันผลไม้ (Oriental Fruit Fly)',
+     sci:'Bactrocera dorsalis Hendel (Tephritidae) · IRAC: M (เหยื่อพิษ)',
+     when:'ช่วงผลแก่ใกล้เก็บเกี่ยว',
+     sym:'ผลมีรูเล็กๆ เนื้อเน่า กลิ่นเหม็น ผลร่วง',
+     chem:`<b>เหยื่อพิษ:</b> โปรตีนไฮโดรไลเซท + มาลาไทออน (1B) 1:1 พ่นจุดๆ ต้น/ไร่ ทุก 7 วัน<br>
+<b>กับดักฟีโรโมน:</b> เมทิวจีนอล + มาลาไทออน/ฟิโปรนิล (วางระหว่างต้น 4 กับดัก/ไร่)<br>
+<b>ห่อผล:</b> ป้องกันได้ 95%+ ไม่ต้องพ่นยา`,
+     tip:'เก็บผลร่วงออกจากแปลงทุกวัน · ห่อผลดีที่สุด · ห้ามพ่นยาทั่วต้น ทำลายแมลงผสมเกสร'},
+  ];
+
+  // ══════════════════════════════════════════════════════════════════
+  // โรคทุเรียน — อ้างอิง: กรมวิชาการเกษตร 51 โรค + สถาบันวิจัยพืชสวน
+  // ม.เกษตรศาสตร์ กำแพงแสน (รัติยา พงศ์พิสุทธา) + ศูนย์อารักขาพืช
+  // ══════════════════════════════════════════════════════════════════
+  const FUNGS = [
+    // ══ อ้างอิง: กรมวิชาการเกษตร + ม.เกษตรศาสตร์ + FRAC 2022 ══
+    {sev:'high',
+     n:'รากเน่าโคนเน่า (Phytophthora Root & Crown Rot)',
+     sci:'Phytophthora palmivora Butler · FRAC: P07 ↔ 4 ↔ 49 (ห้ามใช้ 4 เดี่ยวนาน)',
+     when:'มิ.ย.–ต.ค. (ฝนชุก น้ำขัง)',
+     sym:'ยางน้ำตาลไหลจากโคนต้น เปลือกนุ่มเน่า ใบเหลืองทั้งต้น รากดำเน่า',
+     rx:`<b>FRAC P07 (Phosphonates · เดิมกลุ่ม 33):</b> ฟอสอีทิล-อะลูมิเนียม 80%WP 50 ก./ต้น ราดรอบโคน<br>
+<b>FRAC 4 (Phenylamides):</b> เมทาแลคซิล-M 4%GR 30 ก./ต้น | เมทาแลคซิล 25%WP 20 ก./น้ำ 20 ล.<br>
+<b>FRAC P07 (กลุ่มเดียวกับฟอสอีทิล-Al):</b> กรดฟอสฟอรัส 45%SL 20–30 มล./น้ำ 20 ล. ราดดิน<br>
+<b>FRAC 49 (OSBPI):</b> อ็อกซาไทอะพิโพรลิน (Zorvec) 10%EC 5 มล./น้ำ 20 ล. (ใหม่)<br>
+<b>ชีวภัณฑ์:</b> ไตรโคเดอม่า ฮาร์เซียนัม 10⁹ cfu/ก. 20–50 ก./ต้น ใส่ดิน (ป้องกัน-ระยะยาว)<br>
+⚠ <b>แผนหมุนเวียน:</b> ก.ค.=P07+4 → ส.ค.=P07 → ก.ย.=P07 → ต.ค.=ไตรโคเดอม่า (รักษา)`,
+     tip:'ขูดแผล ทาฟอสอีทิล-Al ข้น · ห้ามน้ำขัง · ราดป้องกันทุกปีก่อนฝนชุก (พ.ค.)'},
+    {sev:'high',
+     n:'โรคใบติดหรือใบไหม้ (Leaf Blight)',
+     sci:'Rhizoctonia solani Kühn · FRAC: 2 → 7 → 11 → M',
+     when:'ช่วงฝนชุก ความชื้นสูง',
+     sym:'ใบมีแผลคล้ายถูกน้ำร้อนลวก แผลขยายลุกลาม ใบติดกัน ใบร่วงมาก',
+     rx:`<b>FRAC 2 (Dicarboximides):</b> ไอโพรไดออน 50%WP 20–25 ก./น้ำ 20 ล.<br>
+<b>FRAC 7 (SDHI):</b> บอสคาลิด 50%WG 10 ก./น้ำ 20 ล. | เพนทิโอพีแรด 10%EC 30 มล.<br>
+<b>FRAC 11 (QoI/Strobilurins):</b> ไพราโคสโตรบิน 25%EC 10 มล./20 ล. | อะซ็อกซีสโตรบิน 25%SC 10 มล.<br>
+<b>FRAC 3+2 (ผสม):</b> โพรพิโคนาโซล + ไอโพรไดโอน อัตราตามฉลาก<br>
+<b>FRAC M (Multi-site):</b> แมนโคเซบ 80%WP 30–40 ก./น้ำ 20 ล. (ดื้อยาต่ำ)<br>
+⚠ <b>แผน:</b> รอบ 1=2 → รอบ 2=11 → รอบ 3=7 → รอบ 4=M (แมนโคเซบ)`,
+     tip:'ตัดแต่งทรงพุ่มให้โปร่ง · เก็บใบร่วงออกจากแปลง · อย่าใช้ 11 เดี่ยวเกิน 2 รอบ ดื้อยาเร็ว'},
+    {sev:'high',
+     n:'ราสีชมพู (Pink Disease)',
+     sci:'Corticium salmonicolor Massee · FRAC: 7 → 11 → M1 (ทา)',
+     when:'ฝนชุก ความชื้นสูง',
+     sym:'เส้นใยสีขาว→ชมพูที่โคนกิ่ง ใบเหลืองแห้งทั้งกิ่ง กิ่งตาย',
+     rx:`<b>ทาแผล FRAC M1 (Copper):</b> คอปเปอร์ออกซีคลอไรด์ผสมน้ำข้น ทาบริเวณเส้นใย<br>
+<b>FRAC 11 (พ่น):</b> ไพราโคสโตรบิน 25%EC 10 มล./20 ล.<br>
+<b>FRAC 7:</b> บอสคาลิด 50%WG 10 ก./น้ำ 20 ล.<br>
+<b>FRAC 3 (DMI):</b> โพรพิโคนาโซล 25%EC 10 มล./น้ำ 20 ล.<br>
+<b>ตัดกิ่งที่ถูกทำลายออก เผาทำลาย</b> (วิธีกายภาพสำคัญที่สุด)`,
+     tip:'ตรวจทุกสัปดาห์ช่วงฝน · ตัดแต่งทรงพุ่มให้ถ่ายเทอากาศ · มักเริ่มจากกิ่งหลักใต้พุ่ม'},
+    {sev:'high',
+     n:'โรคกิ่งแห้ง/ไฟทอฟธอราลำต้น (Stem Canker)',
+     sci:'Phytophthora palmivora (บนลำต้น-กิ่ง) · FRAC: 33 → 4',
+     when:'ฝนชุก',
+     sym:'แผลสีน้ำตาลเปียก มียางไหล บนกิ่งหรือลำต้น กิ่งแห้งตาย',
+     rx:`<b>ทาแผล FRAC P07:</b> ฟอสอีทิล-Al 80%WP ผสมน้ำข้น ทาแผล<br>
+<b>FRAC M1:</b> คอปเปอร์ออกซีคลอไรด์ทาแผล<br>
+<b>FRAC 4:</b> เมทาแลคซิล-M 4%GR หว่านรอบโคน`,
+     tip:'ขูดเนื้อเน่าออกก่อนทายา · รักษาเหมือนโคนเน่าแต่เน้นที่กิ่ง'},
+    {sev:'med',
+     n:'แอนแทรคโนส (Anthracnose)',
+     sci:'Colletotrichum gloeosporioides Penz. · FRAC: 3 → 11 → 9 → M',
+     when:'ฝน/หลังฝน ความชื้นสูง',
+     sym:'จุดน้ำตาลกลม ขอบวงเหลืองชัดเจน บนใบ ผล กิ่ง ผลมีแผลสีน้ำตาลเนื้อยุบ',
+     rx:`<b>FRAC 3 (DMI/Triazoles):</b> ไดฟีโนโคนาโซล 25%EC 10 มล./น้ำ 20 ล. | โพรพิโคนาโซล 25%EC 10 มล.<br>
+<b>FRAC 11 (QoI):</b> ไพราโคสโตรบิน 25%EC 10 มล. | อะซ็อกซีสโตรบิน 25%SC 10 มล.<br>
+<b>FRAC 9 (Anilino-pyrimidines):</b> ไซโพรดินิล 50%WG 15 ก./น้ำ 20 ล.<br>
+<b>FRAC 12 (Phenylpyrroles):</b> ฟลูไดออกโซนิล 50%WG 5 ก./น้ำ 20 ล. (เชื้อดื้อ 3+11 ได้ผลดี)<br>
+<b>FRAC M (Multi-site):</b> แมนโคเซบ 80%WP 30 ก./น้ำ 20 ล. (ดื้อยาต่ำมาก)<br>
+⚠ <b>แผน:</b> รอบ 1=3 → รอบ 2=11 → รอบ 3=9 → รอบ 4=M · ห้ามใช้ 3+11 เดี่ยวเกิน 2 รอบ`,
+     tip:'Colletotrichum ดื้อ 3+11 ได้ง่ายมาก · ต้องหมุนเวียนเคร่งครัด · สลับ M ทุก 3–4 รอบ'},
+    {sev:'med',
+     n:'โรคราแป้ง (Powdery Mildew)',
+     sci:'Oidium sp. · FRAC: 3 → 11 → 13 → กำมะถัน (M02)',
+     when:'อากาศเย็น แห้ง ความชื้นต่ำ',
+     sym:'ผงขาวบนผิวใบ กิ่งอ่อน ดอก ลบออกได้ ใบบิดงอ',
+     rx:`<b>FRAC M2 (กำมะถัน):</b> กำมะถัน 80%WP 40–50 ก./น้ำ 20 ล. (ถูก ดื้อยาต่ำมาก)<br>
+<b>FRAC 3:</b> ไดฟีโนโคนาโซล 25%EC 10 มล. | ไตรฟลอกซีสโตรบิน+ไซโปรโคนาโซล (11+3)<br>
+<b>FRAC 11:</b> ไตรฟลอกซีสโตรบิน 50%WG 5 ก./น้ำ 20 ล.<br>
+<b>FRAC 13 (Quinoxyfen):</b> ควิน็อกซีเฟน 25%SC อัตราตามฉลาก (เฉพาะราแป้ง · ตรวจสอบว่ามีทะเบียนในไทยก่อนซื้อ)`,
+     tip:'ห้ามพ่นกำมะถันตอนอากาศร้อน >35°C จะไหม้ใบ · กำมะถันได้ผลดีและดื้อยาต่ำที่สุด'},
+    {sev:'med',
+     n:'โรคใบจุดสาหร่าย (Algal Leaf Spot)',
+     sci:'Cephaleuros virescens Kunze · ไม่ใช่เชื้อรา ใช้ M1',
+     when:'ฝน ความชื้นสูง ต้นอ่อนแอ',
+     sym:'จุดฟูสีเขียว-เหลือง ขอบแฉกๆ บนใบแก่ เปลี่ยนเป็นสีสนิม',
+     rx:`<b>FRAC M1 (Copper):</b> คอปเปอร์ไฮดร็อกไซด์ 53.8%WG 20 ก./น้ำ 20 ล. | คอปเปอร์ออกซีคลอไรด์ 85%WP 25 ก./น้ำ 20 ล.<br>
+<b>FRAC 3:</b> ไดฟีโนโคนาโซล 25%EC 10 มล./น้ำ 20 ล. (กรณีรุนแรง)`,
+     tip:'ไม่ทำให้ต้นตาย แต่ลดการสังเคราะห์แสง · ปรับระบบระบายน้ำ · ใส่ปุ๋ยให้ต้นแข็งแรง'},
+    {sev:'med',
+     n:'โรคใบจุด (Leaf Spot)',
+     sci:'Cercospora sp., Pestalotiopsis sp. · FRAC: 3 → 11 → M',
+     when:'ฝน ความชื้นสูง',
+     sym:'จุดสีน้ำตาลรูปร่างต่างๆ บนใบ ขอบเหลือง ใบร่วงก่อนกำหนด',
+     rx:`<b>FRAC 3:</b> ไดฟีโนโคนาโซล 25%EC 10 มล./น้ำ 20 ล. | โพรพิโคนาโซล 25%EC 10 มล.<br>
+<b>FRAC 11:</b> ไพราโคสโตรบิน 25%EC 10 มล./น้ำ 20 ล.<br>
+<b>FRAC M:</b> แมนโคเซบ 80%WP 30 ก./น้ำ 20 ล. (สลับทุก 3 รอบ)`,
+     tip:'มักพบช่วงฝน ระบาดรุนแรงถ้าทรงพุ่มทึบ · ตัดแต่งกิ่งให้โปร่ง'},
+    {sev:'med',
+     n:'โรคผลเน่า (Fruit Rot)',
+     sci:'Phytophthora palmivora + Rhizopus sp. · FRAC: 33+4 → M1',
+     when:'ช่วงผลแก่ใกล้เก็บ',
+     sym:'ผลมีแผลน้ำตาล เนื้อเน่า กลิ่นเหม็น มีเส้นใยขาว',
+     rx:`<b>FRAC 4:</b> เมทาแลคซิล 25%WP 20 ก./น้ำ 20 ล. + คอปเปอร์ M1 30 ก./น้ำ 20 ล. พ่นผล<br>
+<b>FRAC P07+4:</b> ฟอสอีทิล-Al + เมทาแลคซิล (ผสม) พ่นผลและโคนต้น<br>
+<b>ห่อผล:</b> ป้องกันได้ 95%+ ไม่ต้องพ่นยา`,
+     tip:'เก็บผลร่วงออกจากแปลงทุกวัน · ห่อผลดีที่สุด'},
+    {sev:'low',
+     n:'โรคราสีดำ/ราดำ (Sooty Mold)',
+     sci:'Capnodium sp. · ไม่ใช่เชื้อราโดยตรง เกิดตามเพลี้ย',
+     when:'ตามหลังเพลี้ยไก่แจ้/เพลี้ยแป้งระบาด',
+     sym:'ผิวใบ-กิ่งสีดำเหมือนเขม่า ลบออกได้ สังเคราะห์แสงลด',
+     rx:`<b>กำจัดแมลงต้นเหตุก่อน</b> (เพลี้ยไก่แจ้/เพลี้ยแป้ง)<br>
+<b>FRAC M1:</b> คอปเปอร์ M1 30 ก./น้ำ 20 ล. + สบู่อ่อน 5 มล. พ่นล้าง<br>
+<b>ล้างด้วยน้ำสบู่เจือจาง</b> ก็เพียงพอถ้าราไม่หนัก`,
+     tip:'ราดำหายเองเมื่อกำจัดแมลงได้ · ไม่ต้องซื้อยาพิเศษ'},
+    {sev:'low',
+     n:'โรคกิ่งแห้งจากเชื้อรา (Dieback)',
+     sci:'Botryosphaeria sp., Lasiodiplodia theobromae · FRAC: 3 → 7 → M1',
+     when:'หลังตัดแต่ง ต้นอ่อนแอ',
+     sym:'กิ่งแห้งจากปลายลงมา เนื้อไม้สีน้ำตาล ลุกลามช้า',
+     rx:`<b>FRAC M1 (ทาแผล):</b> คอปเปอร์ออกซีคลอไรด์ผสมน้ำข้น ทาแผลตัดแต่งทันที<br>
+<b>FRAC 3 (พ่น):</b> ไดฟีโนโคนาโซล 25%EC 10 มล./น้ำ 20 ล.<br>
+<b>FRAC 7:</b> บอสคาลิด 50%WG 10 ก./น้ำ 20 ล. (กรณีรุนแรง)`,
+     tip:'ตัดแต่งด้วยมีดคมที่ฆ่าเชื้อด้วยแอลกอฮอล์ · ทาแผลทันทีทุกครั้ง'},
+  ];
+
+  const catColor = {'ปากดูด':'var(--amb)','กัดกิน':'var(--red)','พิเศษ':'var(--sky)'};
+  const catBg = {'ปากดูด':'var(--amb2)','กัดกิน':'var(--red2)','พิเศษ':'var(--sky2)'};
+
+  document.getElementById('pest-l').innerHTML = PESTS.map(p=>`
+    <div class="dc" style="border-left:3px solid ${p.sev==='high'?'var(--red)':p.sev==='med'?'var(--amb)':'var(--g)'}">
+      <div class="dc-n" style="flex-wrap:wrap;gap:5px">
+        <span>🐛 ${p.n}</span>
+        <span class="tag ${p.sev==='high'?'tr':p.sev==='med'?'ta':'tg'}">${p.sev==='high'?'⚠ สูง':p.sev==='med'?'⚡ กลาง':'✓ ต่ำ'}</span>
+        <span class="tag ts" style="font-size:.6rem">${p.cat}</span>
+      </div>
+      <div style="font-size:.67rem;color:var(--txt3);font-style:italic;margin-bottom:4px">📚 ${p.sci}</div>
+      <div class="dc-s">📅 ระบาด: ${p.when}</div>
+      <div class="dc-s" style="background:var(--red2);border-left-color:var(--red)">🔎 อาการ: ${p.sym}</div>
+      <div class="dc-r">💊 ${p.chem}</div>
+      <div class="dc-r" style="background:var(--gold2);border-left-color:var(--gold)">💡 ${p.tip}</div>
+    </div>`).join('');
+
+  document.getElementById('fung-l').innerHTML = FUNGS.map(f=>`
+    <div class="dc" style="border-left:3px solid ${f.sev==='high'?'var(--red)':f.sev==='med'?'var(--amb)':'var(--g)'}">
+      <div class="dc-n" style="flex-wrap:wrap;gap:5px">
+        <span>🍄 ${f.n}</span>
+        <span class="tag ${f.sev==='high'?'tr':f.sev==='med'?'ta':'tg'}">${f.sev==='high'?'⚠ สูง':f.sev==='med'?'⚡ กลาง':'✓ ต่ำ'}</span>
+      </div>
+      <div style="font-size:.67rem;color:var(--txt3);font-style:italic;margin-bottom:4px">📚 ${f.sci}</div>
+      <div class="dc-s">📅 ระบาด: ${f.when}</div>
+      <div class="dc-s" style="background:var(--red2);border-left-color:var(--red)">🔎 อาการ: ${f.sym}</div>
+      <div class="dc-r">🧪 ${f.rx}</div>
+      <div class="dc-r" style="background:var(--gold2);border-left-color:var(--gold)">💡 ${f.tip}</div>
+    </div>`).join('');
+}
+
+function showCrop(k){
+  document.querySelectorAll('.csec').forEach(e=>e.classList.remove('on'));
+  document.querySelectorAll('[id^="cc-"]').forEach(e=>e.classList.remove('on'));
+  document.getElementById('cs-'+k).classList.add('on');
+  document.getElementById('cc-'+k).classList.add('on');
+}
+function showChem(k){
+  document.querySelectorAll('.hsec').forEach(e=>e.classList.remove('on'));
+  document.querySelectorAll('[id^="hc-"]').forEach(e=>e.classList.remove('on'));
+  document.getElementById('hs-'+k).classList.add('on');
+  document.getElementById('hc-'+k).classList.add('on');
+}
+
+function fd(d){if(!d)return'';const[y,m,dy]=d.split('-');const ms=['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];return`${+dy} ${ms[+m]} ${+y+543}`;}
+function tt(t){const m={'ปุ๋ยทางดิน':'tg','ปุ๋ยทางใบ':'tt','ยาฆ่าแมลง':'ta','ยาเชื้อรา':'tgold','สารกำจัดวัชพืช':'tr','ปรับปรุงดิน':'ts','อื่นๆ':'ts'};return`<span class="tag ${m[t]||'tg'}">${t}</span>`;}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2600);}
+</script>
+<!-- PWA Service Worker -->
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    const hadSW=!!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange',()=>{if(hadSW&&!window.__swReloaded){window.__swReloaded=true;location.reload();}});
+    navigator.serviceWorker.register('sw.js')
+      .then(r => console.log('SW registered'))
+      .catch(e => console.log('SW error', e));
+  });
+}
+</script>
+</body>
+</html>
